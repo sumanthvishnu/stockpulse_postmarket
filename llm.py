@@ -14,10 +14,12 @@ import requests
 
 
 def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3):
-    base = os.environ.get("LLM_BASE_URL", "https://api.openai.com/v1").rstrip("/")
-    model = os.environ.get("LLM_MODEL", "gpt-4o-mini")
-    key = (os.environ.get("OPENAI_API_KEY", "") or
-           os.environ.get("LLM_API_KEY", ""))
+    # Empty-string env vars (an unset GitHub secret is injected as "") must
+    # fall back to defaults, else the URL becomes "/chat/completions".
+    base = (os.environ.get("LLM_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
+    model = os.environ.get("LLM_MODEL") or "gpt-4o-mini"
+    key = ((os.environ.get("OPENAI_API_KEY") or "").strip()
+           or (os.environ.get("LLM_API_KEY") or "").strip())
     if not key:
         raise RuntimeError(
             "no API key: set OPENAI_API_KEY (or LLM_API_KEY) in the environment")

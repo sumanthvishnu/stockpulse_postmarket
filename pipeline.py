@@ -131,8 +131,11 @@ def mock_doc(kind, pack):
     n50 = d["indices"]["Nifty 50"]
     bnk = d["indices"]["Nifty Bank"]
     vix = d["vix"]["current"]
-    fii = d["fii_dii_cash_summary"]["fii_net_cr"]
-    dii = d["fii_dii_cash_summary"]["dii_net_cr"]
+    cash = d.get("fii_dii_cash_summary") or {}
+    fii = cash.get("fii_net_cr")
+    dii = cash.get("dii_net_cr")
+    fii_txt = f"Rs {fii:,.2f} Cr" if fii is not None else "n/a"
+    dii_txt = f"Rs {dii:,.2f} Cr" if dii is not None else "n/a"
     tdate = pack["meta"]["trading_date"]
     if kind == "report":
         return ("<!doctype html><html><head><style>"
@@ -144,7 +147,7 @@ def mock_doc(kind, pack):
                 f"<h2>2. Executive Summary</h2><p>Nifty 50 closed at Rs {n50['close']:,.2f} "
                 f"({n50['pct_chg']:+.2f}%). Bank Nifty Rs {bnk['close']:,.2f} "
                 f"({bnk['pct_chg']:+.2f}%). India VIX at {vix}. "
-                f"FII net Rs {fii:,.2f} Cr, DII net Rs {dii:,.2f} Cr.</p>"
+                f"FII net {fii_txt}, DII net {dii_txt}.</p>"
                 "<h2>14. Data Gaps Register</h2><p>No gaps (mock run).</p>"
                 "<p style='margin-top:60px;color:#64748B'>For education only. "
                 "Not investment advice.</p>"
@@ -168,8 +171,8 @@ def mock_doc(kind, pack):
             "<p>Caption A</p><textarea>Nifty closed near Rs "
             f"{n50['close']:,.2f}, up {n50['pct_chg']:+.2f}%. Not investment "
             "advice. #Nifty #IndianStockMarket #StockMarket #Trading #Investing"
-            "</textarea><p>Caption B</p><textarea>FII sold Rs "
-            f"{abs(fii):,.2f} Cr while DII bought Rs {dii:,.2f} Cr. Daily wrap "
+            "</textarea><p>Caption B</p><textarea>FII sold "
+            f"{fii_txt} while DII bought {dii_txt}. Daily wrap "
             "every evening @getstockpulse. Not investment advice. #Nifty "
             "#IndianStockMarket #FII #DII #StockMarket</textarea>"
             "</body></html>")
@@ -197,14 +200,17 @@ def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues):
     n50 = d["indices"]["Nifty 50"]
     bnk = d["indices"]["Nifty Bank"]
     vix = d["vix"]["current"]
-    fii = d["fii_dii_cash_summary"]["fii_net_cr"]
-    dii = d["fii_dii_cash_summary"]["dii_net_cr"]
+    cash = d.get("fii_dii_cash_summary") or {}
+    fii = cash.get("fii_net_cr")
+    dii = cash.get("dii_net_cr")
+    fii_s = f"Rs {fii:,.2f} Cr" if fii is not None else "n/a"
+    dii_s = f"Rs {dii:,.2f} Cr" if dii is not None else "n/a"
     wday = tdate.strftime("%A")
     lines = [
         f"<b>📊 StockPulse Post-Market · {wday}, {tdate.strftime('%d %b %Y')}</b>",
         f"Nifty {n50['close']:,.2f} ({n50['pct_chg']:+.2f}%) · "
         f"Bank Nifty {bnk['close']:,.2f} ({bnk['pct_chg']:+.2f}%)",
-        f"VIX {vix} · FII Rs {fii:,.2f} Cr · DII Rs {dii:,.2f} Cr",
+        f"VIX {vix} · FII {fii_s} · DII {dii_s}",
         "",
         f"🎠 <a href=\"{tg_escape(carousel_url)}\">Carousel (open in browser, download slides)</a>",
         f"📄 <a href=\"{tg_escape(pdf_url)}\">Report (PDF)</a>",
@@ -216,13 +222,16 @@ def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues):
     if DRY:
         log(f"[dry] would send to Telegram:\n{text}\n[dry] + PDF {pdf_path}")
         return
-    tg("sendMessage", chat_id=os.environ["TELEGRAM_CHAT_ID"],
+    chat_id = (os.environ.get("TELEGRAM_CHAT_ID") or "").strip()
+    if not chat_id:
+        raise RuntimeError("TELEGRAM_CHAT_ID is empty - add the secret")
+    tg("sendMessage", chat_id=chat_id,
        text=text, parse_mode="HTML", disable_web_page_preview=False)
     with open(pdf_path, "rb") as fh:
         requests.post(
-            f"https://api.telegram.org/bot{os.environ['TELEGRAM_BOT_TOKEN']}"
+            f"https://api.telegram.org/bot{os.environ.get('TELEGRAM_BOT_TOKEN', '')}"
             f"/sendDocument",
-            data={"chat_id": os.environ["TELEGRAM_CHAT_ID"]},
+            data={"chat_id": chat_id},
             files={"document": (os.path.basename(pdf_path), fh)}, timeout=120)
 
 
@@ -257,9 +266,30 @@ def main():
         notify_generic(f"📭 StockPulse: markets closed today ({detail}). "
                        "No report generated.")
         return
+
+    cash = pack.get("derived", {}).get("fii_dii_cash_summary") or {}
+    if cash.get("stale_warning"):
+        # The NSE cash API returns the LATEST figures, not the target date's.
+        # On backfills (or a late API) this silently returns wrong numbers -
+        # null them so we degrade to "unavailable" instead of publishing them.
+        pack["derived"]["fii_dii_cash_summary"] = {
+            "stale_warning": True,
+            "fii_net_cr": None, "dii_net_cr": None,
+            "date_labels": cash.get("date_labels"),
+            "note": ("FII/DII cash figures are not for the target date "
+                     "(stale) - omitted rather than published wrong.")}
     if "indices" not in pack.get("derived", {}):
         notify_generic("⚠️ StockPulse: index data missing from datapack - "
                        "report aborted. Check fetcher logs.")
+        return
+    idx_date = (pack.get("derived", {}).get("indices_date") or "")[:10]
+    if idx_date and idx_date < tdate.isoformat():
+        notify_generic(
+            f"⚠️ StockPulse: datapack indices are dated {idx_date}, older than "
+            f"trading date {tdate.isoformat()}. NSE end-of-day archives for "
+            "today are not published yet (gates open ~18:00-19:00 IST), so the "
+            "run is aborted rather than publishing stale numbers. Re-run after "
+            "19:00 IST, or use a past trading date.")
         return
 
     log("== stage 2/4: compile report (LLM + lint) ==")
