@@ -1,0 +1,38 @@
+{
+  "headline": "Pharma stood tall while *Nifty* slipped.",
+  "subline": "Defensives led, but breadth stayed weak across the tape.",
+  "hero_text": "Nifty fell 0.48% but Pharma and Healthcare rose. Breadth stayed weak: 867 advances against 1,716 declines.",
+  "why_head": "Why the market slipped",
+  "why": [
+    {"emoji": "💊", "title": "Pharma and healthcare led", "desc": "Defensive rotation lifted Cipla and healthcare names.", "badge": "Pharma up 0.84%"},
+    {"emoji": "🏦", "title": "PSU banks dragged", "desc": "State lenders slipped while private names steadied.", "badge": "PSU Bank down 0.94%"},
+    {"emoji": "🏭", "title": "Metals stayed soft", "desc": "Metal index fell with commodity prices muted.", "badge": "Metal down 0.86%"},
+    {"emoji": "🌍", "title": "Flows split again", "desc": "FII sold while DII bought heavily, a familiar pattern.", "badge": "DII +4,977 Cr"}
+  ],
+  "sector_reasons": {
+    "Pharma": "Defensive bid led the day.",
+    "Healthcare": "Tracked pharma higher.",
+    "Consumer Durables": "Steady demand names rose.",
+    "PSU Bank": "State lenders led the fall.",
+    "Media": "Weakest pocket of the session.",
+    "Metal": "Commodity names stayed soft."
+  },
+  "bonus_title": "Breadth check",
+  "bonus_text": "867 advances versus 1,716 declines. Weak breadth under a mild index fall.",
+  "movers_note_gainers": "Adani names and Kotak led. Delivery stayed above 55%, a healthy sign.",
+  "movers_note_losers": "Hindalco and HDFC Bank led the fall. Delivery above 57% hints at real selling.",
+  "watch_text": "Support at 24,000 and resistance at 24,300 bracket the next session.",
+  "lessons": [
+    "Defensives led a down tape, a classic risk off tilt.",
+    "Breadth was weak: 867 advances versus 1,716 declines.",
+    "DII buying of Rs 4,977 Cr cushioned FII selling.",
+    "VIX rose 4.76%, nudging caution higher."
+  ],
+  "alert_title": "Watch tomorrow",
+  "alert_text": "Global cues and the weekly options expiry arrive next week.",
+  "cta_headline": "Save this and *check back at the close*.",
+  "cta_sub": "A defensive day with weak breadth. Follow for the full picture every evening.",
+  "next_text": "Global cues and corporate actions land before the open.",
+  "caption_a": "Nifty slipped 0.48% but pharma and healthcare led, a classic defensive day.\n\nBreadth stayed weak: 867 advances versus 1,716 declines.\n\nDII bought Rs 4,977 Cr while FII sold Rs 298 Cr.\n\nWatch: support at 24,000, resistance at 24,300.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #StockMarketIndia #Pharma #MarketWrap",
+  "caption_b": "Follow the flows, not just the headline.\n\nFII sold Rs 298 Cr but DII bought Rs 4,977 Cr, cushioning the fall.\n\nAdani names and Kotak led gains on healthy delivery. Hindalco led losses.\n\nVIX rose 4.76%, caution ticked higher.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #FIIDII #NiftyPharma #MarketWrap"
+}

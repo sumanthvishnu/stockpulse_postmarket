@@ -158,6 +158,8 @@ def generate_with_lint(kind, pack):
                 max_tokens=12000 if kind == "report" else 10000,
                 temperature=0.3 if kind == "report" else 0.4)
         issues = compliance.lint(html, kind)
+        if kind == "report":
+            issues += compliance.number_lock(html, pack)
         if not issues:
             return html, []
         log(f"  [{kind}] lint attempt {attempt}: {issues}")

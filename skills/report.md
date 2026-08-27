@@ -118,6 +118,16 @@ hallucinated:
     `failures` entry, each with reason + effect. If empty, state "No gaps".
 15. **Back page** — disclaimer + methodology + provenance note + version.
 
+## NUMBER VERIFICATION (automatic, no exceptions)
+
+After you generate the HTML, every numeral is machine-checked against the
+datapack. Any number that is not traceable to the pack (index closes, strikes,
+FII/DII, breadth, yields, global levels) fails the build and you will be asked
+to rewrite. Therefore: quote datapack figures exactly (rounding a close to
+whole rupees or 2 decimals is fine; changing, approximating or inventing a
+figure is not). Headline closes, option strikes, max pain, and support /
+resistance levels are checked the most strictly.
+
 ## COMPLIANCE (hard, no exceptions)
 
 - No investment advice: no buy/sell/hold/accumulate/target-price language, no
