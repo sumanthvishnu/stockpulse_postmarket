@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockPulse Post-Market Analysis</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: #0F2744; }
+        .frame { position:absolute; inset:7px 0 0 0; z-index:2; padding:56px 64px 60px; display:flex; flex-direction:column; }
+        .slide-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:40px; flex-shrink:0; }
+        .body { flex:1; display:flex; flex-direction:column; min-height:0; }
+        .banner { background: #FFFFFF; color: #0F2744; padding: 20px; text-align: center; }
+        .banner h1 { font-size: 72px; font-weight: 800; }
+        .date-pill { background: #F97316; color: #FFFFFF; padding: 10px 20px; border-radius: 20px; font-weight: 800; }
+        .headline { font-size: 50px; font-weight: 800; margin: 20px 0; }
+        .subline { font-size: 20px; }
+        .stat-pill { background: #16A34A; color: #FFFFFF; padding: 10px; border-radius: 20px; font-weight: 500; }
+        .card { background: #FFFFFF; border-radius: 10px; padding: 20px; margin: 10px 0; }
+        .cta { background: #F97316; color: #FFFFFF; padding: 15px; border-radius: 10px; text-align: center; font-weight: 500; cursor: pointer; }
+        .ghost-watermark { position:absolute; bottom:10px; right:10px; opacity:0.05; font-size: 50px; color: #FFFFFF; }
+        .caption-panel { background: #FFFFFF; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        .caption-box { width: 100%; height: 100px; border: 1px solid #64748B; border-radius: 5px; padding: 10px; resize: none; }
+        .copy-btn { background: #F97316; color: #FFFFFF; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+        .char-count { font-size: 12px; color: #64748B; }
+        .download-btn { margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<div class="frame" id="slide1">
+    <div class="slide-header">
+        <div class="logo">
+            <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="9" fill="#F97316"/>
+                <path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="slide-number" style="opacity: 0.35;">1</div>
+    </div>
+    <div class="body">
+        <div class="banner">
+            <div class="date-pill">WEDNESDAY · AUGUST 27, 2026</div>
+            <h1>POST MARKET ANALYSIS</h1>
+            <div class="headline">Nifty closed down 116.9 points</div>
+            <div class="subline">Market sentiment remained cautious.</div>
+            <div class="stat-pill">India VIX rose 4.76%</div>
+        </div>
+        <div class="ghost-watermark">CLOSE · WHY · MOVE · NEXT</div>
+    </div>
+</div>
+<div class="frame" id="slide2">
+    <div class="slide-header">
+        <div class="logo">
+            <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="9" fill="#F97316"/>
+                <path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="slide-number" style="opacity: 0.35;">2</div>
+    </div>
+    <div class="body">
+        <div class="card">Nifty 50: 24090.85 (-0.48%)</div>
+        <div class="card">Sensex: 77472.94 (-0.24%)</div>
+        <div class="card">Bank Nifty: 57509.95 (-0.47%)</div>
+        <div class="card">
+            <div>India VIX: 11.07 (+4.76%)</div>
+            <div>Advances: 867</div>
+            <div>Declines: 1716</div>
+            <div>FII Net Cash: -298.26 Cr</div>
+            <div>DII Net Cash: 4977.17 Cr</div>
+        </div>
+        <div class="cta download-btn" onclick="downloadSlide(2)">Download PNG</div>
+    </div>
+</div>
+<div class="frame" id="slide3">
+    <div class="slide-header">
+        <div class="logo">
+            <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="9" fill="#F97316"/>
+                <path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="slide-number" style="opacity: 0.35;">3</div>
+    </div>
+    <div class="body">
+        <div class="headline">WHY IT HAPPENED</div>
+        <div class="card">Global markets showed mixed signals.</div>
+        <div class="card">FII selling continued in index futures.</div>
+        <div class="card">Nifty showed weakness amid profit booking.</div>
+        <div class="card">India VIX increased, indicating uncertainty.</div>
+        <div class="cta download-btn" onclick="downloadSlide(3)">Download PNG</div>
+        <div class="ghost-watermark">WHY</div>
+    </div>
+</div>
+<div class="frame" id="slide4">
+    <div class="slide-header">
+        <div class="logo">
+            <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="9" fill="#F97316"/>
+                <path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="slide-number" style="opacity: 0.35;">4</div>
+    </div>
+    <div class="body">
+        <div class="headline">SECTOR SCORECARD</div>
+        <div class="card">Nifty Auto: -0.40%</div>
+        <div class="card">Nifty Bank: -0.47%</div>
+        <div class="card">Nifty IT: -1.27%</div>
+        <div class="card">Nifty Metal: -0.86%</div>
+        <div class="card">Nifty Pharma: +0.84%</div>
+        <div class="card">Nifty FMCG: -0.47%</div>
+        <div class="card">Bonus: Nifty Energy: +0.01%</div>
+        <div class="cta download-btn" onclick="downloadSlide(4)">Download PNG</div>
+    </div>
+</div>
+<div class="frame" id="slide5">
+    <div class="slide-header">
+        <div class="logo">
+            <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="9" fill="#F97316"/>
+                <path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="slide-number" style="opacity: 0.35;">5</div>
+    </div>
+    <div class="body">
+        <div class="headline">TOP MOVERS</div>
+        <div class="card">Gainers: IMAGICAA +19.99%</div>
+        <div class="card">Gainers: SHAHA +19.62%</div>
+        <div class="card">Gainers: NATCAPSUQ +18.79%</div>
+        <div class="card">Gainers: MVELECTRO +15.47%</div>
+        <div class="card">Losers: WEL -20.00%</div>
+        <div class="card">Losers: DAVANGERE -20.00%</div>
+        <div class="card">Losers: RGL -12.30%</div>
+        <div class="card">Losers: ARCHIDPLY -8.77%</div>
+        <div class="cta download-btn" onclick="downloadSlide(5)">Download PNG</div>
+        <div class="ghost-watermark">MOVE</div>
+    </div>
+</div>
+<div class="frame" id="slide6">
+    <div class="slide-header">
+        <div class="logo">
+            <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="9" fill="#F97316"/>
+                <path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="slide-number" style="opacity: 0.35;">6</div>
+    </div>
+    <div class="body">
+        <div class="headline">TECHNICAL LEVELS</div>
+        <div class="card">Nifty Support: 24000</div>
+        <div class="card">Nifty Resistance: 24300</div>
+        <div class="card">Bank Nifty Support: 57000</div>
+        <div class="card">Bank Nifty Resistance: 58000</div>
+        <div class="cta download-btn" onclick="downloadSlide(6)">Download PNG</div>
+    </div>
+</div>
+<div class="frame" id="slide7">
+    <div class="slide-header">
+        <div class="logo">
+            <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="9" fill="#F97316"/>
+                <path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="slide-number" style="opacity: 0.35;">7</div>
+    </div>
+    <div class="body">
+        <div class="headline">KEY LESSONS</div>
+        <div class="card">Market sentiment is cautious.</div>
+        <div class="card">Profit booking led to declines.</div>
+        <div class="card">Watch for FII movements.</div>
+        <div class="card">Next session may show volatility.</div>
+        <div class="cta download-btn" onclick="downloadSlide(7)">Download PNG</div>
+        <div class="ghost-watermark">NEXT</div>
+    </div>
+</div>
+<div class="frame" id="slide8">
+    <div class="slide-header">
+        <div class="logo">
+            <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="9" fill="#F97316"/>
+                <path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="slide-number" style="opacity: 0.35;">8</div>
+    </div>
+    <div class="body">
+        <div class="headline">CTA</div>
+        <div class="card">Bookmark for daily updates!</div>
+        <div class="card">Nifty close: 24090.85 (-0.48%)</div>
+        <div class="card">India VIX: 11.07 (+4.76%)</div>
+        <div class="card">FII net cash: -298.26 Cr</div>
+        <div class="card">DII net cash: 4977.17 Cr</div>
+        <div class="cta download-btn" onclick="downloadSlide(8)">Download PNG</div>
+    </div>
+</div>
+
+<div class="caption-panel">
+    <h2>CAPTIONS · TAP COPY</h2>
+    <textarea class="caption-box" id="captionA" readonly>Market closed with Nifty down 116.9 points, reflecting cautious sentiment. FII selling continues to impact indices. Daily wrap every evening @getstockpulse. #Nifty #IndianStockMarket #MarketAnalysis #StockMarket #Investing</textarea>
+    <button class="copy-btn" onclick="copyCaption('captionA')">Copy caption</button>
+    <div class="char-count" id="countA">Character count: 0</div>
+    
+    <textarea class="caption-box" id="captionB" readonly>Nifty's support level is at 24000, while resistance is at 24300. Watch for FII movements as market sentiment remains cautious. Daily wrap every evening @getstockpulse. #Nifty #IndianStockMarket #MarketTrends #StockMarket #Investing</textarea>
+    <button class="copy-btn" onclick="copyCaption('captionB')">Copy caption</button>
+    <div class="char-count" id="countB">Character count: 0</div>
+</div>
+
+<script>
+    function downloadSlide(slideNumber) {
+        const slide = document.getElementById(`slide${slideNumber}`);
+        html2canvas(slide).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `stockpulse-postmarket-27AUG-slide${slideNumber}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    }
+
+    function copyCaption(id) {
+        const caption = document.getElementById(id);
+        caption.select();
+        document.execCommand('copy');
+        alert('Copied');
+    }
+
+    document.getElementById('captionA').addEventListener('input', function() {
+        document.getElementById('countA').innerText = 'Character count: ' + this.value.length;
+    });
+
+    document.getElementById('captionB').addEventListener('input', function() {
+        document.getElementById('countB').innerText = 'Character count: ' + this.value.length;
+    });
+</script>
+
+</body>
+</html>
