@@ -175,6 +175,9 @@ def build(pack, prose):
     def cash_short(v):
         return "n/a" if v is None else f"{v:+,.0f} Cr"
 
+    def cash_note(v, pos, neg):
+        return "n/a" if v is None else (pos if v >= 0 else neg)
+
     # --- cover ----------------------------------------------------------
     stat_class = up_down(nifty["pct_chg"])
     cover_pill = (f"Nifty {fnum(nifty['close'])} · "
@@ -196,10 +199,10 @@ def build(pack, prose):
          up_down(breadth['advances'] - breadth['declines']),
          ("more stocks rose than fell" if breadth["advances"] >= breadth["declines"]
           else "more stocks fell than rose")),
-        ("FII net (cash)", cash_s(fii), up_down(fii if fii is not None else 0),
-         "foreign inflows" if (fii or 0) >= 0 else "foreign outflows"),
-        ("DII net (cash)", cash_s(dii), up_down(dii if dii is not None else 0),
-         "domestic inflows" if (dii or 0) >= 0 else "domestic outflows"),
+        ("FII net (cash)", cash_s(fii), up_down(fii),
+         cash_note(fii, "foreign inflows", "foreign outflows")),
+        ("DII net (cash)", cash_s(dii), up_down(dii),
+         cash_note(dii, "domestic inflows", "domestic outflows")),
     ]
 
     # --- sectors (top 3 + bottom 3 by daily % change) --------------------
@@ -340,4 +343,5 @@ def validate(html, pack):
     if "Not investment advice." not in html:
         issues.append("disclaimer missing on slide 8")
     issues += compliance.lint(html, kind="carousel")
+    issues += compliance.number_lock(html, pack)
     return issues

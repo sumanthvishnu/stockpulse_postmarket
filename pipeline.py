@@ -105,6 +105,24 @@ def parse_json_lenient(text):
     return json.loads(m.group(0))
 
 
+def _prose_text(prose):
+    """Flatten all prose strings (captions live in <script>, so the HTML
+    number-lock cannot see them; check them here directly)."""
+    acc = []
+
+    def walk(node):
+        if isinstance(node, str):
+            acc.append(node)
+        elif isinstance(node, dict):
+            for v in node.values():
+                walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+    walk(prose)
+    return " ".join(acc)
+
+
 def generate_carousel(pack):
     """LLM writes prose JSON; code renders it through the fixed template."""
     system = open(os.path.join(REPO, "skills", "carousel.md"),
@@ -127,6 +145,7 @@ def generate_carousel(pack):
                 system, user, max_tokens=8000, temperature=0.4))
         html, leftover = carousel.build(pack, prose)
         issues = carousel.validate(html, pack)
+        issues += compliance.number_lock(_prose_text(prose), pack)
         if leftover:
             issues += [f"unfilled template tokens: {leftover}"]
         if not issues:

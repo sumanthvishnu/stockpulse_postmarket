@@ -89,6 +89,9 @@ def _extract_numbers(html):
     t = re.sub(r"<style[^>]*>.*?</style>", " ", html, flags=re.I | re.S)
     t = re.sub(r"<script[^>]*>.*?</script>", " ", t, flags=re.I | re.S)
     t = re.sub(r"<svg[^>]*>.*?</svg>", " ", t, flags=re.I | re.S)
+    t = re.sub(r"<link[^>]*>", " ", t, flags=re.I)   # Google Fonts etc.
+    t = re.sub(r'(?:href|src)="[^"]*"', " ", t, flags=re.I)
+    t = re.sub(r"(?:href|src)='[^']*'", " ", t, flags=re.I)
     t = re.sub(r'style="[^"]*"', " ", t, flags=re.I)
     t = re.sub(r"style='[^']*'", " ", t, flags=re.I)
     t = re.sub(r"#[0-9a-fA-F]{3,8}\b", " ", t)   # hex colours (#0F2744)
