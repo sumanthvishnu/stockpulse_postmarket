@@ -19,6 +19,18 @@ ADVICE_LEXICON = (
     "sell now", "you should invest",
 )
 
+# The brand is NOT SEBI registered, so any registration claim (or a claim
+# about a third party we cannot verify) is a false statement and is banned.
+# The explicit denial "Not SEBI registered." is allowed.
+def _false_registration_issues(low):
+    out = []
+    if re.search(r"(?<!not )(?:sebi[- ]registered|registered with sebi)", low):
+        out.append("false SEBI registration claim: 'sebi registered'")
+    for w in ("sebi registration", "sebi reg no", "sebi regn"):
+        if w in low:
+            out.append(f"false SEBI registration claim: '{w}'")
+    return out
+
 
 def _strip_markup(html):
     """Drop <style>/<script> blocks so CSS calc() etc. is not linted."""
@@ -52,6 +64,8 @@ def lint(html, kind="report"):
     for w in ADVICE_LEXICON:
         if re.search(r"\b" + re.escape(w) + r"\b", low):
             issues.append(f"advice lexicon: '{w}'")
+
+    issues += _false_registration_issues(low)
 
     if kind == "report":
         if not re.search(r"not investment advice", low):

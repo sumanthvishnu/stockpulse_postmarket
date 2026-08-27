@@ -20,6 +20,7 @@ from datetime import date, datetime, timedelta, timezone
 
 import compliance
 import llm
+import carousel
 import stockpulse_data_fetcher as fetcher
 
 IST = timezone(timedelta(hours=5, minutes=30))
@@ -93,6 +94,45 @@ def inject_footer(html):
 # ----------------------------------------------------------- generation ---
 def pack_json(pack):
     return json.dumps(pack, ensure_ascii=False, default=str)
+
+
+def parse_json_lenient(text):
+    """Extract a JSON object from LLM output that may include code fences."""
+    import re
+    m = re.search(r"\{.*\}", text, re.S)
+    if not m:
+        raise ValueError("no JSON object found in output")
+    return json.loads(m.group(0))
+
+
+def generate_carousel(pack):
+    """LLM writes prose JSON; code renders it through the fixed template."""
+    system = open(os.path.join(REPO, "skills", "carousel.md"),
+                  encoding="utf-8").read()
+    base_user = ("Here is today's datapack (JSON). Write the carousel prose "
+                 "content model as a JSON object.\n\n" + pack_json(pack))
+    sample = os.path.join(REPO, "prose27.json")
+    issues = None
+    for attempt in range(1, 4):
+        user = base_user
+        if issues:
+            user += ("\n\nYour previous JSON was REJECTED. Fix exactly these "
+                     "issues and return the FULL corrected JSON:\n- " +
+                     "\n- ".join(issues))
+        if MOCK:
+            prose = (json.load(open(sample, encoding="utf-8"))
+                     if os.path.exists(sample) else carousel.default_prose())
+        else:
+            prose = parse_json_lenient(llm.chat(
+                system, user, max_tokens=8000, temperature=0.4))
+        html, leftover = carousel.build(pack, prose)
+        issues = carousel.validate(html, pack)
+        if leftover:
+            issues += [f"unfilled template tokens: {leftover}"]
+        if not issues:
+            return html, prose, []
+        log(f"  [carousel] attempt {attempt}: {issues}")
+    return html, prose, issues
 
 
 def generate_with_lint(kind, pack):
@@ -294,8 +334,8 @@ def main():
 
     log("== stage 2/4: compile report (LLM + lint) ==")
     report_html, report_issues = generate_with_lint("report", pack)
-    log("== stage 3/4: build carousel (LLM + lint) ==")
-    carousel_html, carousel_issues = generate_with_lint("carousel", pack)
+    log("== stage 3/4: build carousel (LLM prose + template) ==")
+    carousel_html, carousel_prose, carousel_issues = generate_carousel(pack)
     all_issues = report_issues + carousel_issues
 
     log("== stage 4/4: render + publish + notify ==")

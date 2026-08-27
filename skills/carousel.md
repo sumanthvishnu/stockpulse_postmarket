@@ -1,157 +1,98 @@
-# StockPulse Post-Market Carousel — Builder Instructions
+# StockPulse Post-Market Carousel — Prose Content Model
 
-Build the StockPulse Instagram carousel (POST MARKET mode) as ONE
-self-contained HTML file: 8 slides (1080x1080 px each), each with its own
-"Download PNG" button, plus a CAPTIONS panel at the bottom with Caption A and
-Caption B in copy boxes. Use ONLY real data from the datapack (the same locked
-numbers as the report — never invent, never carry figures over).
+You write the WORDS for the StockPulse Instagram carousel (post-market mode).
+You do NOT write HTML, CSS or any numbers that the datapack already contains.
+The layout, and every numeric value, are assembled deterministically from the
+datapack by code. Your job is the narrative: headlines, reasons, lessons and
+captions, in the StockPulse voice.
 
-## OUTPUT FORMAT
+## OUTPUT FORMAT (strict)
 
-Return ONLY the HTML file content. No markdown fences, no commentary. All CSS
-in one shared `<style>` block reused across slides.
+Return ONLY a JSON object. No markdown fences, no commentary before or after.
 
-## LAYOUT SYSTEM (non-negotiable — every slide shares ONE frame)
-
+```json
+{
+  "headline": "Pharma stood tall while *Nifty* slipped.",
+  "subline": "Defensives led, but breadth stayed weak across the tape.",
+  "hero_text": "Nifty fell 0.48% but Pharma and Healthcare rose. Breadth stayed weak: 867 advances against 1,716 declines.",
+  "why_head": "Why the market slipped",
+  "why": [
+    {"emoji": "💊", "title": "Pharma and healthcare led", "desc": "Defensive rotation lifted Cipla and healthcare names.", "badge": "Pharma up 0.84%"},
+    {"emoji": "🏦", "title": "PSU banks dragged", "desc": "State lenders slipped while private names steadied.", "badge": "PSU Bank down 0.94%"},
+    {"emoji": "🏭", "title": "Metals stayed soft", "desc": "Metal index fell with commodity prices muted.", "badge": "Metal down 0.86%"},
+    {"emoji": "🌍", "title": "Flows split again", "desc": "FII sold while DII bought heavily, a familiar pattern.", "badge": "DII +4,977 Cr"}
+  ],
+  "sector_reasons": {
+    "Pharma": "Defensive bid led the day.",
+    "Healthcare": "Tracked pharma higher.",
+    "Consumer Durables": "Steady demand names rose.",
+    "PSU Bank": "State lenders led the fall.",
+    "Media": "Weakest pocket of the session.",
+    "Metal": "Commodity names stayed soft."
+  },
+  "bonus_title": "Breadth check",
+  "bonus_text": "867 advances versus 1,716 declines. Weak breadth under a mild index fall.",
+  "movers_note_gainers": "Adani names and Kotak led. Delivery stayed above 55%, a healthy sign.",
+  "movers_note_losers": "Hindalco and HDFC Bank led the fall. Delivery above 57% hints at real selling.",
+  "watch_text": "Support at 24,000 and resistance at 24,300 bracket the next session.",
+  "lessons": [
+    "Defensives led a down tape, a classic risk off tilt.",
+    "Breadth was weak: 867 advances versus 1,716 declines.",
+    "DII buying of Rs 4,977 Cr cushioned FII selling.",
+    "VIX rose 4.76%, nudging caution higher."
+  ],
+  "alert_title": "Watch tomorrow",
+  "alert_text": "Global cues and the weekly options expiry arrive next week.",
+  "cta_headline": "Save this and *check back at the close*.",
+  "cta_sub": "A defensive day with weak breadth. Follow for the full picture every evening.",
+  "next_text": "Global cues and corporate actions land before the open.",
+  "caption_a": "Nifty slipped 0.48% but pharma and healthcare led.\n\nBreadth stayed weak: 867 advances versus 1,716 declines.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #StockMarketIndia #Pharma #MarketWrap",
+  "caption_b": "Follow the flows, not just the headline.\n\nFII sold Rs 298 Cr but DII bought Rs 4,977 Cr.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #FIIDII #NiftyPharma #MarketWrap"
+}
 ```
-.frame { position:absolute; inset:7px 0 0 0; z-index:2;
-         padding:56px 64px 60px; display:flex; flex-direction:column; }
-.slide-header { display:flex; justify-content:space-between; align-items:center;
-                margin-bottom:40px; flex-shrink:0; }
-.body { flex:1; display:flex; flex-direction:column; min-height:0; }
-```
-- Header padding identical on ALL 8 slides. Never vary it.
-- `.body` always flex:1 so content fills the full height. Use
-  justify-content:space-between or flex ratios so no dead space at the bottom.
-- Logo at the same left edge, slide counter at the same right edge, every slide.
 
-## OVERFLOW CAPS (POST MARKET positions)
+## FIELD RULES
 
-- Snapshot (slide 2): 3 index cards (Nifty, Sensex, Bank Nifty), one 2x2 stat
-  grid, ONE full-width hero box. Never a 4th index card.
-- Sector rows (slide 4): 6 rows + 1 bonus card. Never 7 rows.
-- Why rows (slide 3): 4 event rows, NOT 5. Merge related points; never shrink
-  fonts to fit a 5th.
-- Top movers (slide 5): 4 per column (gainers + losers), one callout note per
-  column. Never 5 per column.
-- Levels (slide 6): dark price hero with 3 level badges + 2 level cards
-  (Nifty, Bank Nifty) + 2 expert boxes (or one full-width "WHAT TO WATCH" box).
-- Lessons (slide 7): 4 rows max. Bigger text beats more items.
-- If anything still overflows, shorten descriptions. Never go below the font
-  minimums.
-
-FONT MINIMUMS: hero numbers 72px, section headings 50px, card titles 26px,
-body text 20px, labels 18px, disclaimer 15px. Font weight 900 is BANNED; 800
-is the max.
-
-## DESIGN SYSTEM
-
-- Font: Plus Jakarta Sans (Google Fonts), weights 400/500/700/800 only.
-- Background dark #0F2744, light #FFFFFF, accent orange #F97316,
-  success green #16A34A, danger red #EF4444, muted text #64748B.
-- Top bar dark: solid #F97316, 7px. Top bar light: gradient #0F2744 to #F97316, 7px.
-- html2canvas CDN 1.4.1 always (no iframes).
-- Logo mark — use EXACTLY, never modify:
-```
-<svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-  <rect width="36" height="36" rx="9" fill="#F97316"/>
-  <path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-```
-- Wordmark (two spans, 22px weight 800):
-  dark slide: `<span class="brand-name"><span style="color:#fff">Stock</span><span style="color:#F97316">Pulse</span></span>`
-  light slide: `<span class="brand-name"><span style="color:#0F2744">Stock</span><span style="color:#F97316">Pulse</span></span>`
-- Slide counter top-right, 18px, opacity 0.35.
-- Ghost watermark on dark slides (1,3,5,7): ~300px, opacity 0.05, bottom-right.
-  Post market words: 1 CLOSE · 3 WHY · 5 MOVE · 7 NEXT. Swap in an event word
-  (RBI, FED, CPI, VIX, EXPIRY) when the day is defined by that event.
-- Alternation: slides 1,3,5,7 dark navy; 2,4,6,8 white. Fixed to POSITION.
-
-## SLIDE STRUCTURE — POST MARKET
-
-1. **BANNER COVER (dark)** — full-width banner FIRST in body: WHITE banner
-   (#FFFFFF), "POST MARKET ANALYSIS" in navy #0F2744, 72px weight 800; inside
-   it a pill with the day + date (e.g. "FRIDAY · AUGUST 21, 2026"), orange
-   #F97316 pill, white text, 27px weight 800. Below: headline (2 lines max,
-   weight 800, key phrase in orange), one plain subline, and the stat pill
-   (the day's most impactful stat; green = up day, red = down day, orange =
-   mixed). Ghost watermark CLOSE.
-2. **SNAPSHOT (white)** — 3 index cards (Nifty, Sensex, Bank Nifty; green top
-   border if up, red if down), 2x2 stat grid (India VIX with direction,
-   advance/decline breadth, FII net cash, DII net cash; substitute the next
-   most prominent stat if one is missing, never leave a blank tile), full-width
-   hero box for the day's biggest stat.
-3. **WHY IT HAPPENED (dark)** — heading + 4 icon rows (emoji, title, plain
-   description, data badge). Ghost watermark WHY.
-4. **SECTOR SCORECARD (white)** — 6 sector rows (green/red/grey left bar) + one
-   bonus card.
-5. **TOP MOVERS (dark)** — gainers (green) and losers (red), 4 per column, one
-   callout note per column. Ghost watermark MOVE.
-6. **TECHNICAL LEVELS (white)** — dark price hero with 3 level badges, 2 level
-   cards (Nifty, Bank Nifty: support from max Put OI strike, resistance from
-   max Call OI strike), 2 expert quote boxes (max 15 words, name + firm, from
-   the report only). If no attributed quotes exist, replace with one full-width
-   "WHAT TO WATCH" box from the report's own outlook lines. Never invent a
-   quote or attribution.
-7. **KEY LESSONS (dark)** — 4 numbered lessons + alert box for the next event.
-   Ghost watermark NEXT.
-8. **CTA (white)** — bookmark emoji, headline tied to the day, subtext, 4-stat
-   grid (Nifty close with percent, India VIX, FII net, DII net — these MUST
-   match slide 2 exactly), next-session box, CTA pill ("Join early access, link
-   in bio"), SwarmIQ row, @getstockpulse handle, SEBI disclaimer ending
-   "Not investment advice."
-
-Friday editions: frame as WEEKLY wrap (banner "WEEKLY MARKET WRAP", weekly
-change data, "For Next Week" on slide 6, "This Week" lessons on slide 7).
-
-## PNG DOWNLOAD MECHANISM (do not change)
-
-Each slide previews at transform scale(0.4333) inside a 468x468 container with
-overflow hidden; each has its own Download PNG button:
-- html2canvas only. NEVER iframes.
-- On click: detach the slide, render off-screen at 1080x1080 scale(1), capture
-  at 2x, trigger download, then restore scale(0.4333) in place.
-- Filename: stockpulse-postmarket-[DDMMM]-slide[N].png
+- `headline` / `cta_headline`: wrap the key phrase you want highlighted in
+  orange with asterisks, e.g. `*Nifty*`. One highlight only, 2-6 words.
+- `why`: exactly 4 rows. `emoji` a single relevant emoji. `badge` a short data
+  chip (3-5 words) whose number MUST come from the datapack.
+- `sector_reasons`: keyed by the SHORT sector names you expect the day's 6
+  sectors to be. The renderer picks the top 3 and bottom 3 sectors by daily %
+  change; any missing reason gets a generic fallback. Provide reasons for at
+  least the sectors you mention in `why`/`lessons`.
+- `lessons`: exactly 4, past tense, observational.
+- `captions`: under 500 characters each including hashtags. Exactly 5 hashtags
+  each, always including #Nifty and #IndianStockMarket. End with
+  "Not investment advice." Include the line
+  "Daily wrap every evening @getstockpulse".
+- Use `\n` for line breaks inside captions (double `\n\n` between blocks).
 
 ## WRITING RULES
 
-- Short sentences, 6-10 words. Past tense, settled ("Closed", "ended", "fell",
-  "led the gains").
-- NO em dashes. NO hyphens joining thoughts. Write "200 week" not "200-week".
+- Short sentences, 6-10 words. Past tense, settled ("closed", "ended",
+  "fell", "led the gains").
+- NO em dashes, no hyphens joining thoughts. "200 week" not "200-week".
 - No AI-sounding words: worth noting, furthermore, moreover, in conclusion,
   delve, leverage, robust, pivotal, it is important to highlight.
-- Numbers in plain form: 24,000 not "the 24K level". Use ONLY datapack data.
-- Banned instruction words even if a source used them: buy, sell, long, short,
-  target, stop loss, SL, invest, recommend. Levels and zones are fine;
-  instructions are not.
-- Green = up, red = down, orange = neutral.
-- Currency "Rs", never the rupee glyph.
+- Currency "Rs", never the rupee glyph. Numbers in plain form: 24,000 not
+  "the 24K level".
+- Banned instruction words even if a source used them: buy, sell, long,
+  short, target, stop loss, SL, invest, recommend. Levels and zones are fine.
+- Green up, red down, orange neutral (the renderer handles colour).
 
-## CAPTIONS PANEL (after slide 8)
+## NUMBERS (copy from the datapack only, never invent)
 
-- Heading "CAPTIONS · TAP COPY"; two readonly `<textarea>` boxes labelled
-  "Caption A" and "Caption B" (no spellcheck, styled to match, tall enough to
-  show the full caption), each with a "Copy caption" button
-  (navigator.clipboard.writeText + select-and-copy fallback, shows "Copied" for
-  2s), and a live character count under each box (both under 500 chars
-  including hashtags).
-- Caption A opens with the most surprising fact. Caption B uses a different
-  hook (flows or levels angle). 2-3 data points, one watch line, CTA line
-  "Daily wrap every evening @getstockpulse", then "Not investment advice."
-  Exactly 5 hashtags each, always including #Nifty and #IndianStockMarket plus
-  3 relevant ones.
+All figures you quote must already exist in `derived.*`:
 
-## SELF-CHECK BEFORE OUTPUT
+- Index closes/changes -> `derived.indices`
+- Breadth -> `derived.breadth`
+- FII/DII cash -> `derived.fii_dii_cash_summary`
+- Movers + delivery % -> `derived.nifty50_movers`
+- Sector moves -> `derived.indices` (sectoral indices)
+- Support/resistance -> `derived.options_NIFTY.max_put_oi_strike` /
+  `max_call_oi_strike`; Bank Nifty pivot = `derived.options_BANKNIFTY.max_pain`
+- Global (Brent, DXY, US) -> `derived.global_markets.markets`
 
-All 8 slides share the identical .frame padding; header identical; body uses
-flex:1; overflow caps met; dark/light alternation correct (1,3,5,7 dark);
-slide 1 opens with the white POST MARKET ANALYSIS banner + correct day/date
-pill; logo SVG exact on all slides; wordmark two spans; ghost watermark on
-1,3,5,7 with correct words; every number matches the datapack exactly; the
-slide-2 stat grid and slide-8 stat grid agree; no banned instruction words; no
-em dashes or joining hyphens; no font weight 900; expert quotes only from the
-report, under 15 words, attributed (or the fallback box used); html2canvas
-1.4.1, no iframes, no localStorage, no `<form>` tags; captions inside the HTML
-copy boxes (not chat text), both under 500 chars, exactly 5 hashtags each
-including #Nifty and #IndianStockMarket.
+If a number is not in the pack, do not quote it. Do not invent analyst names
+or quotes. Do not carry figures over from a previous day.
