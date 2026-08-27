@@ -1,0 +1,5 @@
+requests>=2.31
+curl_cffi>=0.6        # NSE/BSE TLS fingerprint (the Akamai 403 wall)
+yfinance>=0.2.40      # global-markets snapshot (Sensex, US/Asia/Europe, FX)
+xlrd>=2.0.1           # FII derivatives .xls parsing
+weasyprint>=62        # HTML -> PDF render (report)

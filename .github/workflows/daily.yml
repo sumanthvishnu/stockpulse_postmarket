@@ -1,0 +1,66 @@
+name: StockPulse Daily Post-Market
+
+on:
+  schedule:
+    # 15:30 UTC = 21:00 IST, Monday-Friday
+    - cron: "30 15 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Trade date DD-MM-YYYY (blank = today IST)"
+        required: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: stockpulse-daily
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install system libs (weasyprint / pango)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf-2.0-0 \
+            libffi-dev shared-mime-info fonts-dejavu-core fonts-liberation
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Run pipeline
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TRADE_DATE: ${{ github.event.inputs.date || '' }}
+          GH_PAGES_BASE: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+        run: python pipeline.py
+
+      - name: Commit daily datapack (state for ban-list diff)
+        run: |
+          git config user.name "stockpulse-bot"
+          git config user.email "bot@stockpulse.local"
+          git add data/
+          git commit -m "data: $(date -u +%F)" || echo "nothing to commit"
+          git push
+
+      - name: Deploy site to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          keep_files: true
+          force_orphan: false

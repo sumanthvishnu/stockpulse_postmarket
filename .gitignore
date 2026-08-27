@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+/stockpulse_datapack_*.json
+/kite_token.json
+/site/
+_pytest_*
+*.log
