@@ -10,6 +10,13 @@ captions, in the StockPulse voice.
 
 Return ONLY a JSON object. No markdown fences, no commentary before or after.
 
+JSON VALIDITY IS MACHINE-CHECKED. A malformed response fails the build and is
+retried, so follow these exactly:
+- No trailing commas (the last item in every object/array has no comma).
+- Captions must be single-line strings using \\n for line breaks. NEVER put a
+  literal line break inside quotes.
+- No comments (no // or #). No unquoted keys. Every string in double quotes.
+
 ```json
 {
   "headline": "Pharma stood tall while *Nifty* slipped.",

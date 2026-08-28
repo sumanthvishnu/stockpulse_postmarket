@@ -97,12 +97,21 @@ def pack_json(pack):
 
 
 def parse_json_lenient(text):
-    """Extract a JSON object from LLM output that may include code fences."""
+    """Extract a JSON object from LLM output; tolerant of code fences and the
+    most common LLM slips (trailing commas, surrounding prose)."""
     import re
-    m = re.search(r"\{.*\}", text, re.S)
+    if not isinstance(text, str) or not text.strip():
+        raise ValueError("empty LLM output")
+    t = re.sub(r"```(?:json)?", "", text).strip()
+    m = re.search(r"\{.*\}", t, re.S)
     if not m:
         raise ValueError("no JSON object found in output")
-    return json.loads(m.group(0))
+    raw = m.group(0)
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        # trailing commas before } or ] are the most common LLM mistake
+        return json.loads(re.sub(r",\s*([}\]])", r"\1", raw))
 
 
 def _prose_text(prose):
@@ -124,34 +133,74 @@ def _prose_text(prose):
 
 
 def generate_carousel(pack):
-    """LLM writes prose JSON; code renders it through the fixed template."""
+    """LLM writes prose JSON; code renders it through the fixed template.
+
+    Never crashes the run: any LLM/parse error is retried with feedback, and
+    after 3 attempts it falls back to neutral prose with correct numbers."""
     system = open(os.path.join(REPO, "skills", "carousel.md"),
                   encoding="utf-8").read()
     base_user = ("Here is today's datapack (JSON). Write the carousel prose "
                  "content model as a JSON object.\n\n" + pack_json(pack))
     sample = os.path.join(REPO, "prose27.json")
-    issues = None
+    issues = []
     for attempt in range(1, 4):
         user = base_user
         if issues:
-            user += ("\n\nYour previous JSON was REJECTED. Fix exactly these "
-                     "issues and return the FULL corrected JSON:\n- " +
+            user += ("\n\nYour previous response had problems. Return the FULL "
+                     "corrected JSON object, fixing exactly these issues:\n- " +
                      "\n- ".join(issues))
-        if MOCK:
-            prose = (json.load(open(sample, encoding="utf-8"))
-                     if os.path.exists(sample) else carousel.default_prose())
-        else:
-            prose = parse_json_lenient(llm.chat(
-                system, user, max_tokens=8000, temperature=0.4))
-        html, leftover = carousel.build(pack, prose)
-        issues = carousel.validate(html, pack)
-        issues += compliance.number_lock(_prose_text(prose), pack)
-        if leftover:
-            issues += [f"unfilled template tokens: {leftover}"]
-        if not issues:
-            return html, prose, []
+        try:
+            if MOCK:
+                prose = (json.load(open(sample, encoding="utf-8"))
+                         if os.path.exists(sample) else carousel.default_prose())
+            else:
+                prose = parse_json_lenient(llm.chat(
+                    system, user, max_tokens=8000, temperature=0.4))
+            html, leftover = carousel.build(pack, prose)
+            issues = carousel.validate(html, pack)
+            issues += compliance.number_lock(_prose_text(prose), pack)
+            if leftover:
+                issues += [f"unfilled template tokens: {leftover}"]
+            if not issues:
+                return html, prose, []
+        except Exception as e:  # noqa: BLE001 - LLM/parse failure must not kill the run
+            issues = [f"carousel generation error: {e}"]
         log(f"  [carousel] attempt {attempt}: {issues}")
-    return html, prose, issues
+    log("  [carousel] falling back to neutral prose (numbers still locked)")
+    html, _ = carousel.build(pack, carousel.default_prose())
+    return html, carousel.default_prose(), (issues or ["used fallback prose"])
+
+
+def minimal_report(pack):
+    """Deterministic fallback report built from locked numbers. Used only if
+    the LLM is down or persistently fails the number-lock, so the nightly run
+    still ships a correct-numbers report instead of nothing."""
+    d = pack["derived"]
+    tdate = pack["meta"]["trading_date"]
+    n50 = d["indices"]["Nifty 50"]
+    bnk = d["indices"]["Nifty Bank"]
+    vix = d["vix"]["current"]
+    br = d["breadth"]
+    cash = d.get("fii_dii_cash_summary") or {}
+    fii = cash.get("fii_net_cr")
+    dii = cash.get("dii_net_cr")
+    fii_s = f"Rs {fii:,.2f} Cr" if fii is not None else "n/a"
+    dii_s = f"Rs {dii:,.2f} Cr" if dii is not None else "n/a"
+    rows = "".join(
+        f"<tr><td>{k}</td><td>{v['close']:,.2f}</td><td>{v['pct_chg']:+.2f}%</td></tr>"
+        for k, v in [("Nifty 50", n50), ("Nifty Bank", bnk)])
+    return (f"<!doctype html><html><head><meta charset='utf-8'><style>"
+            f"body{{font-family:sans-serif;margin:40px;color:#0F2744}}"
+            f"h1{{color:#0F2744}}table{{border-collapse:collapse;width:60%}}"
+            f"td,th{{border:1px solid #ccc;padding:6px 12px;text-align:right}}"
+            f"th:first-child,td:first-child{{text-align:left}}"
+            f"</style></head><body>"
+            f"<h1>StockPulse Post-Market Report · {tdate}</h1>"
+            f"<table><tr><th>Index</th><th>Close</th><th>Change</th></tr>{rows}</table>"
+            f"<p>India VIX {vix}. Breadth: {br['advances']} advances vs "
+            f"{br['declines']} declines. FII net {fii_s}, DII net {dii_s}.</p>"
+            f"<p>For education only. Not investment advice.</p>"
+            f"</body></html>")
 
 
 def generate_with_lint(kind, pack):
@@ -162,7 +211,8 @@ def generate_with_lint(kind, pack):
             else "post-market carousel HTML")
     base_user = (f"Here is today's datapack (JSON). Build the {what}.\n\n"
                  + pack_json(pack))
-    issues = None
+    html = None
+    issues = []
     for attempt in range(1, 4):
         user = base_user
         if issues:
@@ -172,10 +222,15 @@ def generate_with_lint(kind, pack):
         if MOCK:
             html = mock_doc(kind, pack)
         else:
-            html = llm.chat(
-                system, user,
-                max_tokens=12000 if kind == "report" else 10000,
-                temperature=0.3 if kind == "report" else 0.4)
+            try:
+                html = llm.chat(
+                    system, user,
+                    max_tokens=12000 if kind == "report" else 10000,
+                    temperature=0.3 if kind == "report" else 0.4)
+            except Exception as e:  # noqa: BLE001 - transient API failure
+                issues = [f"LLM call failed: {e}"]
+                log(f"  [{kind}] attempt {attempt}: {issues}")
+                continue
         issues = compliance.lint(html, kind)
         if kind == "report":
             issues += compliance.number_lock(html, pack)
@@ -183,6 +238,11 @@ def generate_with_lint(kind, pack):
             return html, []
         log(f"  [{kind}] lint attempt {attempt}: {issues}")
     log(f"  [warn] {kind}: still failing after retries: {issues}")
+    if html is None or (kind == "report" and any(
+            ("unverified number" in i) or ("close stated" in i) or
+            ("level '" in i) for i in issues)):
+        html = minimal_report(pack)
+        log(f"  [{kind}] shipped minimal number-locked report instead")
     return html, issues
 
 
@@ -278,7 +338,7 @@ def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues):
     ]
     if issues:
         lines.append("")
-        lines.append("⚠️ Lint warnings: " + "; ".join(issues[:4]))
+        lines.append("⚠️ Alerts: " + "; ".join(issues[:4]))
     text = "\n".join(lines)
     if DRY:
         log(f"[dry] would send to Telegram:\n{text}\n[dry] + PDF {pdf_path}")
