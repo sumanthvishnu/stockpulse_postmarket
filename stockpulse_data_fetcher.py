@@ -903,12 +903,19 @@ def run_sanity_checks(pack):
     return flags
 
 
-def fetch_global_yfinance():
-    """OPTIONAL: US/Asia/Europe/commodities/FX snapshot. Guarded import."""
+def fetch_global_yfinance(target=None):
+    """OPTIONAL: US/Asia/Europe/commodities/FX snapshot. Guarded import.
+
+    Selects the last bar ON OR BEFORE `target` (default: today IST) so a
+    backfill run quotes the target date's close, not the current live level
+    (yfinance otherwise returns the latest bar regardless of target date).
+    """
     try:
         import yfinance as yf
     except ImportError:
         return None, "yfinance not installed"
+    import pandas as pd
+    end = target or now_ist().date()
     tickers = {
         "SP500": "^GSPC", "Dow": "^DJI", "Nasdaq": "^IXIC",
         "US10Y_yield": "^TNX", "DXY": "DX-Y.NYB",
@@ -920,17 +927,27 @@ def fetch_global_yfinance():
     out = {}
     for label, tk in tickers.items():
         try:
-            h = yf.Ticker(tk).history(period="7d")
-            if len(h) >= 2:
-                last, prev = h["Close"].iloc[-1], h["Close"].iloc[-2]
-                lastf, prevf = float(last), float(prev)
-                if not (math.isfinite(lastf) and math.isfinite(prevf)):
-                    continue  # e.g. Shanghai/Kospi can return NaN
-                out[label] = {
-                    "ticker": tk, "level": round(lastf, 4),
-                    "prev_close": round(prevf, 4),
-                    "pct_chg": round((lastf / prevf - 1) * 100, 2),
-                    "bar_date": str(h.index[-1].date())}
+            h = yf.Ticker(tk).history(period="1mo")
+            if h is None or len(h) < 2:
+                continue
+            # normalise the index to naive dates (Asia/Kolkata) to compare
+            # against the target trading date
+            dates = h.index
+            if dates.tz is not None:
+                dates = dates.tz_convert("Asia/Kolkata").tz_localize(None)
+            date_s = pd.Series([d.date() for d in dates], index=h.index)
+            sel = h[date_s <= end]
+            if len(sel) < 2:
+                continue
+            last, prev = sel["Close"].iloc[-1], sel["Close"].iloc[-2]
+            lastf, prevf = float(last), float(prev)
+            if not (math.isfinite(lastf) and math.isfinite(prevf)):
+                continue  # e.g. Shanghai/Kospi can return NaN
+            out[label] = {
+                "ticker": tk, "level": round(lastf, 4),
+                "prev_close": round(prevf, 4),
+                "pct_chg": round((lastf / prevf - 1) * 100, 2),
+                "bar_date": str(date_s.loc[sel.index[-1]])}
         except Exception:
             continue
     return out, f"{len(out)}/{len(tickers)} tickers"
@@ -1367,7 +1384,7 @@ def collect(target):
     # ---- optional yfinance global snapshot --------------------------------
     if ENABLE_YFINANCE:
         try:
-            g, detail = fetch_global_yfinance()
+            g, detail = fetch_global_yfinance(target)
             if g:
                 pack["derived"]["global_markets"] = {
                     "note": ("US/Asia bars may be the prior session; Europe/US "
