@@ -19,6 +19,14 @@ below it. Wire items (India 10Y, global markets, Sensex) rank lowest and are
 tagged "wire". If two figures disagree, the datapack wins and the discrepancy
 is noted, not reconciled.
 
+STALENESS RULE (hard): any object carrying `"stale_warning": true` describes a
+DIFFERENT session than the report's trading date. Its values are nulled and its
+`note` explains why. Never quote a number from such an object, never substitute
+one from elsewhere, and never reword it into a factual claim about today — in
+particular a nulled count is NOT "zero" or "none reported". Say the item is
+unavailable for the trading date, give the reason from `note`, and add a line
+to the Data Gaps Register (Section 14).
+
 ## INPUT
 
 The user message contains the datapack JSON (top-level keys: meta, data,
@@ -85,7 +93,9 @@ hallucinated:
 9. **Stocks in focus + bulk deals** — from `derived.bulk_deals_signals`:
    one-sided deals >= Rs 20 Cr, round-trips already removed. Skip rows with
    `is_known_mm: true` (market-making noise) or note them as such. Surface
-   the genuine non-MM signals with value in Rs Cr.
+   the genuine non-MM signals with value in Rs Cr. If `stale_warning` is true
+   the rolling bulk-deals window does not cover this date: write that bulk-deal
+   coverage is unavailable, NOT that there were no bulk deals.
 10. **Global context** — a pre-computed GLOBAL MARKETS TABLE is provided in
     your prompt: embed it verbatim in this section (do not retype or recompute
     its numbers). Around it, write prose: label each entry with its
@@ -93,9 +103,13 @@ hallucinated:
     be intraday. Never present a live US quote as a close. If you state a
     points change in prose, quote `pts_chg` exactly from the pack — NEVER
     subtract two values yourself. India 10Y G-sec yield from
-    `derived.india_10y` (tag wire, quote its `asof_text`).
-11. **Institutional flows** — `derived.fii_dii_cash_summary` (confirm
-    `stale_warning` is false), `derived.fii_fno_stats.segments` (Index/Stock
+    `derived.india_10y` (tag wire, quote its `asof_text`); if its
+    `stale_warning` is true the quote belongs to another session — report the
+    yield as unavailable instead of printing it.
+11. **Institutional flows** — `derived.fii_dii_cash_summary` (if
+    `stale_warning` is true, state that cash-segment FII/DII flows are
+    unavailable for this date and give no figures; do not fall back to
+    `data.fii_dii_cash`), `derived.fii_fno_stats.segments` (Index/Stock
     Futures/Options buy/sell/net/OI), and the four-cohort table from
     `derived.participant_oi` (Client/DII/FII/Pro: net index futures, net stock
     futures, total long/short). Guardrail: cash and index-futures pointing
@@ -108,7 +122,9 @@ hallucinated:
     strike (support), ATM strike and expiry for both NIFTY and BANKNIFTY,
     sourced from the F&O bhavcopy. Around it, write prose: F&O ban list from
     `derived.fo_ban` — its `trade_date` is the NEXT trading day; report it as
-    such and include entries/exits if present.
+    such and include entries/exits if present. If its `stale_warning` is true
+    the file describes a different session: report the ban list as unavailable
+    and name no symbols.
     State whether tomorrow is an expiry day using this calendar:
     Nifty 50 weekly expires every TUESDAY (monthly: last Tuesday); Bank Nifty
     MONTHLY only, last Tuesday (weekly discontinued Nov 2024); Sensex weekly
@@ -123,6 +139,11 @@ hallucinated:
     calendar, analyst levels, GIFT Nifty, driver attribution), plus every
     `failures` entry, each with reason + effect. If empty, state "No gaps".
 15. **Back page** — disclaimer + methodology + provenance note + version.
+    Every rendered page already carries a one-line "For education only. Not
+    investment advice." footer, so do NOT end the body with that sentence
+    alone: it prints twice, back to back. Write a substantive closing block
+    (the full disclaimer wording, data sources, method, pack version) that
+    happens to contain the required phrase.
 
 ## NUMBER VERIFICATION (automatic, no exceptions)
 

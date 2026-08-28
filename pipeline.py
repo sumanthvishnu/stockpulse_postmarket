@@ -53,6 +53,82 @@ def site_url(rel):
     return f"{base}/{rel}" if base else rel
 
 
+# ------------------------------------------------------------- staleness ---
+def scrub_stale(pack):
+    """Null out every value the fetcher flagged as not belonging to the target
+    session, so the LLM can never quote it.
+
+    Several NSE/wire endpoints are UNDATED and always serve "latest": the
+    FII/DII cash API, fo_secban.csv, the rolling bulk-deals window and the
+    Trading Economics 10Y quote. On a backfill they return a later session's
+    numbers. Blanking only `derived` is not enough - the whole pack (including
+    `data.*`) is serialised into the prompt, so the raw block has to go too.
+
+    Returns the list of human-readable notes describing what was dropped.
+    """
+    d = pack.setdefault("derived", {})
+    raw = pack.setdefault("data", {})
+    dropped = []
+
+    cash = d.get("fii_dii_cash_summary") or {}
+    if cash.get("stale_warning"):
+        labels = cash.get("date_labels")
+        note = ("FII/DII cash figures are not for the target date (stale) - "
+                "omitted rather than published wrong.")
+        d["fii_dii_cash_summary"] = {
+            "stale_warning": True, "fii_net_cr": None, "dii_net_cr": None,
+            "date_labels": labels, "note": note}
+        # the prompt sees data.* too - strip the raw netValue rows as well
+        if isinstance(raw.get("fii_dii_cash"), dict):
+            raw["fii_dii_cash"] = {
+                "source": raw["fii_dii_cash"].get("source"),
+                "date_labels": labels, "stale_warning": True,
+                "raw": None, "note": note}
+        dropped.append((f"FII/DII cash (labels {labels})", note))
+
+    ban = d.get("fo_ban") or {}
+    if ban.get("stale_warning"):
+        note = ban.get("note") or ("F&O ban list is not the session after the "
+                                   "target date (stale) - omitted.")
+        d["fo_ban"] = {"stale_warning": True, "trade_date": None,
+                       "count": None, "symbols": None, "diff_vs_prior": False,
+                       "note": note}
+        dropped.append(("F&O ban list", note))
+
+    bulk = d.get("bulk_deals_today") or {}
+    if bulk.get("stale_warning"):
+        note = bulk.get("note") or ("bulk-deals window does not cover the "
+                                    "target date - coverage unavailable.")
+        d["bulk_deals_today"] = {"stale_warning": True, "count": None,
+                                 "rows": [], "note": note}
+        d["bulk_deals_signals"] = {"stale_warning": True, "count": None,
+                                   "signals": [], "note": note}
+        dropped.append(("bulk deals", note))
+
+    y10 = d.get("india_10y") or {}
+    if y10.get("stale_warning"):
+        note = y10.get("note") or ("India 10Y wire quote is not for the "
+                                   "target session (stale) - omitted.")
+        d["india_10y"] = {"stale_warning": True, "yield_pct": None,
+                          "direction": None,
+                          "asof_text": y10.get("asof_text"),
+                          "source": y10.get("source"), "note": note}
+        dropped.append((f"India 10Y (as of {y10.get('asof_text')})", note))
+
+    if dropped:
+        # Surface each dropped item in the Data Gaps Register. Section 14 of
+        # the report skill enumerates every `failures` entry, so registering
+        # them here makes the disclosure deterministic instead of relying on
+        # the model to notice each stale_warning flag.
+        fails = pack.setdefault("failures", [])
+        for item, note in dropped:
+            fails.append({"source": f"stale:{item}", "reason": note,
+                          "checked_ist": datetime.now(IST).strftime("%H:%M IST")})
+        log("  [stale] dropped as not-for-target-date: "
+            + "; ".join(i for i, _ in dropped))
+    return dropped
+
+
 # ----------------------------------------------------------------- state ---
 def restore_state():
     """Copy archived datapacks into CWD so the fetcher's ban-list diff can see
@@ -95,6 +171,26 @@ def inject_footer(html):
 # ----------------------------------------------------------- generation ---
 def pack_json(pack):
     return json.dumps(pack, ensure_ascii=False, default=str)
+
+
+def strip_code_fence(html):
+    """Remove a markdown code fence wrapping the whole document.
+
+    The report path feeds LLM output straight into WeasyPrint, so a stray
+    ```html ... ``` wrapper renders as literal text on page 1 and a trailing
+    ``` on the last page. The carousel's JSON path already strips fences in
+    parse_json_lenient; this is the HTML equivalent.
+    """
+    if not isinstance(html, str):
+        return html
+    t = html.strip()
+    if not t.startswith("```"):
+        return html
+    # drop the opening fence line (```html / ```HTML / ```) ...
+    t = re.sub(r"\A```[^\n]*\n?", "", t)
+    # ... and the matching closing fence at the very end
+    t = re.sub(r"\n?```\s*\Z", "", t)
+    return t.strip()
 
 
 def parse_json_lenient(text):
@@ -289,6 +385,7 @@ def generate_with_lint(kind, pack):
                 issues = [f"LLM call failed: {e}"]
                 log(f"  [{kind}] attempt {attempt}: {issues}")
                 continue
+        html = strip_code_fence(html)
         issues = compliance.lint(html, kind)
         if kind == "report":
             issues += compliance.number_lock(html, pack)
@@ -456,17 +553,8 @@ def main():
                        "No report generated.")
         return
 
-    cash = pack.get("derived", {}).get("fii_dii_cash_summary") or {}
-    if cash.get("stale_warning"):
-        # The NSE cash API returns the LATEST figures, not the target date's.
-        # On backfills (or a late API) this silently returns wrong numbers -
-        # null them so we degrade to "unavailable" instead of publishing them.
-        pack["derived"]["fii_dii_cash_summary"] = {
-            "stale_warning": True,
-            "fii_net_cr": None, "dii_net_cr": None,
-            "date_labels": cash.get("date_labels"),
-            "note": ("FII/DII cash figures are not for the target date "
-                     "(stale) - omitted rather than published wrong.")}
+    scrub_stale(pack)
+
     if "indices" not in pack.get("derived", {}):
         notify_generic("⚠️ StockPulse: index data missing from datapack - "
                        "report aborted. Check fetcher logs.")
@@ -500,7 +588,11 @@ def main():
               encoding="utf-8") as f:
         json.dump({"report_issues": report_issues,
                    "carousel_issues": carousel_issues}, f)
-    shutil.copy(cpath, os.path.join(day_dir, "datapack.json"))
+    # Publish the SCRUBBED pack, not the on-disk original: shutil.copy would
+    # re-expose the stale FII/DII rows that scrub_stale() just removed.
+    with open(os.path.join(day_dir, "datapack.json"), "w",
+              encoding="utf-8") as f:
+        json.dump(pack, f, ensure_ascii=False, default=str)
 
     archive_pack(tdate)
 
