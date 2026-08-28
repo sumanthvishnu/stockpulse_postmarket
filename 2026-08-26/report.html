@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,19 +18,22 @@
         h1 {
             font-size: 24pt;
             text-align: center;
+            margin-bottom: 20px;
         }
         h2 {
             font-size: 18pt;
             margin-top: 20px;
+            margin-bottom: 10px;
         }
         h3 {
             font-size: 16pt;
             margin-top: 15px;
+            margin-bottom: 5px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0;
+            margin-bottom: 20px;
         }
         th, td {
             border: 1px solid #ccc;
@@ -42,73 +44,70 @@
             background-color: #f2f2f2;
         }
         .deriv, .glob {
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
         .disclaimer {
-            margin-top: 40px;
             font-size: 10pt;
-            color: #666;
+            color: #777;
+            margin-top: 30px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
         }
     </style>
 </head>
 <body>
     <h1>StockPulse Post-Market Report</h1>
     <h2>Trading Date: 2026-08-26</h2>
-    <p>Nifty 50 closed at 24,207.75, down 126.8 points or 0.52%. Sensex closed at 77,472.94, down 183.16 points or 0.24% (wire).</p>
+    <p>Nifty 50 closed at 24,207.75, down 126.80 points or 0.52%. Sensex closed at 77,472.94, down 183.16 points or 0.24% (wire).</p>
 
     <h2>Executive Summary</h2>
-    <p>The market exhibited a narrow rally with the Nifty 50 declining for the first session. The India VIX closed at 10.57, reflecting a decrease of 4.6%. The Nifty 50 has now recorded a streak of one session down. Market breadth was positive with 1,451 advances against 1,135 declines. Foreign Institutional Investors (FIIs) showed mixed activity in cash markets, while Domestic Institutional Investors (DIIs) were net sellers.</p>
+    <p>The frontline Nifty 50 index experienced a decline, reflecting a narrow rally with 14 gainers against 36 decliners among its constituents. The India VIX closed at 10.57, indicating a decrease of 4.6%. The Nifty streak is down for one session. The overall market breadth was positive with an advance-decline ratio of 1.278, suggesting some underlying strength despite the frontline's decline. FII/DII cash figures are unavailable for this date due to stale data.</p>
 
     <h2>Market Snapshot</h2>
     <table>
         <tr>
             <th>Index</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
             <th>Close</th>
-            <th>Change (pts)</th>
-            <th>Change (%)</th>
-            <th>5-Day Change (%)</th>
-        </tr>
+            <th>Points Change</th>
+            <th>Percentage Change</th></tr>
         <tr>
             <td>Nifty 50</td>
+            <td>24,341.95</td>
+            <td>24,378.60</td>
             <td>24,207.75</td>
-            <td>-126.8</td>
+            <td>24,207.75</td>
+            <td>-126.80</td>
             <td>-0.52</td>
-            <td>0.54</td>
         </tr>
         <tr>
             <td>Nifty Next 50</td>
+            <td>74,632.30</td>
+            <td>75,000.40</td>
+            <td>74,483.45</td>
             <td>74,501.05</td>
             <td>-7.85</td>
             <td>-0.01</td>
-            <td>0.81</td>
         </tr>
         <tr>
             <td>Nifty Bank</td>
+            <td>57,628.65</td>
+            <td>57,996.05</td>
+            <td>57,611.85</td>
             <td>57,783.75</td>
             <td>269.55</td>
             <td>0.47</td>
-            <td>0.95</td>
-        </tr>
-        <tr>
-            <td>Nifty Midcap 150</td>
-            <td>23,532.20</td>
-            <td>3.25</td>
-            <td>0.01</td>
-            <td>0.97</td>
-        </tr>
-        <tr>
-            <td>Nifty Smallcap 250</td>
-            <td>18,455.75</td>
-            <td>108.6</td>
-            <td>0.59</td>
-            <td>1.23</td>
         </tr>
         <tr>
             <td>India VIX</td>
+            <td>11.075</td>
+            <td>11.075</td>
+            <td>10.13</td>
             <td>10.57</td>
             <td>-0.51</td>
             <td>-4.60</td>
-            <td>-6.63</td>
         </tr>
     </table>
 
@@ -120,56 +119,42 @@
         <tr>
             <th>Sector</th>
             <th>Close</th>
-            <th>Change (pts)</th>
-            <th>Change (%)</th>
-            <th>5-Day Change (%)</th>
-        </tr>
+            <th>Points Change</th>
+            <th>Percentage Change</th></tr>
         <tr>
             <td>Nifty Auto</td>
             <td>29,000.15</td>
             <td>-216.75</td>
             <td>-0.74</td>
-            <td>-0.63</td>
         </tr>
         <tr>
             <td>Nifty Bank</td>
             <td>57,783.75</td>
             <td>269.55</td>
             <td>0.47</td>
-            <td>0.95</td>
-        </tr>
-        <tr>
-            <td>Nifty Financial Services</td>
-            <td>26,386.75</td>
-            <td>139.80</td>
-            <td>0.53</td>
-            <td>1.44</td>
         </tr>
         <tr>
             <td>Nifty FMCG</td>
             <td>47,252.90</td>
             <td>-454.05</td>
             <td>-0.95</td>
-            <td>-0.47</td>
         </tr>
         <tr>
             <td>Nifty IT</td>
             <td>30,318.85</td>
             <td>-452.95</td>
             <td>-1.47</td>
-            <td>-0.38</td>
         </tr>
         <tr>
             <td>Nifty Metal</td>
             <td>13,541.70</td>
             <td>169.40</td>
             <td>1.27</td>
-            <td>3.98</td>
         </tr>
     </table>
 
     <h2>Breadth & Internals</h2>
-    <p>Advances: 1,451; Declines: 1,135; Unchanged: 46; A/D Ratio: 1.278; EQ Universe: 2,632. New highs: 103; New lows: 43.</p>
+    <p>Advances: 1,451; Declines: 1,135; Unchanged: 46; A/D Ratio: 1.278; EQ Universe: 2,632. The internal breadth shows 103 new highs and 43 new lows.</p>
 
     <h2>Nifty 50 Movers</h2>
     <table>
@@ -178,8 +163,7 @@
             <th>Close</th>
             <th>Change (%)</th>
             <th>Delivery (%)</th>
-            <th>Turnover (Rs Cr)</th>
-        </tr>
+            <th>Turnover (Rs Cr)</th></tr>
         <tr>
             <td>KOTAKBANK</td>
             <td>416.70</td>
@@ -224,8 +208,7 @@
             <th>Close</th>
             <th>Change (%)</th>
             <th>Delivery (%)</th>
-            <th>Turnover (Rs Cr)</th>
-        </tr>
+            <th>Turnover (Rs Cr)</th></tr>
         <tr>
             <td>RAMBHAJO</td>
             <td>255.69</td>
@@ -264,7 +247,7 @@
     </table>
 
     <h2>Stocks in Focus + Bulk Deals</h2>
-    <p>No bulk deals reported today.</p>
+    <p>Bulk deal coverage for the target session is unavailable.</p>
 
     <h2>Global Context</h2>
     <table class='glob'>
@@ -404,7 +387,7 @@
     </table>
 
     <h2>Institutional Flows</h2>
-    <p>FIIs were net sellers in cash markets with a net value of Rs -298.26 Cr (27-Aug-2026). DIIs were net sellers with a net value of Rs 4,977.17 Cr (27-Aug-2026).</p>
+    <p>FII/DII cash figures are unavailable for this date due to stale data. FII/FNO statistics show a net sell in Index Futures and Stock Futures.</p>
 
     <h2>Derivatives Dashboard</h2>
     <table class='deriv'>
@@ -438,15 +421,16 @@
     </table>
 
     <h2>Tomorrow's Watchlist</h2>
-    <p>Corporate actions ex-tomorrow include: THOMASCOOK with a dividend of Rs 0.50 per share, PFC with an interim dividend of Rs 3.90 per share, DOMS with a dividend of Rs 3.65 per share, MANAKCOAT with a dividend of Re 0.05 per share, and PGHL with a dividend of Rs 45 per share. No Nifty 50 names are present in the ex-tomorrow list. The economic calendar for the next session is unavailable.</p>
+    <p>Corporate actions ex-tomorrow include: THOMASCOOK (Dividend - Rs 0.50 Per Share), PFC (Interim Dividend - Rs 3.90 Per Share), DOMS (Dividend - Rs 3.65 Per Share), MANAKCOAT (Dividend - Re 0.05 Per Share), PGHL (Dividend - Rs 45 Per Share).</p>
+    <p>T+2 look-ahead includes: JAYKAY (Rights 3:19 @ Premium Rs 74/-), CORALFINAC (Dividend - Re 0.20 Per Share), MCX (Dividend - Rs 8 Per Share), MUFTI (Dividend - Rs 2 Per Share), STERTOOLS (Dividend - Rs 2.75 Per Share), STUDDS (Dividend - Rs 3 Per Share), SUMIT (Dividend - Re 0.20 Per Share), SWANCORP (Dividend - Re 0.15 Per Share), NBCC (Dividend - Re 0.46 Per Share), PARAS (Dividend - Re 1 Per Share), POLYMED (Dividend - Rs 3.50 Per Share), VARDHACRLC (Dividend - Rs 1.50 Per Share), PROTEAN (Dividend - Rs 10 Per Share), VHL (Dividend - Rs 5 Per Share), VIKRAN (Dividend - Re 0.18 Per Share), VSSL (Dividend - Rs 3.50 Per Share), VTL (Dividend - Rs 5 Per Share), WHIRLPOOL (Dividend - Rs 5 Per Share), YUKEN (Dividend - Rs 1.50 Per Share), ROHLTD (Dividend - Rs 2.50 Per Share), SALZERELEC (Dividend - Rs 2.50 Per Share), DAMCAPITAL (Dividend - Re 1 Per Share), ADSL (Dividend - Rs 1.50 Per Share), DYNAMATECH (Dividend - Rs 5 Per Share), EMAMIPAP (Dividend - Rs 3.20 Per Share), ARVSMART (Dividend - Rs 2.25 Per Share), GAEL (Dividend - Re 0.30 Per Share), BBOX (Dividend - Re 1 Per Share), GUFICBIO (Dividend - Re 0.10 Per Share), GULPOLY (Dividend - Rs 1.50 Per Share), HALDYNGL (Dividend - Re 0.70 Per Share), CANTABIL (Dividend - Re 0.75 Per Share), HONASA (Dividend - Rs 3 Per Share), JENBURPH (Dividend - Rs 20.70 Per Share).</p>
+    <p>F&O ban for next session is unavailable.</p>
+    <p>Economic calendar for the next session is unavailable.</p>
 
     <h2>Data Gaps Register</h2>
-    <p>1. Economic calendar for the next session: unavailable.<br>2. Analyst support/resistance levels: unavailable.<br>3. GIFT Nifty evening level: unavailable.<br>4. Driver attribution: unavailable.<br>5. Corporate actions fetch failure: HTTP 200 at 16:19 IST.</p>
+    <p>FII/DII cash figures are unavailable for this date due to stale data. Economic calendar for the next session is unavailable. Analyst support/resistance levels are unavailable. GIFT Nifty evening level is unavailable.</p>
 
-    <h2>Back Page</h2>
     <div class="disclaimer">
         <p>For education only. Not investment advice.</p>
     </div>
 </body>
 </html>
-```
