@@ -84,7 +84,7 @@ def scrub_stale(pack):
                 "source": raw["fii_dii_cash"].get("source"),
                 "date_labels": labels, "stale_warning": True,
                 "raw": None, "note": note}
-        dropped.append(f"FII/DII cash (labels {labels})")
+        dropped.append((f"FII/DII cash (labels {labels})", note))
 
     ban = d.get("fo_ban") or {}
     if ban.get("stale_warning"):
@@ -93,7 +93,7 @@ def scrub_stale(pack):
         d["fo_ban"] = {"stale_warning": True, "trade_date": None,
                        "count": None, "symbols": None, "diff_vs_prior": False,
                        "note": note}
-        dropped.append("F&O ban list")
+        dropped.append(("F&O ban list", note))
 
     bulk = d.get("bulk_deals_today") or {}
     if bulk.get("stale_warning"):
@@ -103,7 +103,7 @@ def scrub_stale(pack):
                                  "rows": [], "note": note}
         d["bulk_deals_signals"] = {"stale_warning": True, "count": None,
                                    "signals": [], "note": note}
-        dropped.append("bulk deals")
+        dropped.append(("bulk deals", note))
 
     y10 = d.get("india_10y") or {}
     if y10.get("stale_warning"):
@@ -113,10 +113,19 @@ def scrub_stale(pack):
                           "direction": None,
                           "asof_text": y10.get("asof_text"),
                           "source": y10.get("source"), "note": note}
-        dropped.append(f"India 10Y (as of {y10.get('asof_text')})")
+        dropped.append((f"India 10Y (as of {y10.get('asof_text')})", note))
 
     if dropped:
-        log("  [stale] dropped as not-for-target-date: " + "; ".join(dropped))
+        # Surface each dropped item in the Data Gaps Register. Section 14 of
+        # the report skill enumerates every `failures` entry, so registering
+        # them here makes the disclosure deterministic instead of relying on
+        # the model to notice each stale_warning flag.
+        fails = pack.setdefault("failures", [])
+        for item, note in dropped:
+            fails.append({"source": f"stale:{item}", "reason": note,
+                          "checked_ist": datetime.now(IST).strftime("%H:%M IST")})
+        log("  [stale] dropped as not-for-target-date: "
+            + "; ".join(i for i, _ in dropped))
     return dropped
 
 

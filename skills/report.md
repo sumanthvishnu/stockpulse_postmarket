@@ -139,6 +139,11 @@ hallucinated:
     calendar, analyst levels, GIFT Nifty, driver attribution), plus every
     `failures` entry, each with reason + effect. If empty, state "No gaps".
 15. **Back page** — disclaimer + methodology + provenance note + version.
+    Every rendered page already carries a one-line "For education only. Not
+    investment advice." footer, so do NOT end the body with that sentence
+    alone: it prints twice, back to back. Write a substantive closing block
+    (the full disclaimer wording, data sources, method, pack version) that
+    happens to contain the required phrase.
 
 ## NUMBER VERIFICATION (automatic, no exceptions)
 
