@@ -125,10 +125,20 @@ hallucinated:
 After you generate the HTML, every numeral is machine-checked against the
 datapack. Any number that is not traceable to the pack (index closes, strikes,
 FII/DII, breadth, yields, global levels) fails the build and you will be asked
-to rewrite. Therefore: quote datapack figures exactly (rounding a close to
-whole rupees or 2 decimals is fine; changing, approximating or inventing a
-figure is not). Headline closes, option strikes, max pain, and support /
-resistance levels are checked the most strictly.
+to rewrite. Therefore:
+
+- Quote datapack figures exactly (rounding a close to whole rupees or 2
+  decimals is fine; changing, approximating or inventing a figure is not).
+- If you cannot find a figure in the pack, write the word "unavailable" or
+  omit the figure. NEVER estimate a number to fill a gap. A disclosed gap is
+  acceptable; an invented number fails the build.
+- Do not compute new numbers from other numbers (e.g. do not sum call+put OI
+  into a "Total OI", do not derive percentages, do not convert to points).
+  Quote what the pack provides, in the units the pack provides.
+- Sector moves: quote `derived.indices[name].pct_chg` for the sectoral names
+  listed there; never guess a sector's move.
+- Headline closes, option strikes, max pain, and support / resistance levels
+  are checked the most strictly.
 
 ## COMPLIANCE (hard, no exceptions)
 

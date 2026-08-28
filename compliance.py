@@ -253,6 +253,14 @@ def number_lock(html, pack):
             continue
         _collect_numbers(val, wl)
     _collect_numbers(pack.get("data", {}), wl)
+    # Global-market entries carry level + prev_close but NOT the points change,
+    # which the report legitimately writes as "down 183.15 points". Add that
+    # derivation (and the reverse) so it is not misread as an invented number.
+    for mk in d.get("global_markets", {}).get("markets", {}).values():
+        lvl, prev = mk.get("level"), mk.get("prev_close")
+        if isinstance(lvl, (int, float)) and isinstance(prev, (int, float)):
+            wl.add(float(lvl) - float(prev))
+            wl.add(float(prev) - float(lvl))
     # The report sometimes writes "Total OI" as call + put OI; that sum is
     # legitimately derivable from two adjacent pack values, so allow it.
     for key in ("options_NIFTY", "options_BANKNIFTY"):

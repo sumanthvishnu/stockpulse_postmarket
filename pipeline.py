@@ -214,7 +214,7 @@ def generate_with_lint(kind, pack):
                  + pack_json(pack))
     html = None
     issues = []
-    for attempt in range(1, 4):
+    for attempt in range(1, 6):
         user = base_user
         if issues:
             user += ("\n\nYour previous draft was REJECTED by the compliance "
@@ -439,6 +439,10 @@ def main():
         f.write(report_html)
     with open(os.path.join(day_dir, "carousel.html"), "w", encoding="utf-8") as f:
         f.write(carousel_html)
+    with open(os.path.join(day_dir, "report_issues.json"), "w",
+              encoding="utf-8") as f:
+        json.dump({"report_issues": report_issues,
+                   "carousel_issues": carousel_issues}, f)
     shutil.copy(cpath, os.path.join(day_dir, "datapack.json"))
 
     archive_pack(tdate)
