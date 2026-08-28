@@ -100,9 +100,11 @@ hallucinated:
     point the same way.
 12. **Derivatives dashboard** — `derived.options_NIFTY` / `options_BANKNIFTY`:
     PCR (OI-based), max pain, max Call OI strike (resistance) and max Put OI
-    strike (support), ATM strike, total OI, and ALWAYS the `expiry` the chain
-    refers to. F&O ban list from `derived.fo_ban` — its `trade_date` is the
-    NEXT trading day; report it as such and include entries/exits if present.
+    strike (support), ATM strike, total Call OI and total Put OI (quote
+    `total_call_oi` and `total_put_oi` separately as-is; do not invent a
+    combined "Total OI"), and ALWAYS the `expiry` the chain refers to. F&O ban
+    list from `derived.fo_ban` — its `trade_date` is the NEXT trading day;
+    report it as such and include entries/exits if present.
     State whether tomorrow is an expiry day using this calendar:
     Nifty 50 weekly expires every TUESDAY (monthly: last Tuesday); Bank Nifty
     MONTHLY only, last Tuesday (weekly discontinued Nov 2024); Sensex weekly
@@ -135,7 +137,9 @@ resistance levels are checked the most strictly.
   views only if attributed to a NAMED SEBI-registered analyst — in this
   automated run none are available, so include none.
 - Currency "Rs", never the rupee glyph. No em-dashes or hyphens as sentence
-  connectors. No "est.", "approx." or "~" on figures.
+  connectors. (Quoting a corporate-action subject verbatim is fine: the
+  linter permits the source's " - " directly before Rs/Re/Bonus, e.g.
+  "Dividend - Rs 3.65 Per Share".) No "est.", "approx." or "~" on figures.
 - Disclaimer ("For education only. Not investment advice.") present in the
   body (the per-page footer is added by the renderer automatically).
 

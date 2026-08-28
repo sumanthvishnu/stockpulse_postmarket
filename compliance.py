@@ -57,6 +57,9 @@ RULE_CONSTANTS = {
     25000,  # FII/DII single-day sanity bound (Rs Cr)
     0.5, 0.7, 1.3, 1.5,   # A/D + PCR interpretation bands
     3.5, 3.4, 3.3, 3.2, 3.1, 3.0, 2.1, 2.0, 1.4, 1.0, 0.9,  # version numbers
+    # HTTP status codes the model may mention in a data-gap note
+    200, 201, 202, 204, 301, 302, 400, 401, 403, 404, 408,
+    409, 429, 500, 502, 503,
 }
 
 def _within(x, w):
@@ -123,10 +126,12 @@ def _collect_numbers(node, acc):
     elif isinstance(node, (int, float)):
         acc.add(float(node))
     elif isinstance(node, str):
-        s = node.strip()
-        if re.fullmatch(r"-?[\d,]+(?:\.\d+)?", s):
+        # Collect numbers embedded in strings too (e.g. "Dividend - Rs 3.65
+        # Per Share" in a corporate-action subject), so a report that quotes a
+        # dividend amount passes the lock instead of being flagged.
+        for m in re.finditer(r"-?\d[\d,]*(?:\.\d+)?", node):
             try:
-                acc.add(float(s.replace(",", "")))
+                acc.add(float(m.group(0).replace(",", "")))
             except ValueError:
                 pass
 
@@ -248,6 +253,12 @@ def number_lock(html, pack):
             continue
         _collect_numbers(val, wl)
     _collect_numbers(pack.get("data", {}), wl)
+    # The report sometimes writes "Total OI" as call + put OI; that sum is
+    # legitimately derivable from two adjacent pack values, so allow it.
+    for key in ("options_NIFTY", "options_BANKNIFTY"):
+        o = d.get(key, {})
+        if o.get("total_call_oi") and o.get("total_put_oi"):
+            wl.add(float(o["total_call_oi"]) + float(o["total_put_oi"]))
     issues = []
     for val, raw, ctx in _extract_numbers(html):
         if val == int(val) and 0 <= val <= 99:       # counts, sections, times
@@ -281,7 +292,7 @@ def lint(html, kind="report"):
         if d in text:
             issues.append(f"banned dash '{d}' - no em/en dashes")
 
-    if re.search(r" - ", text):
+    if re.search(r"[A-Za-z] - (?!Rs\b|Re\b|Bonus\b|Rights\b|Split\b)", text):
         issues.append("spaced hyphen ' - ' used as a connector")
 
     if re.search(r"~\s*\d", text) or re.search(r"\d\s*~", text):

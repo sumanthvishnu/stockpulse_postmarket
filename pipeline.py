@@ -14,6 +14,7 @@ Env knobs:
 """
 import json
 import os
+import re
 import shutil
 import sys
 from datetime import date, datetime, timedelta, timezone
@@ -338,7 +339,9 @@ def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues):
     ]
     if issues:
         lines.append("")
-        lines.append("⚠️ Alerts: " + "; ".join(issues[:4]))
+        # issue strings contain report HTML fragments (<td>, <tr>...), which
+        # Telegram's HTML parser rejects -> escape them or sendMessage 400s.
+        lines.append("⚠️ Alerts: " + tg_escape("; ".join(issues[:4])))
     text = "\n".join(lines)
     if DRY:
         log(f"[dry] would send to Telegram:\n{text}\n[dry] + PDF {pdf_path}")
@@ -346,14 +349,22 @@ def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues):
     chat_id = (os.environ.get("TELEGRAM_CHAT_ID") or "").strip()
     if not chat_id:
         raise RuntimeError("TELEGRAM_CHAT_ID is empty - add the secret")
-    tg("sendMessage", chat_id=chat_id,
-       text=text, parse_mode="HTML", disable_web_page_preview=False)
-    with open(pdf_path, "rb") as fh:
-        requests.post(
-            f"https://api.telegram.org/bot{os.environ.get('TELEGRAM_BOT_TOKEN', '')}"
-            f"/sendDocument",
-            data={"chat_id": chat_id},
-            files={"document": (os.path.basename(pdf_path), fh)}, timeout=120)
+    try:
+        tg("sendMessage", chat_id=chat_id, text=text,
+           parse_mode="HTML", disable_web_page_preview=False)
+    except Exception as e:  # noqa: BLE001 - don't let a Telegram hiccup fail the run
+        log(f"  [telegram] HTML send failed ({e}); retrying as plain text")
+        plain = re.sub(r"<[^>]+>", " ", text)
+        tg("sendMessage", chat_id=chat_id, text=plain)
+    try:
+        with open(pdf_path, "rb") as fh:
+            requests.post(
+                f"https://api.telegram.org/bot{os.environ.get('TELEGRAM_BOT_TOKEN', '')}"
+                f"/sendDocument",
+                data={"chat_id": chat_id},
+                files={"document": (os.path.basename(pdf_path), fh)}, timeout=120)
+    except Exception as e:  # noqa: BLE001
+        log(f"  [telegram] sendDocument failed: {e}")
 
 
 def notify_generic(text):
