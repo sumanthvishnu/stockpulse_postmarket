@@ -125,16 +125,21 @@ hallucinated:
     such and include entries/exits if present. If its `stale_warning` is true
     the file describes a different session: report the ban list as unavailable
     and name no symbols.
-    State whether tomorrow is an expiry day using this calendar:
+    State whether the NEXT TRADING SESSION is an expiry day using this
+    calendar (the next session is named in the CALENDAR block in your prompt
+    — on a Friday run it is Monday, not Saturday; never write "tomorrow"
+    when the market is closed the next calendar day):
     Nifty 50 weekly expires every TUESDAY (monthly: last Tuesday); Bank Nifty
     MONTHLY only, last Tuesday (weekly discontinued Nov 2024); Sensex weekly
     expires THURSDAY (BSE); stock F&O monthly, physically settled; on a
     holiday the expiry shifts to the PREVIOUS trading day.
-13. **Tomorrow's watchlist** — corporate actions ex-tomorrow from
-    `derived.corp_actions.ex_t1`, and T+2 look-ahead from `ex_t2` (state
-    explicitly if either is empty, and whether any Nifty 50 name is present).
-    F&O ban for next session from `derived.fo_ban`. Expiry check per Section
-    12. Economic calendar: mark unavailable.
+13. **Next session's watchlist** — corporate actions whose ex-date falls on
+    the NEXT TRADING SESSION from `derived.corp_actions.ex_t1` (the buckets
+    skip weekends and NSE holidays, so T+1 can be 3+ calendar days out — use
+    `t1_date`/the CALENDAR block to name it), and the T+2 look-ahead from
+    `ex_t2` (state explicitly if either is empty, and whether any Nifty 50
+    name is present). F&O ban for the next session from `derived.fo_ban`.
+    Expiry check per Section 12. Economic calendar: mark unavailable.
 14. **Data Gaps Register** — list every wire item not retrieved (economic
     calendar, analyst levels, GIFT Nifty, driver attribution), plus every
     `failures` entry, each with reason + effect. If empty, state "No gaps".

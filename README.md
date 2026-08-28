@@ -118,6 +118,14 @@ Register** lists these as unavailable rather than inventing them:
 
 These can be added later as small enrichment fetches (most have free APIs).
 
+**Calendar wording is locked, not left to the model.** The fetcher computes
+`derived.next_trading_session` (next trading day = weekends + the NSE holiday
+master skipped) and the prompt gets a CALENDAR block naming that session. The
+linter then rejects any "tomorrow" phrasing in the carousel/report when the
+next session is not literally the next calendar day — so a Friday run must
+reference Monday, never Saturday (this caught a real "Watch tomorrow" blunder
+on the 28-Aug-2026 carousel). The same lock guards the LLM-fallback prose.
+
 ---
 
 ## Manual workflow (Stage 1, still available)

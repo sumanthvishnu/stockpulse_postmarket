@@ -54,6 +54,44 @@ def site_url(rel):
 
 
 # ------------------------------------------------------------- staleness ---
+def next_session_info(pack):
+    """Next-session calendar facts from the datapack (fetched, holiday-aware),
+    falling back to weekend-only math for archived packs that predate the
+    field. Used to brief the LLM and to run the calendar lock."""
+    s = (pack.get("derived") or {}).get("next_trading_session")
+    if isinstance(s, dict) and s.get("label"):
+        return s
+    return compliance._weekend_next_session(pack)
+
+
+def calendar_brief(pack):
+    """Hard-fact block appended to the LLM prompt: which session is next, and
+    that 'tomorrow' wording is banned when the market is closed the next day.
+    The linter enforces this deterministically (models cannot be trusted to
+    remember the weekday — see the 28-Aug-2026 'Watch tomorrow' blunder)."""
+    s = next_session_info(pack)
+    tdate = date.fromisoformat(pack["meta"]["trading_date"])
+    today = tdate.strftime("%A, %d %B %Y")
+    lines = [
+        "CALENDAR (hard fact, not a suggestion): today's trading date is "
+        f"{today} (the session the datapack describes).",
+        f"The NEXT trading session is {s['label']} "
+        f"({s['cal_days_ahead']} calendar days later).",
+    ]
+    if s.get("holiday_notes"):
+        lines.append("Market is CLOSED in between: "
+                     + "; ".join(s["holiday_notes"]) + ".")
+    if s.get("is_imminent"):
+        lines.append("'tomorrow' IS a trading session, so 'tomorrow' and "
+                     "'next morning' wording is factually fine.")
+    else:
+        lines.append(f"NEVER write 'tomorrow', 'tomorrow's ...', or 'next "
+                     f"morning': the market is closed the next calendar day. "
+                     f"Refer to the next session as '{s['weekday']}', "
+                     f"'{s['label']}' or 'the next session'.")
+    return "\n\n" + "\n".join(lines)
+
+
 def scrub_stale(pack):
     """Null out every value the fetcher flagged as not belonging to the target
     session, so the LLM can never quote it.
@@ -238,6 +276,7 @@ def generate_carousel(pack):
                   encoding="utf-8").read()
     base_user = ("Here is today's datapack (JSON). Write the carousel prose "
                  "content model as a JSON object.\n\n" + pack_json(pack))
+    base_user += calendar_brief(pack)
     sample = os.path.join(REPO, "prose27.json")
     issues = []
     for attempt in range(1, 4):
@@ -255,7 +294,9 @@ def generate_carousel(pack):
                     system, user, max_tokens=8000, temperature=0.4))
             html, leftover = carousel.build(pack, prose)
             issues = carousel.validate(html, pack)
-            issues += compliance.number_lock(_prose_text(prose), pack)
+            prose_flat = _prose_text(prose)
+            issues += compliance.number_lock(prose_flat, pack)
+            issues += compliance.calendar_lock(prose_flat, pack)
             if leftover:
                 issues += [f"unfilled template tokens: {leftover}"]
             if not issues:
@@ -357,6 +398,7 @@ def generate_with_lint(kind, pack):
             else "post-market carousel HTML")
     base_user = (f"Here is today's datapack (JSON). Build the {what}.\n\n"
                  + pack_json(pack))
+    base_user += calendar_brief(pack)
     if kind == "report":
         base_user += (
             "\n\nTwo pre-computed tables are provided below. Embed them "
@@ -389,6 +431,7 @@ def generate_with_lint(kind, pack):
         issues = compliance.lint(html, kind)
         if kind == "report":
             issues += compliance.number_lock(html, pack)
+        issues += compliance.calendar_lock(html, pack)
         if not issues:
             return html, []
         log(f"  [{kind}] lint attempt {attempt}: {issues}")
