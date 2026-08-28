@@ -787,20 +787,57 @@ def parse_fii_fno_stats(xls_bytes):
     return out or None
 
 
-def next_trading_days(target, n):
+def next_trading_days(target, n, holidays=()):
+    """Return the next n trading dates after `target` (skips weekends plus any
+    NSE trading holidays in `holidays`; dates may be date objects or ISO
+    strings)."""
+    if isinstance(holidays, str):
+        holidays = (holidays,)
+    hset = {h.isoformat() if isinstance(h, _date) else str(h)[:10]
+            for h in holidays} if holidays else set()
     days, d = [], target
     while len(days) < n:
         d += timedelta(days=1)
-        if d.weekday() < 5:
+        if d.weekday() < 5 and d.isoformat() not in hset:
             days.append(d)
     return days
 
 
-def derive_corp_actions(ca_raw, target, constituents):
-    """Bucket ex-dividend/action dates into today / T+1 / T+2, flag Nifty-50."""
+def next_trading_session(target, holidays=()):
+    """Calendar facts for the trading session AFTER `target`, computed
+    deterministically (weekends + NSE holidays). Stored into the datapack so
+    the LLM prompt can name the real next session and the carousel/report
+    linter can reject relative-time wording ("tomorrow") that would be wrong.
+
+    Returns a dict with date / weekday / label / cal_days_ahead /
+    is_imminent / holiday_notes, or None if no session found.
+    """
+    nxt = next_trading_days(target, 1, holidays)
+    if not nxt:
+        return None
+    nxt = nxt[0]
+    cal = (nxt - target).days
+    notes = []
+    for k in range(1, cal):
+        d = target + timedelta(days=k)
+        if d.weekday() >= 5:
+            notes.append(f"{d.strftime('%A')} {d.day} {d.strftime('%b')} (weekend)")
+        else:
+            notes.append(f"{d.strftime('%A')} {d.day} {d.strftime('%b')} (NSE holiday)")
+    return {"date": nxt.isoformat(),
+            "weekday": nxt.strftime("%A"),
+            "label": nxt.strftime("%A, %d %B %Y"),
+            "cal_days_ahead": cal,
+            "is_imminent": cal == 1,
+            "holiday_notes": notes}
+
+
+def derive_corp_actions(ca_raw, target, constituents, holidays=()):
+    """Bucket ex-dividend/action dates into today / T+1 / T+2, flag Nifty-50.
+    T+1/T+2 are trading sessions (weekends + NSE holidays skipped)."""
     if not isinstance(ca_raw, list):
         return None
-    t1, t2 = next_trading_days(target, 2)
+    t1, t2 = next_trading_days(target, 2, holidays)
     cset = set(constituents)
     buckets = {"ex_today": [], "ex_t1": [], "ex_t2": []}
     for r in ca_raw:
@@ -1379,9 +1416,12 @@ def collect(target):
     #  endpoint has been dropped so it no longer pollutes the gaps register.)
 
     # ---- holiday + corporate actions ---------------------------------------
+    holiday_dates = []   # NSE trading-holiday dates (populated when the master loads)
     try:
         hol = c.get_json(f"{BASE}/api/holiday-master?type=trading",
                          referer=f"{BASE}/resources/exchange-communication-holidays")
+        holiday_dates = [d for h in hol.get("CM", [])
+                         if (d := parse_dt(h.get("tradingDate")))]
         today_hol = [h for h in hol.get("CM", []) if parse_dt(h.get("tradingDate")) == target]
         pack["data"]["holiday_check"] = {
             "is_holiday": bool(today_hol),
@@ -1391,12 +1431,25 @@ def collect(target):
     except Exception as e:
         record("holiday_check", False, str(e))
 
+    # Next-session calendar facts (weekends + any NSE holidays from the master)
+    # land in the pack so the LLM prompt can name the real next session and the
+    # carousel/report linter can reject "tomorrow" wording when the market is
+    # closed the following day (e.g. a Friday run -> next session is Monday).
+    nxt_sess = next_trading_session(target, holiday_dates)
+    if nxt_sess:
+        pack["derived"]["next_trading_session"] = nxt_sess
+        record("next_trading_session", True,
+               f"next session {nxt_sess['label']} "
+               f"({nxt_sess['cal_days_ahead']} calendar days)")
+
     try:
         # Per-day fetches (today / T+1 / T+2) so all three buckets populate.
         # A single undated call only ever returned the current ex-date, which
-        # left ex_t1/ex_t2 empty by non-coverage (handover spec 9C).
+        # left ex_t1/ex_t2 empty by non-coverage (handover spec 9C). T+1/T+2
+        # are trading sessions (weekends + NSE holidays skipped), so ex_t1 can
+        # carry ex-dates that are 3+ calendar days out.
         ca_raw, seen = [], set()
-        for d in [target, *next_trading_days(target, 2)]:
+        for d in [target, *next_trading_days(target, 2, holiday_dates)]:
             ds = d.strftime("%d-%m-%Y")
             try:
                 chunk = c.get_json(
@@ -1412,7 +1465,8 @@ def collect(target):
             except Exception as e:
                 record(f"corporate_actions:{d.isoformat()}", False, str(e))
         pack["data"]["corporate_actions_raw"] = ca_raw
-        buckets = derive_corp_actions(ca_raw, target, constituents)
+        buckets = derive_corp_actions(ca_raw, target, constituents,
+                                      holiday_dates)
         if buckets is not None:
             pack["derived"]["corp_actions"] = buckets
             record("corporate_actions", True,

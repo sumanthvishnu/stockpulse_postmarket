@@ -48,11 +48,11 @@ retried, so follow these exactly:
     "DII buying of Rs 4,977 Cr cushioned FII selling.",
     "VIX rose 4.76%, nudging caution higher."
   ],
-  "alert_title": "Watch tomorrow",
-  "alert_text": "Global cues and the weekly options expiry arrive next week.",
+  "alert_title": "Watch the next session",
+  "alert_text": "Global cues and the weekly options expiry land ahead of the next session.",
   "cta_headline": "Save this and *check back at the close*.",
   "cta_sub": "A defensive day with weak breadth. Follow for the full picture every evening.",
-  "next_text": "Global cues and corporate actions land before the open.",
+  "next_text": "Global cues and corporate actions land next session.",
   "caption_a": "Nifty slipped 0.48% but pharma and healthcare led.\n\nBreadth stayed weak: 867 advances versus 1,716 declines.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #StockMarketIndia #Pharma #MarketWrap",
   "caption_b": "Follow the flows, not just the headline.\n\nFII sold Rs 298 Cr but DII bought Rs 4,977 Cr.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #FIIDII #NiftyPharma #MarketWrap"
 }
@@ -74,6 +74,13 @@ retried, so follow these exactly:
   "Not investment advice." Include the line
   "Daily wrap every evening @getstockpulse".
 - Use `\n` for line breaks inside captions (double `\n\n` between blocks).
+- `alert_title` / `alert_text` / `next_text` / `watch_text`: refer to the NEXT
+  TRADING SESSION, never the next calendar day. Your prompt contains a
+  CALENDAR block that names the exact next session. Use that weekday/date
+  ("on Monday", "next session") — NEVER write "tomorrow", "tomorrow's ..."
+  or "next morning" unless the CALENDAR block says the next session IS the
+  next calendar day (weekends and NSE holidays close the market; a Friday run
+  must talk about Monday, not Saturday).
 
 ## WRITING RULES
 

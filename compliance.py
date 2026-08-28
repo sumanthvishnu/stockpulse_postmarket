@@ -287,6 +287,58 @@ def number_lock(html, pack):
     return out
 
 
+def _weekend_next_session(pack):
+    """Fallback next-session facts for packs fetched before the
+    `next_trading_session` field existed: weekends only (NSE holidays cannot
+    be known without the master, but the weekend case covers the common
+    Friday->Monday blunder)."""
+    from datetime import date, timedelta
+    tdate = date.fromisoformat(pack.get("meta", {}).get("trading_date", ""))
+    nxt = tdate + timedelta(days=1)
+    while nxt.weekday() >= 5:
+        nxt += timedelta(days=1)
+    cal = (nxt - tdate).days
+    return {"date": nxt.isoformat(), "weekday": nxt.strftime("%A"),
+            "label": nxt.strftime("%A, %d %B %Y"), "cal_days_ahead": cal,
+            "is_imminent": cal == 1, "holiday_notes": []}
+
+
+def calendar_lock(text, pack):
+    """Deterministic guard against calendar blunders in LLM prose.
+
+    On a Friday run, models routinely write "Watch tomorrow" / "tomorrow's
+    market" even though Saturday is a weekend and the next session is Monday.
+    The next-session date is a FACT, so it is locked exactly like numbers:
+    whenever the next trading session is NOT literally the next calendar day,
+    any "tomorrow" reference in the prose is rejected and the retry loop makes
+    the model rewrite it using the session's real weekday/date.
+    """
+    if not text:
+        return []
+    s = (pack.get("derived") or {}).get("next_trading_session") \
+        or _weekend_next_session(pack)
+    if not s or s.get("is_imminent"):
+        return []   # next session IS the next calendar day -> "tomorrow" is fine
+    label = s.get("label")
+    n_days = s.get("cal_days_ahead")
+    low = _strip_markup(str(text))
+    issues, seen = [], set()
+    for m in re.finditer(r"\btomorrow\b", low, re.I):
+        tok = low[m.start():m.end()]
+        # one issue per distinct context, so the retry feedback points the
+        # model at every spoiled phrase (e.g. BOTH "Watch tomorrow" and
+        # "tomorrow's market" on a Friday run), not just the first one.
+        ctx = low[max(0, m.start() - 45):m.end() + 45].replace("\n", " ")
+        issue = (f"calendar: says '{tok}' but the next trading session is "
+                 f"{label} ({n_days} calendar days later); name that session "
+                 f"('{s.get('weekday')}', its date or 'the next session') "
+                 f"instead (\"...{ctx.strip()}...\")")
+        if issue not in seen:
+            seen.add(issue)
+            issues.append(issue)
+    return issues
+
+
 def lint(html, kind="report"):
     """Return a list of violation strings (empty list = clean)."""
     issues = []

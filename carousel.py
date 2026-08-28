@@ -134,11 +134,11 @@ def default_prose():
             "Breadth tells the fuller market story.",
             "Flows set the tone for the next session.",
         ],
-        "alert_title": "Watch tomorrow",
-        "alert_text": "Fresh global cues arrive before the open.",
+        "alert_title": "Watch the next session",
+        "alert_text": "Fresh global cues arrive before the next open.",
         "cta_headline": "Save this and *check back at the close*.",
         "cta_sub": "Follow for the full picture every evening.",
-        "next_text": "Global cues and corporate actions land tomorrow.",
+        "next_text": "Global cues and corporate actions land next session.",
         "caption_a": "Nifty closed lower today. Daily wrap every evening "
                      "@getstockpulse. Not investment advice. #Nifty "
                      "#IndianStockMarket #StockMarket #Trading #Investing",
@@ -307,7 +307,7 @@ def build(pack, prose):
         # lessons
         "LESSON1": lessons[0], "LESSON2": lessons[1],
         "LESSON3": lessons[2], "LESSON4": lessons[3],
-        "ALERT_TITLE": prose.get("alert_title") or "Watch tomorrow",
+        "ALERT_TITLE": prose.get("alert_title") or "Watch the next session",
         "ALERT_TEXT": prose.get("alert_text") or "",
         # CTA
         "CTA_HEADLINE": hl(prose.get("cta_headline")),
