@@ -946,6 +946,7 @@ def fetch_global_yfinance(target=None):
             out[label] = {
                 "ticker": tk, "level": round(lastf, 4),
                 "prev_close": round(prevf, 4),
+                "pts_chg": round(lastf - prevf, 2),
                 "pct_chg": round((lastf / prevf - 1) * 100, 2),
                 "bar_date": str(date_s.loc[sel.index[-1]])}
         except Exception:

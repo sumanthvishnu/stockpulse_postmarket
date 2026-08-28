@@ -86,11 +86,14 @@ hallucinated:
    one-sided deals >= Rs 20 Cr, round-trips already removed. Skip rows with
    `is_known_mm: true` (market-making noise) or note them as such. Surface
    the genuine non-MM signals with value in Rs Cr.
-10. **Global context** — from `derived.global_markets.markets`: label each
-    entry with its `bar_date`; state the capture time (`captured_ist`). US and
-    Asia bars may be the prior session; Europe/US bars may be intraday — label
-    accordingly and never present a live US quote as a close. India 10Y G-sec
-    yield from `derived.india_10y` (tag wire, quote its `asof_text`).
+10. **Global context** — a pre-computed GLOBAL MARKETS TABLE is provided in
+    your prompt: embed it verbatim in this section (do not retype or recompute
+    its numbers). Around it, write prose: label each entry with its
+    `bar_date`; US and Asia bars may be the prior session, Europe/US bars may
+    be intraday. Never present a live US quote as a close. If you state a
+    points change in prose, quote `pts_chg` exactly from the pack — NEVER
+    subtract two values yourself. India 10Y G-sec yield from
+    `derived.india_10y` (tag wire, quote its `asof_text`).
 11. **Institutional flows** — `derived.fii_dii_cash_summary` (confirm
     `stale_warning` is false), `derived.fii_fno_stats.segments` (Index/Stock
     Futures/Options buy/sell/net/OI), and the four-cohort table from
@@ -98,13 +101,14 @@ hallucinated:
     futures, total long/short). Guardrail: cash and index-futures pointing
     opposite ways is usually hedging; call it directional only when BOTH legs
     point the same way.
-12. **Derivatives dashboard** — `derived.options_NIFTY` / `options_BANKNIFTY`:
-    PCR (OI-based), max pain, max Call OI strike (resistance) and max Put OI
-    strike (support), ATM strike, total Call OI and total Put OI (quote
-    `total_call_oi` and `total_put_oi` separately as-is; do not invent a
-    combined "Total OI"), and ALWAYS the `expiry` the chain refers to. F&O ban
-    list from `derived.fo_ban` — its `trade_date` is the NEXT trading day;
-    report it as such and include entries/exits if present.
+12. **Derivatives dashboard** — a pre-computed DERIVATIVES DASHBOARD table is
+    provided in your prompt: embed it verbatim in this section (do not retype
+    or alter the strikes; a mistyped strike is a failed build). It contains
+    PCR (OI-based), max pain, max Call OI strike (resistance), max Put OI
+    strike (support), ATM strike and expiry for both NIFTY and BANKNIFTY,
+    sourced from the F&O bhavcopy. Around it, write prose: F&O ban list from
+    `derived.fo_ban` — its `trade_date` is the NEXT trading day; report it as
+    such and include entries/exits if present.
     State whether tomorrow is an expiry day using this calendar:
     Nifty 50 weekly expires every TUESDAY (monthly: last Tuesday); Bank Nifty
     MONTHLY only, last Tuesday (weekly discontinued Nov 2024); Sensex weekly
@@ -132,11 +136,11 @@ to rewrite. Therefore:
 - If you cannot find a figure in the pack, write the word "unavailable" or
   omit the figure. NEVER estimate a number to fill a gap. A disclosed gap is
   acceptable; an invented number fails the build.
-- Do not compute new numbers from other numbers (e.g. do not sum call+put OI
-  into a "Total OI", do not derive percentages, do not convert to points).
-  Quote what the pack provides, in the units the pack provides.
-- Sector moves: quote `derived.indices[name].pct_chg` for the sectoral names
-  listed there; never guess a sector's move.
+- Do not compute new numbers from other numbers (do not subtract closes to
+  get a points change, do not sum OI, do not derive percentages). Quote the
+  pack's `pts_chg`, `pct_chg`, `total_call_oi`, `total_put_oi` as stored.
+- Copy strikes, closes and yields carefully and in full: 24,500 is not 4,500;
+  57,500 is not 7,500. A dropped leading digit fails the build.
 - Headline closes, option strikes, max pain, and support / resistance levels
   are checked the most strictly.
 

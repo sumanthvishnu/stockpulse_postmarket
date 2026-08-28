@@ -204,6 +204,55 @@ def minimal_report(pack):
             f"</body></html>")
 
 
+def derivatives_snippet(pack):
+    """Pre-built derivatives table (section 12) so the LLM embeds correct
+    strikes instead of transcribing them (it previously dropped digits:
+    24500 -> 4500)."""
+    d = pack["derived"]
+
+    def row(label, o):
+        if not o:
+            return ""
+        return (f"<tr><td>{label}</td><td>{o.get('expiry', '')}</td>"
+                f"<td>{o.get('pcr_oi')}</td><td>{o.get('max_pain'):,.0f}</td>"
+                f"<td>{o.get('max_put_oi_strike'):,.0f}</td>"
+                f"<td>{o.get('max_call_oi_strike'):,.0f}</td>"
+                f"<td>{o.get('atm_strike'):,.0f}</td></tr>")
+
+    return ("<table class='deriv'><tr><th>Index</th><th>Expiry</th><th>PCR</th>"
+            "<th>Max Pain</th><th>Support (max Put OI)</th>"
+            "<th>Resistance (max Call OI)</th><th>ATM</th></tr>"
+            + row("NIFTY", d.get("options_NIFTY"))
+            + row("BANKNIFTY", d.get("options_BANKNIFTY"))
+            + "</table>")
+
+
+def global_snippet(pack):
+    """Pre-built global-markets table (section 10) so the LLM embeds correct
+    levels/points changes instead of computing them (it previously wrote
+    'down 184.16 points' for a true -183.16)."""
+    gm = pack["derived"].get("global_markets", {}).get("markets", {})
+    order = ["Dow", "SP500", "Nasdaq", "US10Y_yield", "DXY",
+             "Nikkei", "HangSeng", "Shanghai", "Kospi",
+             "FTSE", "DAX", "Brent", "WTI", "Gold", "USDINR",
+             "IndiaVIX", "Sensex", "Nifty50"]
+    rows = ""
+    for k in order:
+        v = gm.get(k)
+        if not v or not isinstance(v, dict):
+            continue
+        pts = v.get("pts_chg")
+        pts_s = f"{pts:+,.2f}" if isinstance(pts, (int, float)) else "n/a"
+        pct = v.get("pct_chg")
+        pct_s = f"{pct:+.2f}%" if isinstance(pct, (int, float)) else "n/a"
+        lvl = v.get("level")
+        lvl_s = f"{lvl:,.2f}" if isinstance(lvl, (int, float)) else "n/a"
+        rows += (f"<tr><td>{k}</td><td>{v.get('bar_date', '')}</td>"
+                 f"<td>{lvl_s}</td><td>{pts_s}</td><td>{pct_s}</td></tr>")
+    return ("<table class='glob'><tr><th>Market</th><th>As of</th><th>Level"
+            "</th><th>Chg (pts)</th><th>Chg %</th></tr>" + rows + "</table>")
+
+
 def generate_with_lint(kind, pack):
     """Generate report/carousel HTML, lint it, retry with feedback."""
     system = open(os.path.join(REPO, "skills", f"{kind}.md"),
@@ -212,6 +261,14 @@ def generate_with_lint(kind, pack):
             else "post-market carousel HTML")
     base_user = (f"Here is today's datapack (JSON). Build the {what}.\n\n"
                  + pack_json(pack))
+    if kind == "report":
+        base_user += (
+            "\n\nTwo pre-computed tables are provided below. Embed them "
+            "VERBATIM (copy-paste, do not retype or alter any number) in "
+            "your report: the derivatives table in section 12, the global "
+            "markets table in section 10.\n\n"
+            "DERIVATIVES DASHBOARD:\n" + derivatives_snippet(pack) +
+            "\n\nGLOBAL MARKETS TABLE:\n" + global_snippet(pack) + "\n")
     html = None
     issues = []
     for attempt in range(1, 6):
