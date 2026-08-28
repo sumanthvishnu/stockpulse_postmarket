@@ -320,4 +320,11 @@ def lint(html, kind="report"):
         if not re.search(r"not investment advice", low):
             issues.append("missing 'Not investment advice' disclaimer in body")
 
+    # A markdown code fence around the document renders as literal "```html"
+    # text in the PDF. pipeline.strip_code_fence() removes the wrapping case;
+    # this catches any fence that survives (e.g. mid-document).
+    if "```" in html:
+        issues.append("markdown code fence '```' in output - return raw HTML "
+                      "only, with no fence")
+
     return issues

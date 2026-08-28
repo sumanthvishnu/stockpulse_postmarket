@@ -258,6 +258,20 @@ def parse_dt(s):
         return None
 
 
+def _parse_long_date(s):
+    """Parse the wire 'August 28, 2026' / '28 August 2026' forms that the
+    compact parse_dt() formats do not cover."""
+    s = (s or "").strip()
+    if not s:
+        return None
+    for fmt in ("%B %d, %Y", "%b %d, %Y", "%d %B %Y", "%B %d %Y"):
+        try:
+            return datetime.strptime(s, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
 def last_weekdays(n, end=None):
     days, d = [], (end or now_ist().date())
     while len(days) < n:
@@ -358,7 +372,15 @@ class Client:
                 r = self._raw_get(url, headers=h)
                 if r.status_code == 200 and r.content and len(r.content) > 40:
                     return r.content
-                last = f"HTTP {r.status_code}"
+                if r.status_code == 200:
+                    # A 200 with an empty/stub body is not a transport error;
+                    # reporting it as bare "HTTP 200" made the gaps register
+                    # read like a mystery failure.
+                    last = (f"HTTP 200 but empty/short body "
+                            f"({len(r.content or b'')} bytes) - endpoint "
+                            "returned no data for this query")
+                else:
+                    last = f"HTTP {r.status_code}"
                 # A 403 mid-run means the Akamai cookie decayed - re-warm once.
                 if r.status_code in (401, 403) and attempt < self.retries:
                     self._primed = False
@@ -803,8 +825,17 @@ def derive_corp_actions(ca_raw, target, constituents):
     return buckets
 
 
-def parse_ban_list(raw, prior_symbols=None):
-    """Parse fo_secban into {trade_date, symbols} plus entry/exit diff."""
+def parse_ban_list(raw, prior_symbols=None, target=None):
+    """Parse fo_secban into {trade_date, symbols} plus entry/exit diff.
+
+    fo_secban.csv is a single UNDATED file that always describes the NEXT
+    trading session from *now*, not from `target`. On a backfill that makes it
+    silently wrong, so when `target` is supplied we compare the file's own
+    trade date against the session that should follow `target` and set
+    `stale_warning` when they disagree (pipeline then degrades to
+    "unavailable" instead of publishing the current ban list under a past
+    date).
+    """
     trade_date, syms = None, []
     for ln in raw.split("\n"):
         ln = ln.strip()
@@ -815,6 +846,16 @@ def parse_ban_list(raw, prior_symbols=None):
             if len(parts) >= 2 and parts[1].strip():
                 syms.append(parts[1].strip())
     out = {"trade_date": trade_date, "count": len(syms), "symbols": syms}
+    if target is not None:
+        expected = next_trading_days(target, 1)[0]
+        got = parse_dt(trade_date)
+        stale = bool(got and got != expected)
+        out["stale_warning"] = stale
+        out["expected_trade_date"] = expected.isoformat()
+        if stale:
+            out["note"] = ("fo_secban.csv is undated and always describes the "
+                           "next session from now; this file is for "
+                           f"{trade_date}, not the session after {target}.")
     if prior_symbols is not None:
         prior = set(prior_symbols)
         out["entries"] = sorted(set(syms) - prior)
@@ -1163,13 +1204,35 @@ def collect(target):
             rows = clean_rows(fetched["bulk_deals"].decode("utf-8", errors="replace"))
             dc = next((k for k in (rows[0].keys() if rows else []) if "Date" in k), None)
             todays = [r for r in rows if dc and parse_dt(r.get(dc)) == target]
-            pack["derived"]["bulk_deals_today"] = {"count": len(todays),
-                                                   "rows": todays[:80]}
-            pack["derived"]["bulk_deals_signals"] = derive_bulk_signals(todays, target)
+            # bulk.csv is a ROLLING window, not a per-date archive. If the file
+            # covers a date range that excludes the target, "0 deals today" is
+            # not a fact about the target session - it just fell out of the
+            # window. Distinguish the two so the report can say "unavailable"
+            # rather than "no bulk deals reported today".
+            covered = sorted({d for d in (parse_dt(r.get(dc)) for r in rows)
+                              if d} ) if dc else []
+            in_window = bool(covered) and covered[0] <= target <= covered[-1]
+            stale = bool(covered) and not in_window
+            bulk = {"count": len(todays), "rows": todays[:80]}
+            if covered:
+                bulk["window"] = [covered[0].isoformat(), covered[-1].isoformat()]
+            if stale:
+                bulk["stale_warning"] = True
+                bulk["note"] = ("bulk.csv is a rolling window covering "
+                                f"{covered[0]} to {covered[-1]}; it does not "
+                                f"include {target}, so bulk-deal coverage for "
+                                "the target session is unavailable (not zero).")
+            pack["derived"]["bulk_deals_today"] = bulk
+            sig = derive_bulk_signals(todays, target)
+            if stale:
+                sig["stale_warning"] = True
+                sig["note"] = bulk["note"]
+            pack["derived"]["bulk_deals_signals"] = sig
             record("derived:bulk_deals", True,
-                   f"{len(todays)} raw, "
-                   f"{pack['derived']['bulk_deals_signals']['count']} one-sided >= "
-                   f"Rs {BULK_MIN_VALUE_CR:.0f} Cr")
+                   f"{len(todays)} raw, {sig['count']} one-sided >= "
+                   f"Rs {BULK_MIN_VALUE_CR:.0f} Cr"
+                   + (f" - WARNING: window {covered[0]}..{covered[-1]} excludes "
+                      f"{target} (stale)" if stale else ""))
         except Exception as e:
             record("derived:bulk_deals", False, str(e))
 
@@ -1196,10 +1259,13 @@ def collect(target):
                 if prior_syms is not None:
                     break
             pack["derived"]["fo_ban"] = parse_ban_list(
-                fetched["fo_ban_list"].decode("utf-8", errors="replace"), prior_syms)
+                fetched["fo_ban_list"].decode("utf-8", errors="replace"),
+                prior_syms, target)
+            _ban = pack["derived"]["fo_ban"]
             record("derived:fo_ban", True,
-                   f"{pack['derived']['fo_ban']['count']} names for "
-                   f"{pack['derived']['fo_ban']['trade_date']}")
+                   f"{_ban['count']} names for {_ban['trade_date']}"
+                   + (" - WARNING: not the session after the target date "
+                      "(stale)" if _ban.get("stale_warning") else ""))
         except Exception as e:
             record("derived:fo_ban", False, str(e))
 
@@ -1404,9 +1470,19 @@ def collect(target):
     try:
         y10, y10_err = fetch_india_10y()
         if y10:
+            # Trading Economics serves the LATEST quote, not the target date's.
+            # On a backfill the as-of date is a later session, so flag it.
+            asof = parse_dt(y10.get("asof_text") or "") or _parse_long_date(
+                y10.get("asof_text"))
+            if asof and asof != target:
+                y10["stale_warning"] = True
+                y10["note"] = (f"wire quote is as of {y10.get('asof_text')}, "
+                               f"not the target session {target}.")
             pack["derived"]["india_10y"] = y10
             record("india_10y", True,
-                   f"{y10['yield_pct']}% ({y10.get('asof_text') or 'as of today'}, wire)")
+                   f"{y10['yield_pct']}% ({y10.get('asof_text') or 'as of today'}, wire)"
+                   + (" - WARNING: not the target date (stale)"
+                      if y10.get("stale_warning") else ""))
         else:
             record("india_10y", False, y10_err or "no value parsed")
     except Exception as e:
