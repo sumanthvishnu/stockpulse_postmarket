@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockPulse Post-Market Carousel · 26 Aug 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F2744; --white:#FFFFFF; --orange:#F97316;
+    --green:#16A34A; --red:#EF4444; --muted:#64748B;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background:#E2E8F0; color:var(--navy);
+    padding:40px 20px; -webkit-font-smoothing:antialiased;
+  }
+  .page-head{max-width:1000px;margin:0 auto 34px;text-align:center;}
+  .page-head h1{font-size:30px;font-weight:800;color:var(--navy);}
+  .page-head h1 span{color:var(--orange);}
+  .page-head p{font-size:16px;color:var(--muted);margin-top:8px;font-weight:500;}
+
+  .grid{
+    max-width:1010px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(2,468px);
+    gap:34px;justify-content:center;
+  }
+  .cell{display:flex;flex-direction:column;align-items:center;}
+
+  .preview{
+    width:468px;height:468px;border-radius:20px;overflow:hidden;
+    box-shadow:0 14px 40px rgba(15,39,68,.20);position:relative;
+    background:#fff;
+  }
+  .scaler{
+    width:1080px;height:1080px;transform:scale(0.43333);
+    transform-origin:top left;position:absolute;top:0;left:0;
+  }
+
+  /* ---- shared slide frame ---- */
+  .slide{
+    width:1080px;height:1080px;position:relative;overflow:hidden;
+  }
+  .slide.dark{background:var(--navy);color:#fff;}
+  .slide.light{background:var(--white);color:var(--navy);}
+  .topbar{position:absolute;top:0;left:0;right:0;height:7px;z-index:5;}
+  .topbar.dark{background:var(--orange);}
+  .topbar.light{background:linear-gradient(90deg,var(--navy),var(--orange));}
+
+  .frame{
+    position:absolute;inset:7px 0 0 0;z-index:2;
+    padding:56px 64px 60px;display:flex;flex-direction:column;
+  }
+  .slide-header{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:40px;flex-shrink:0;
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand-name{font-size:22px;font-weight:800;letter-spacing:-.01em;}
+  .counter{font-size:18px;opacity:.35;font-weight:700;}
+  .body{flex:1;display:flex;flex-direction:column;min-height:0;}
+
+  .ghost{
+    position:absolute;bottom:-40px;right:20px;font-size:300px;
+    font-weight:800;opacity:.05;color:#fff;z-index:1;line-height:.8;
+    pointer-events:none;letter-spacing:-.03em;
+  }
+
+  /* ---- banner (slide 1) ---- */
+  .banner{
+    border-radius:24px;padding:44px 40px;text-align:center;
+    background:var(--white);flex-shrink:0;
+  }
+  .banner-title{
+    font-size:72px;font-weight:800;letter-spacing:.02em;color:var(--navy);
+    line-height:1;
+  }
+  .banner-pill{
+    display:inline-block;margin-top:22px;padding:12px 30px;border-radius:100px;
+    font-size:27px;font-weight:800;background:var(--orange);color:#fff;
+    letter-spacing:.01em;
+  }
+  .cover-mid{flex:1;display:flex;flex-direction:column;justify-content:center;}
+  .headline{font-size:66px;font-weight:800;line-height:1.08;letter-spacing:-.01em;}
+  .headline .hl{color:var(--orange);}
+  .subline{font-size:27px;font-weight:500;color:#94A3B8;margin-top:26px;line-height:1.4;}
+  .stat-pill{
+    display:inline-flex;align-items:center;gap:14px;margin-top:38px;
+    padding:22px 34px;border-radius:18px;font-size:30px;font-weight:800;
+    align-self:flex-start;color:#fff;
+  }
+  .stat-pill.red{background:rgba(239,68,68,.15);border:1.5px solid var(--red);color:#FCA5A5;}
+  .stat-pill.green{background:rgba(22,163,74,.15);border:1.5px solid var(--green);color:#86EFAC;}
+  .dot{width:16px;height:16px;border-radius:50%;}
+  .dot.red{background:var(--red);}
+  .dot.green{background:var(--green);}
+
+  .section-h{font-size:50px;font-weight:800;letter-spacing:-.01em;line-height:1.05;flex-shrink:0;}
+  .section-sub{font-size:22px;font-weight:500;color:var(--muted);margin-top:12px;flex-shrink:0;}
+
+  /* ---- snapshot ---- */
+  .index-row{display:flex;gap:22px;}
+  .index-card{
+    flex:1;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:20px;
+    padding:30px 26px;border-top:6px solid var(--muted);
+  }
+  .index-card.up{border-top-color:var(--green);}
+  .index-card.down{border-top-color:var(--red);}
+  .ic-name{font-size:24px;font-weight:700;color:var(--muted);}
+  .ic-val{font-size:46px;font-weight:800;margin-top:12px;color:var(--navy);}
+  .ic-chg{font-size:24px;font-weight:800;margin-top:8px;}
+  .ic-chg.up{color:var(--green);}
+  .ic-chg.down{color:var(--red);}
+
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  .stat-tile{
+    background:#F8FAFC;border:1px solid #E2E8F0;border-radius:20px;padding:26px 28px;
+  }
+  .st-label{font-size:20px;font-weight:700;color:var(--muted);}
+  .st-val{font-size:40px;font-weight:800;margin-top:8px;color:var(--navy);}
+  .st-val.up{color:var(--green);}
+  .st-val.down{color:var(--red);}
+  .st-note{font-size:18px;font-weight:600;color:var(--muted);margin-top:4px;}
+
+  .hero-box{
+    background:var(--navy);border-radius:20px;padding:34px 38px;color:#fff;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .hero-box.flip{background:var(--white);color:var(--navy);border:1px solid #E2E8F0;}
+  .hb-label{font-size:22px;font-weight:700;color:var(--orange);}
+  .hb-text{font-size:34px;font-weight:800;margin-top:10px;line-height:1.15;}
+
+  /* ---- why rows ---- */
+  .why-row{
+    display:flex;gap:26px;align-items:flex-start;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+    border-radius:20px;padding:28px 30px;
+  }
+  .why-emoji{font-size:52px;line-height:1;flex-shrink:0;}
+  .why-txt{flex:1;}
+  .why-title{font-size:30px;font-weight:800;}
+  .why-desc{font-size:22px;font-weight:500;color:#94A3B8;margin-top:8px;line-height:1.35;}
+  .why-badge{
+    font-size:20px;font-weight:800;color:var(--orange);white-space:nowrap;
+    background:rgba(249,115,22,.14);padding:10px 18px;border-radius:12px;flex-shrink:0;
+    align-self:center;
+  }
+
+  /* ---- sector rows ---- */
+  .sec-row{
+    display:flex;align-items:center;gap:22px;
+    background:#F8FAFC;border:1px solid #E2E8F0;border-radius:16px;
+    padding:22px 26px;border-left:8px solid var(--muted);
+  }
+  .sec-row.up{border-left-color:var(--green);}
+  .sec-row.down{border-left-color:var(--red);}
+  .sec-name{font-size:28px;font-weight:800;flex:1;color:var(--navy);}
+  .sec-reason{font-size:19px;font-weight:500;color:var(--muted);flex:1.3;line-height:1.3;}
+  .sec-pct{font-size:30px;font-weight:800;white-space:nowrap;}
+  .sec-pct.up{color:var(--green);}
+  .sec-pct.down{color:var(--red);}
+  .bonus-card{
+    background:#FFF7ED;border:1px solid #FED7AA;border-left:8px solid var(--orange);
+    border-radius:16px;padding:22px 26px;
+  }
+  .bonus-card b{color:var(--navy);font-size:24px;font-weight:800;}
+  .bonus-card span{font-size:20px;font-weight:500;color:#9A5B2B;display:block;margin-top:6px;line-height:1.3;}
+
+  /* ---- movers ---- */
+  .mv-cols{display:flex;gap:26px;flex:1;}
+  .mv-col{flex:1;display:flex;flex-direction:column;gap:16px;justify-content:space-between;}
+  .mv-head{font-size:28px;font-weight:800;padding-bottom:6px;}
+  .mv-head.up{color:var(--green);}
+  .mv-head.down{color:var(--red);}
+  .mv-item{
+    display:flex;justify-content:space-between;align-items:center;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+    border-radius:14px;padding:20px 24px;
+  }
+  .mv-sym{font-size:26px;font-weight:800;}
+  .mv-pct{font-size:26px;font-weight:800;}
+  .mv-pct.up{color:#86EFAC;}
+  .mv-pct.down{color:#FCA5A5;}
+  .mv-note{
+    font-size:19px;font-weight:600;color:#94A3B8;line-height:1.35;
+    background:rgba(255,255,255,.04);border-radius:14px;padding:18px 22px;
+  }
+
+  /* ---- levels ---- */
+  .price-hero{
+    background:var(--navy);border-radius:20px;padding:34px 38px;color:#fff;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .ph-left .ph-label{font-size:22px;font-weight:700;color:#94A3B8;}
+  .ph-left .ph-val{font-size:58px;font-weight:800;margin-top:6px;}
+  .ph-badges{display:flex;gap:14px;}
+  .ph-badge{background:rgba(255,255,255,.08);border-radius:14px;padding:16px 22px;text-align:center;}
+  .ph-badge .b-lab{font-size:17px;font-weight:700;color:#94A3B8;}
+  .ph-badge .b-val{font-size:30px;font-weight:800;margin-top:4px;color:var(--orange);}
+
+  .lvl-cards{display:flex;gap:22px;}
+  .lvl-card{flex:1;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:20px;padding:28px 30px;}
+  .lc-name{font-size:28px;font-weight:800;color:var(--navy);}
+  .lc-line{display:flex;justify-content:space-between;font-size:22px;font-weight:700;margin-top:16px;}
+  .lc-line .lab{color:var(--muted);}
+  .lc-line .sup{color:var(--green);}
+  .lc-line .res{color:var(--red);}
+
+  .quote-box{
+    background:#FFF7ED;border-left:6px solid var(--orange);border-radius:14px;
+    padding:24px 28px;flex:1;
+  }
+  .qb-text{font-size:24px;font-weight:700;color:var(--navy);line-height:1.35;}
+  .qb-who{font-size:19px;font-weight:600;color:#9A5B2B;margin-top:12px;}
+
+  /* ---- lessons ---- */
+  .lesson{
+    display:flex;gap:26px;align-items:flex-start;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+    border-radius:18px;padding:26px 30px;
+  }
+  .lesson-num{
+    font-size:34px;font-weight:800;color:var(--orange);flex-shrink:0;
+    width:56px;height:56px;border-radius:14px;background:rgba(249,115,22,.14);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .lesson-txt{font-size:26px;font-weight:700;line-height:1.3;align-self:center;}
+  .alert-box{
+    background:rgba(249,115,22,.14);border:1.5px solid var(--orange);border-radius:18px;
+    padding:26px 30px;display:flex;gap:20px;align-items:center;
+  }
+  .alert-box .ae{font-size:44px;}
+  .alert-box .at{font-size:23px;font-weight:700;line-height:1.3;}
+  .alert-box .at b{color:var(--orange);}
+
+  /* ---- CTA ---- */
+  .cta-emoji{font-size:80px;}
+  .cta-head{font-size:56px;font-weight:800;line-height:1.08;margin-top:16px;}
+  .cta-head .hl{color:var(--orange);}
+  .cta-sub{font-size:26px;font-weight:500;color:var(--muted);margin-top:16px;line-height:1.4;}
+  .cta-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .cta-stat{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:16px;padding:22px 18px;text-align:center;}
+  .cs-lab{font-size:17px;font-weight:700;color:var(--muted);}
+  .cs-val{font-size:30px;font-weight:800;margin-top:6px;color:var(--navy);}
+  .cs-val.up{color:var(--green);}
+  .cs-val.down{color:var(--red);}
+  .next-box{background:var(--navy);border-radius:16px;padding:24px 28px;color:#fff;display:flex;gap:18px;align-items:center;}
+  .next-box .ne{font-size:40px;}
+  .next-box .nt{font-size:22px;font-weight:600;line-height:1.3;}
+  .next-box .nt b{color:var(--orange);}
+  .cta-pill{
+    background:var(--orange);color:#fff;text-align:center;border-radius:100px;
+    padding:24px;font-size:30px;font-weight:800;
+  }
+  .swarm-row{display:flex;align-items:center;justify-content:center;gap:14px;font-size:22px;font-weight:700;color:var(--muted);}
+  .swarm-row b{color:var(--navy);}
+  .handle{text-align:center;font-size:30px;font-weight:800;color:var(--navy);}
+  .handle span{color:var(--orange);}
+  .disclaimer{font-size:15px;font-weight:500;color:var(--muted);text-align:center;line-height:1.4;}
+
+  /* ---- download button ---- */
+  .dl-btn{
+    margin-top:16px;background:var(--navy);color:#fff;border:none;
+    padding:13px 26px;border-radius:100px;font-family:inherit;font-size:15px;
+    font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;
+    transition:background .15s;
+  }
+  .dl-btn:hover{background:var(--orange);}
+  .dl-btn svg{width:16px;height:16px;}
+
+  /* ---- captions panel ---- */
+  .captions{
+    max-width:1010px;margin:60px auto 0;background:#fff;border-radius:24px;
+    padding:44px 46px;box-shadow:0 14px 40px rgba(15,39,68,.14);
+  }
+  .cap-head{font-size:26px;font-weight:800;color:var(--navy);margin-bottom:8px;letter-spacing:.03em;}
+  .cap-head span{color:var(--orange);}
+  .cap-wrap{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:24px;}
+  .cap-box .cap-label{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:10px;}
+  .cap-box textarea{
+    width:100%;border:1.5px solid #E2E8F0;border-radius:16px;padding:22px;
+    font-family:inherit;font-size:16px;line-height:1.55;color:var(--navy);
+    background:#F8FAFC;resize:none;
+  }
+  .cap-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
+  .cap-count{font-size:15px;font-weight:600;color:var(--muted);}
+  .copy-btn{
+    background:var(--navy);color:#fff;border:none;padding:11px 22px;border-radius:100px;
+    font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;
+  }
+  .copy-btn:hover{background:var(--orange);}
+  @media(max-width:1050px){
+    .grid{grid-template-columns:468px;}
+    .cap-wrap{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>Stock<span>Pulse</span> · Post-Market Carousel</h1>
+  <p>Wednesday, 26 AUGUST 2026 · 8 slides · tap each button to download a PNG</p>
+</div>
+
+<div class="grid" id="grid">
+
+  <!-- ============ SLIDE 1 · BANNER COVER (dark) ============ -->
+  <div class="cell">
+    <div class="preview"><div class="scaler">
+      <div class="slide dark" id="slide1">
+        <div class="topbar dark"></div>
+        <div class="ghost">CLOSE</div>
+        <div class="frame">
+          <div class="slide-header">
+            <div class="brand">
+              <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="36" rx="9" fill="#F97316"/><path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="brand-name"><span style="color:#fff">Stock</span><span style="color:#F97316">Pulse</span></span>
+            </div>
+            <div class="counter">01 / 08</div>
+          </div>
+          <div class="body">
+            <div class="banner">
+              <div class="banner-title">POST MARKET ANALYSIS</div>
+              <div class="banner-pill">WEDNESDAY · AUGUST 26, 2026</div>
+            </div>
+            <div class="cover-mid">
+              <div class="headline">Nifty slipped while <span class="hl">Pharma</span> gained.</div>
+              <div class="subline">Mixed performance as broad market struggles.</div>
+              <div class="stat-pill down"><span class="dot down"></span>Nifty 24,207.75 · down 126.80 pts (0.52%)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <button class="dl-btn" data-slide="slide1" data-name="slide1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download PNG</button>
+  </div>
+
+  <!-- ============ SLIDE 2 · SNAPSHOT (white) ============ -->
+  <div class="cell">
+    <div class="preview"><div class="scaler">
+      <div class="slide light" id="slide2">
+        <div class="topbar light"></div>
+        <div class="frame">
+          <div class="slide-header">
+            <div class="brand">
+              <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="36" rx="9" fill="#F97316"/><path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="brand-name"><span style="color:#0F2744">Stock</span><span style="color:#F97316">Pulse</span></span>
+            </div>
+            <div class="counter" style="color:#0F2744">02 / 08</div>
+          </div>
+          <div class="body" style="justify-content:space-between;">
+            <div><div class="section-h">Where the market closed</div></div>
+            <div class="index-row" style="flex:0;">
+              <div class="index-card down">
+                <div class="ic-name">Nifty 50</div>
+                <div class="ic-val">24,207.75</div>
+                <div class="ic-chg down">down 0.52%</div>
+              </div>
+              <div class="index-card up">
+                <div class="ic-name">Sensex</div>
+                <div class="ic-val">77,118.55</div>
+                <div class="ic-chg up">up 0.24%</div>
+              </div>
+              <div class="index-card up">
+                <div class="ic-name">Bank Nifty</div>
+                <div class="ic-val">57,783.75</div>
+                <div class="ic-chg up">up 0.47%</div>
+              </div>
+            </div>
+            <div class="stat-grid" style="flex:0;">
+              <div class="stat-tile">
+                <div class="st-label">India VIX</div>
+                <div class="st-val down">10.57</div>
+                <div class="st-note">down 4.60%</div>
+              </div>
+              <div class="stat-tile">
+                <div class="st-label">Advances vs Declines</div>
+                <div class="st-val up">1,451 : 1,135</div>
+                <div class="st-note">more stocks rose than fell</div>
+              </div>
+              <div class="stat-tile">
+                <div class="st-label">FII net (cash)</div>
+                <div class="st-val flat">n/a</div>
+                <div class="st-note">n/a</div>
+              </div>
+              <div class="stat-tile">
+                <div class="st-label">DII net (cash)</div>
+                <div class="st-val flat">n/a</div>
+                <div class="st-note">n/a</div>
+              </div>
+            </div>
+            <div class="hero-box" style="flex:0;">
+              <div class="hb-label">THE DAY IN ONE LINE</div>
+              <div class="hb-text">Nifty fell 0.52% while Pharma rose 0.23%. Breadth showed strength with 1,451 advances against 1,135 declines.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <button class="dl-btn" data-slide="slide2" data-name="slide2">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download PNG</button>
+  </div>
+
+  <!-- ============ SLIDE 3 · WHY IT HAPPENED (dark) ============ -->
+  <div class="cell">
+    <div class="preview"><div class="scaler">
+      <div class="slide dark" id="slide3">
+        <div class="topbar dark"></div>
+        <div class="ghost">WHY</div>
+        <div class="frame">
+          <div class="slide-header">
+            <div class="brand">
+              <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="36" rx="9" fill="#F97316"/><path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="brand-name"><span style="color:#fff">Stock</span><span style="color:#F97316">Pulse</span></span>
+            </div>
+            <div class="counter">03 / 08</div>
+          </div>
+          <div class="body" style="justify-content:space-between;">
+            <div class="section-h">Why the market slipped</div>
+            <div style="display:flex;flex-direction:column;gap:22px;flex:1;justify-content:center;">
+              <div class="why-row">
+                <div class="why-emoji">📉</div>
+                <div class="why-txt"><div class="why-title">Nifty fell</div><div class="why-desc">Profit booking weighed on the index.</div></div>
+                <div class="why-badge">Nifty down 0.52%</div>
+              </div>
+              <div class="why-row">
+                <div class="why-emoji">💊</div>
+                <div class="why-txt"><div class="why-title">Pharma resilience</div><div class="why-desc">Pharma stocks attracted buyers amid weakness.</div></div>
+                <div class="why-badge">Pharma up 0.23%</div>
+              </div>
+              <div class="why-row">
+                <div class="why-emoji">📊</div>
+                <div class="why-txt"><div class="why-title">Mixed sector performance</div><div class="why-desc">Financials and IT dragged down the index.</div></div>
+                <div class="why-badge">IT down 1.47%</div>
+              </div>
+              <div class="why-row">
+                <div class="why-emoji">🌍</div>
+                <div class="why-txt"><div class="why-title">Global cues mixed</div><div class="why-desc">US markets showed slight gains overnight.</div></div>
+                <div class="why-badge">SP500 up 0.72%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <button class="dl-btn" data-slide="slide3" data-name="slide3">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download PNG</button>
+  </div>
+
+  <!-- ============ SLIDE 4 · SECTOR SCORECARD (white) ============ -->
+  <div class="cell">
+    <div class="preview"><div class="scaler">
+      <div class="slide light" id="slide4">
+        <div class="topbar light"></div>
+        <div class="frame">
+          <div class="slide-header">
+            <div class="brand">
+              <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="36" rx="9" fill="#F97316"/><path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="brand-name"><span style="color:#0F2744">Stock</span><span style="color:#F97316">Pulse</span></span>
+            </div>
+            <div class="counter" style="color:#0F2744">04 / 08</div>
+          </div>
+          <div class="body" style="justify-content:space-between;">
+            <div class="section-h">Sector scorecard</div>
+            <div style="display:flex;flex-direction:column;gap:16px;flex:1;justify-content:center;">
+              <div class="sec-row up"><div class="sec-name">Metal</div><div class="sec-reason">led the day</div><div class="sec-pct up">+1.27%</div></div>
+              <div class="sec-row up"><div class="sec-name">Private Bank</div><div class="sec-reason">led the day</div><div class="sec-pct up">+1.04%</div></div>
+              <div class="sec-row up"><div class="sec-name">PSU Bank</div><div class="sec-reason">led the day</div><div class="sec-pct up">+0.77%</div></div>
+              <div class="sec-row down"><div class="sec-name">IT</div><div class="sec-reason">Profit booking led to declines.</div><div class="sec-pct down">-1.47%</div></div>
+              <div class="sec-row down"><div class="sec-name">Infra</div><div class="sec-reason">lagged the day</div><div class="sec-pct down">-1.20%</div></div>
+              <div class="sec-row down"><div class="sec-name">FMCG</div><div class="sec-reason">lagged the day</div><div class="sec-pct down">-0.95%</div></div>
+            </div>
+            <div class="bonus-card">
+              <b>Breadth check</b>
+              <span>1,451 advances versus 1,135 declines. Positive breadth despite index fall.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <button class="dl-btn" data-slide="slide4" data-name="slide4">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download PNG</button>
+  </div>
+
+  <!-- ============ SLIDE 5 · TOP MOVERS (dark) ============ -->
+  <div class="cell">
+    <div class="preview"><div class="scaler">
+      <div class="slide dark" id="slide5">
+        <div class="topbar dark"></div>
+        <div class="ghost">MOVE</div>
+        <div class="frame">
+          <div class="slide-header">
+            <div class="brand">
+              <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="36" rx="9" fill="#F97316"/><path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="brand-name"><span style="color:#fff">Stock</span><span style="color:#F97316">Pulse</span></span>
+            </div>
+            <div class="counter">05 / 08</div>
+          </div>
+          <div class="body" style="justify-content:space-between;">
+            <div class="section-h">The day's big movers</div>
+            <div class="mv-cols">
+              <div class="mv-col">
+                <div class="mv-head up">Top gainers</div>
+                <div class="mv-item"><span class="mv-sym">Kotak Bank</span><span class="mv-pct up">+3.76%</span></div>
+                <div class="mv-item"><span class="mv-sym">Axis Bank</span><span class="mv-pct up">+1.62%</span></div>
+                <div class="mv-item"><span class="mv-sym">JSW Steel</span><span class="mv-pct up">+1.57%</span></div>
+                <div class="mv-item"><span class="mv-sym">UltraTech</span><span class="mv-pct up">+1.53%</span></div>
+                <div class="mv-note">Kotak Bank and Axis Bank led the gains. Delivery above 60% indicates strong interest.</div>
+              </div>
+              <div class="mv-col">
+                <div class="mv-head down">Top losers</div>
+                <div class="mv-item"><span class="mv-sym">Bharti Airtel</span><span class="mv-pct down">-2.31%</span></div>
+                <div class="mv-item"><span class="mv-sym">Power Grid</span><span class="mv-pct down">-2.14%</span></div>
+                <div class="mv-item"><span class="mv-sym">Infosys</span><span class="mv-pct down">-2.10%</span></div>
+                <div class="mv-item"><span class="mv-sym">L&T</span><span class="mv-pct down">-1.96%</span></div>
+                <div class="mv-note">Bharti Airtel and Infosys led the declines. Delivery above 55% suggests real selling.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <button class="dl-btn" data-slide="slide5" data-name="slide5">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download PNG</button>
+  </div>
+
+  <!-- ============ SLIDE 6 · TECHNICAL LEVELS (white) ============ -->
+  <div class="cell">
+    <div class="preview"><div class="scaler">
+      <div class="slide light" id="slide6">
+        <div class="topbar light"></div>
+        <div class="frame">
+          <div class="slide-header">
+            <div class="brand">
+              <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="36" rx="9" fill="#F97316"/><path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="brand-name"><span style="color:#0F2744">Stock</span><span style="color:#F97316">Pulse</span></span>
+            </div>
+            <div class="counter" style="color:#0F2744">06 / 08</div>
+          </div>
+          <div class="body" style="justify-content:space-between;">
+            <div class="section-h">Levels that matter</div>
+            <div class="price-hero" style="flex:0;">
+              <div class="ph-left">
+                <div class="ph-label">Nifty 50 close</div>
+                <div class="ph-val">24,207.75</div>
+              </div>
+              <div class="ph-badges">
+                <div class="ph-badge"><div class="b-lab">Support</div><div class="b-val">24,200</div></div>
+                <div class="ph-badge"><div class="b-lab">Max Pain</div><div class="b-val">24,300</div></div>
+                <div class="ph-badge"><div class="b-lab">Resistance</div><div class="b-val">24,500</div></div>
+              </div>
+            </div>
+            <div class="lvl-cards" style="flex:0;">
+              <div class="lvl-card">
+                <div class="lc-name">Nifty 50</div>
+                <div class="lc-line"><span class="lab">Support</span><span class="sup">24,200</span></div>
+                <div class="lc-line"><span class="lab">Resistance</span><span class="res">24,500</span></div>
+              </div>
+              <div class="lvl-card">
+                <div class="lc-name">Bank Nifty</div>
+                <div class="lc-line"><span class="lab">Close</span><span style="color:#0F2744">57,783.75</span></div>
+                <div class="lc-line"><span class="lab">Pivot</span><span style="color:#0F2744">57,800</span></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:22px;flex:0;">
+              <div class="quote-box" style="flex:1;">
+                <div class="qb-text"><b>What to watch</b> · Support at 24,200 and resistance at 24,500 frame the next session.</div>
+                <div class="qb-who">Option chain derived · NSE F&amp;O bhavcopy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <button class="dl-btn" data-slide="slide6" data-name="slide6">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download PNG</button>
+  </div>
+
+  <!-- ============ SLIDE 7 · KEY LESSONS (dark) ============ -->
+  <div class="cell">
+    <div class="preview"><div class="scaler">
+      <div class="slide dark" id="slide7">
+        <div class="topbar dark"></div>
+        <div class="ghost">NEXT</div>
+        <div class="frame">
+          <div class="slide-header">
+            <div class="brand">
+              <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="36" rx="9" fill="#F97316"/><path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="brand-name"><span style="color:#fff">Stock</span><span style="color:#F97316">Pulse</span></span>
+            </div>
+            <div class="counter">07 / 08</div>
+          </div>
+          <div class="body" style="justify-content:space-between;">
+            <div class="section-h">What today taught us</div>
+            <div style="display:flex;flex-direction:column;gap:18px;flex:1;justify-content:center;">
+              <div class="lesson"><div class="lesson-num">1</div><div class="lesson-txt">Nifty faced profit booking, closing lower.</div></div>
+              <div class="lesson"><div class="lesson-num">2</div><div class="lesson-txt">Pharma stocks showed resilience amidst weakness.</div></div>
+              <div class="lesson"><div class="lesson-num">3</div><div class="lesson-txt">Broader market breadth remained positive.</div></div>
+              <div class="lesson"><div class="lesson-num">4</div><div class="lesson-txt">Global cues provided mixed signals for traders.</div></div>
+            </div>
+            <div class="alert-box">
+              <div class="ae">⚡</div>
+              <div class="at"><b>Watch tomorrow.</b> Keep an eye on global markets and upcoming corporate actions.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <button class="dl-btn" data-slide="slide7" data-name="slide7">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download PNG</button>
+  </div>
+
+  <!-- ============ SLIDE 8 · CTA (white) ============ -->
+  <div class="cell">
+    <div class="preview"><div class="scaler">
+      <div class="slide light" id="slide8">
+        <div class="topbar light"></div>
+        <div class="frame">
+          <div class="slide-header">
+            <div class="brand">
+              <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="36" rx="9" fill="#F97316"/><path d="M8 24 L16 16 L22 20 L28 12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 12 L28 12 L28 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="brand-name"><span style="color:#0F2744">Stock</span><span style="color:#F97316">Pulse</span></span>
+            </div>
+            <div class="counter" style="color:#0F2744">08 / 08</div>
+          </div>
+          <div class="body" style="justify-content:space-between;">
+            <div>
+              <div class="cta-emoji">🔖</div>
+              <div class="cta-head">Save this and <span class="hl">check back at the close</span>.</div>
+              <div class="cta-sub">A day of mixed performance with resilience in Pharma. Follow for the full picture every evening.</div>
+            </div>
+            <div class="cta-stats">
+              <div class="cta-stat"><div class="cs-lab">Nifty close</div><div class="cs-val down">24,208 · -0.52%</div></div>
+              <div class="cta-stat"><div class="cs-lab">India VIX</div><div class="cs-val down">10.57</div></div>
+              <div class="cta-stat"><div class="cs-lab">FII net</div><div class="cs-val up">n/a</div></div>
+              <div class="cta-stat"><div class="cs-lab">DII net</div><div class="cs-val up">n/a</div></div>
+            </div>
+            <div class="next-box">
+              <div class="ne">📅</div>
+              <div class="nt"><b>Next up.</b> Global cues and corporate actions to watch before the open.</div>
+            </div>
+            <div class="cta-pill">Join early access · link in bio</div>
+            <div class="swarm-row">Powered by <b>SwarmIQ</b> · multi source market intelligence</div>
+            <div class="handle">@get<span>stockpulse</span></div>
+            <div class="disclaimer">Not SEBI registered. For informational purposes only. Not investment advice.</div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <button class="dl-btn" data-slide="slide8" data-name="slide8">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download PNG</button>
+  </div>
+
+</div>
+
+<!-- ============ CAPTIONS PANEL ============ -->
+<div class="captions">
+  <div class="cap-head">CAPTIONS · <span>TAP COPY</span></div>
+  <div class="cap-wrap">
+    <div class="cap-box">
+      <div class="cap-label">Caption A</div>
+      <textarea id="capA" readonly spellcheck="false" rows="15"></textarea>
+      <div class="cap-foot">
+        <span class="cap-count" id="countA"></span>
+        <button class="copy-btn" data-target="capA">Copy caption</button>
+      </div>
+    </div>
+    <div class="cap-box">
+      <div class="cap-label">Caption B</div>
+      <textarea id="capB" readonly spellcheck="false" rows="15"></textarea>
+      <div class="cap-foot">
+        <span class="cap-count" id="countB"></span>
+        <button class="copy-btn" data-target="capB">Copy caption</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ---------- captions ---------- */
+  var capA = "Nifty fell 0.52% while Pharma gained 0.23%.\n\nBreadth was strong with 1,451 advances against 1,135 declines.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #StockMarketIndia #Pharma #MarketWrap";
+
+  var capB = "Profit booking weighed on Nifty, but Pharma stood firm.\n\nMixed global cues ahead of the next trading session.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #MarketTrends #Pharma #MarketWrap";
+
+  document.getElementById('capA').value = capA;
+  document.getElementById('capB').value = capB;
+  document.getElementById('countA').textContent = capA.length + " characters";
+  document.getElementById('countB').textContent = capB.length + " characters";
+
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var ta = document.getElementById(btn.dataset.target);
+      var done = function(){
+        var orig = "Copy caption";
+        btn.textContent = "Copied";
+        setTimeout(function(){ btn.textContent = orig; }, 2000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(ta.value).then(done, function(){
+          ta.select(); document.execCommand('copy'); done();
+        });
+      } else {
+        ta.select(); document.execCommand('copy'); done();
+      }
+    });
+  });
+
+  /* ---------- PNG download ---------- */
+  document.querySelectorAll('.dl-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var slide = document.getElementById(btn.dataset.slide);
+      var scaler = slide.parentNode;              // .scaler
+      var preview = scaler.parentNode;            // .preview
+      var origLabel = btn.innerHTML;
+      btn.innerHTML = "Rendering...";
+
+      // detach slide to an off-screen holder at full size
+      var holder = document.createElement('div');
+      holder.style.position = 'fixed';
+      holder.style.left = '-99999px';
+      holder.style.top = '0';
+      holder.style.width = '1080px';
+      holder.style.height = '1080px';
+      document.body.appendChild(holder);
+      holder.appendChild(slide);
+      slide.style.transform = 'scale(1)';
+
+      html2canvas(slide, {scale:2, width:1080, height:1080, backgroundColor:null, useCORS:true})
+        .then(function(canvas){
+          var link = document.createElement('a');
+          link.download = 'stockpulse-postmarket-26AUG-' + btn.dataset.name + '.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        })
+        .finally(function(){
+          // restore slide back into its scaled preview
+          slide.style.transform = '';
+          scaler.appendChild(slide);
+          document.body.removeChild(holder);
+          btn.innerHTML = origLabel;
+        });
+    });
+  });
+</script>
+</body>
+</html>
