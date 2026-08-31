@@ -1,61 +1,108 @@
-name: StockPulse Daily Post-Market
+
 
 on:
   schedule:
     # 15:30 UTC = 21:00 IST, Monday-Friday
     - cron: "30 15 * * 1-5"
+    # BACKSTOP ONLY - do not rely on this for 21:00 IST.
+    # GitHub's scheduler is best-effort and deprioritises new / low-traffic
+    # free repos; our first scheduled run landed 8h34m late. The punctual
+    # trigger is an external cron calling the workflow_dispatch API.
+    - cron: "27 15 * * 1-5"
   workflow_dispatch:
     inputs:
       date:
         description: "Trade date DD-MM-YYYY (blank = today IST)"
         required: false
+      force:
+        description: "Run even if today already published"
+        required: false
+        default: "false"
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    concurrency:
-      group: stockpulse-daily
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: the datapack commit below rebases onto origin/main,
+          # which cannot work from the default depth-1 shallow clone.
+          fetch-depth: 0
+
+      # A delayed schedule can fire on Saturday morning for Friday's slot, or
+      # land on top of a run the external cron already did. Either way the old
+      # setup would generate a second report and Telegram something confusing.
+      - name: Decide whether this run should do any work
+        id: guard
+        run: |
+          set -euo pipefail
+          if [ -n "${{ github.event.inputs.date || '' }}" ] \
+             || [ "${{ github.event.inputs.force || 'false' }}" = "true" ]; then
+            echo "manual override - running"
+            echo "run=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          today=$(TZ=Asia/Kolkata date +%F)
+          if [ "$(TZ=Asia/Kolkata date +%u)" -ge 6 ]; then
+            echo "$today is an IST weekend - markets closed, skipping"
+            echo "run=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ -f "data/stockpulse_datapack_${today}_compiler.json" ]; then
+            echo "$today already published - skipping duplicate trigger"
+            echo "run=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "run=true" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-python@v5
+        if: steps.guard.outputs.run == 'true'
         with:
           python-version: "3.12"
 
       - name: Install system libs (weasyprint / pango)
+        if: steps.guard.outputs.run == 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf-2.0-0 \
             libffi-dev shared-mime-info fonts-dejavu-core fonts-liberation
 
       - name: Install Python deps
+        if: steps.guard.outputs.run == 'true'
         run: pip install -r requirements.txt
 
       - name: Run pipeline
+        if: steps.guard.outputs.run == 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
-          LLM_MODEL: ${{ secrets.LLM_MODEL }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TRADE_DATE: ${{ github.event.inputs.date || '' }}
-          GH_PAGES_BASE: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
         run: python pipeline.py
 
       - name: Commit daily datapack (state for ban-list diff)
+        if: steps.guard.outputs.run == 'true'
         run: |
+          set -euo pipefail
           git config user.name "stockpulse-bot"
           git config user.email "bot@stockpulse.local"
           git add data/
           git commit -m "data: $(date -u +%F)" || echo "nothing to commit"
           git push
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+          git commit -m "data: $(date -u +%F)"
+          # main may have moved (a manual run, a merged PR) while we were
+          # generating. Rebase and retry instead of dying on a stale push.
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "pushed"
+              exit 0
+            fi
+            echo "push rejected (attempt $attempt) - rebasing onto origin/main"
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort || true; }
+            sleep $((attempt * 5))
+          done
+          echo "could not push datapack after 3 attempts" >&2
+          exit 1
 
       - name: Deploy site to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -64,3 +111,59 @@ jobs:
           publish_dir: ./site
           keep_files: true
           force_orphan: false
+      # This is the step that broke the only scheduled run we have ever had:
+      # peaceiris/actions-gh-pages died with git exit 128 *after* Telegram had
+      # already sent a carousel link, so the link pointed at nothing.
+      - name: Publish site to gh-pages
+        if: steps.guard.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ ! -d site ] || [ -z "$(ls -A site 2>/dev/null)" ]; then
+            echo "no site/ output (holiday or aborted run) - nothing to publish"
+            exit 0
+          fi
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          tmp="$(mktemp -d)"
+          for attempt in 1 2 3; do
+            rm -rf "$tmp"; mkdir -p "$tmp"
+            # keep_files semantics: start from the existing branch so past
+            # days stay online, then lay today's output on top.
+            if ! git clone --depth=1 --branch gh-pages "$remote" "$tmp" 2>/dev/null; then
+              git clone --depth=1 "$remote" "$tmp"
+              git -C "$tmp" checkout --orphan gh-pages
+              git -C "$tmp" rm -rf . >/dev/null 2>&1 || true
+            fi
+            cp -r site/. "$tmp"/
+            touch "$tmp/.nojekyll"
+            git -C "$tmp" add -A
+            if git -C "$tmp" diff --cached --quiet; then
+              echo "site unchanged - nothing to publish"
+              exit 0
+            fi
+            git -C "$tmp" -c user.name=stockpulse-bot \
+                          -c user.email=bot@stockpulse.local \
+                          commit -m "deploy: ${GITHUB_SHA}"
+            if git -C "$tmp" push origin gh-pages; then
+              echo "published to gh-pages"
+              exit 0
+            fi
+            echo "push rejected (attempt $attempt) - retrying"
+            sleep $((attempt * 10))
+          done
+          echo "could not publish site after 3 attempts" >&2
+          exit 1
+
+      - name: Tell me on Telegram if the run broke
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -sS -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=⚠️ StockPulse daily run FAILED. No report was published. Logs: ${RUN_URL}" \
+            >/dev/null || true
