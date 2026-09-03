@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Private Telegram bot: send up to 10 photos at once, convert every one."""
+"""Always-on Telegram bot. GPU work is sent to RunPod serverless."""
 
 from __future__ import annotations
 
 import asyncio
 import logging
 import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from io import BytesIO
 
 from dotenv import load_dotenv
@@ -24,8 +26,9 @@ from telegram.ext import (
     filters,
 )
 
-from generate import PromptBlocked, generate_batch, image_from_bytes, jpeg_batch, load_pipeline
 from presets import DEFAULT_STRENGTH, MAX_PHOTOS, PRESETS, STRENGTHS
+from runpod_client import WorkerError, convert_images
+from safety import PromptBlocked, assert_adult_prompt
 
 load_dotenv()
 
@@ -131,9 +134,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
     await update.message.reply_text(
         "Personal photoreal bot. Adults only.\n\n"
-        f"Send up to {MAX_PHOTOS} photos at once (Telegram album), or one by one.\n"
-        "Optional caption = extra prompt.\n"
-        "Then tap a preset — every photo is converted, 1:1.\n\n"
+        f"Send up to {MAX_PHOTOS} photos as one album, then tap a preset.\n"
+        "Every photo is converted, 1:1.\n\n"
+        "First batch after a break can take ~1 minute while the GPU wakes up.\n"
         "/clear — empty the queue"
     )
 
@@ -177,8 +180,6 @@ async def on_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await _send_queue_prompt(context.bot, chat_id, context)
         return
 
-    # Album: Telegram delivers 10 photos as 10 messages. Wait until the
-    # group stops arriving, then send one "got N photos" message.
     key = f"{update.effective_user.id}:{mgid}"
     old = _album_tasks.get(key)
     if old:
@@ -227,45 +228,41 @@ async def _run_job(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     n = len(photos)
     chat_id = update.effective_chat.id
 
+    try:
+        assert_adult_prompt(f"{prompt} {extra}")
+    except PromptBlocked as exc:
+        await context.bot.send_message(chat_id=chat_id, text=str(exc))
+        return
+
     status = await context.bot.send_message(
         chat_id=chat_id,
         text=(
-            f"Converting 0/{n} · {spec['title']} · {STRENGTHS[strength_id]['title']}\n"
-            "Each photo is converted. Album comes back when all are done."
+            f"Queued {n} photo{'s' if n != 1 else ''} · {spec['title']} · "
+            f"{STRENGTHS[strength_id]['title']}\n"
+            "Waking the GPU if it was asleep…"
         ),
     )
 
-    results: list[bytes] = []
+    loop = asyncio.get_running_loop()
+
+    def _note(msg: str) -> None:
+        asyncio.run_coroutine_threadsafe(status.edit_text(msg), loop)
+
     try:
         async with gpu_lock:
-            for i, raw in enumerate(photos, start=1):
-                try:
-                    await status.edit_text(
-                        f"Converting {i}/{n} · {spec['title']} · "
-                        f"{STRENGTHS[strength_id]['title']}"
-                    )
-                except Exception:
-                    pass
-
-                def _work(photo_bytes=raw):
-                    image = image_from_bytes(photo_bytes)
-                    return generate_batch(
-                        image=image,
-                        prompt=prompt,
-                        extra=extra,
-                        strength=strength,
-                        count=1,
-                    )
-
-                frames = await asyncio.to_thread(_work)
-                results.extend(jpeg_batch(frames))
-
+            results = await asyncio.to_thread(
+                convert_images,
+                photos,
+                prompt,
+                extra,
+                strength,
+                _note,
+            )
         media = []
         for i, jpeg in enumerate(results):
             bio = BytesIO(jpeg)
             bio.name = f"gen_{i}.jpg"
             media.append(InputMediaPhoto(bio))
-        # Telegram albums are max 10 — matches our queue cap.
         await context.bot.send_media_group(chat_id=chat_id, media=media)
         await context.bot.send_message(
             chat_id=chat_id,
@@ -277,21 +274,14 @@ async def _run_job(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await status.delete()
         except Exception:
             pass
-    except PromptBlocked as exc:
+    except (PromptBlocked, WorkerError) as exc:
         await status.edit_text(str(exc))
     except Exception:
         log.exception("generation failed")
-        note = f" Got {len(results)}/{n} before the error." if results else ""
         await status.edit_text(
-            "Generation failed. Check the GPU terminal log." + note
+            "Generation failed. If this is the very first run, wait 15 minutes "
+            "and try one photo again (the model is still downloading)."
         )
-        if results:
-            media = []
-            for i, jpeg in enumerate(results):
-                bio = BytesIO(jpeg)
-                bio.name = f"gen_{i}.jpg"
-                media.append(InputMediaPhoto(bio))
-            await context.bot.send_media_group(chat_id=chat_id, media=media)
 
 
 async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -329,16 +319,32 @@ async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         await _run_job(update, context)
 
 
+def _health_server() -> None:
+    port = int(os.environ.get("PORT", "8080"))
+
+    class H(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"ok")
+
+        def log_message(self, *_args):
+            return
+
+    try:
+        HTTPServer(("0.0.0.0", port), H).serve_forever()
+    except OSError:
+        log.warning("Health port %s unavailable", port)
+
+
 def main() -> None:
     if not TOKEN or not ALLOWED:
-        raise SystemExit(
-            "Missing TELEGRAM_BOT_TOKEN or ALLOWED_USER_ID. "
-            "Run scripts/setup_pod.sh so it can write .env"
-        )
+        raise SystemExit("Missing TELEGRAM_BOT_TOKEN or ALLOWED_USER_ID")
+    if not os.environ.get("RUNPOD_API_KEY") or not os.environ.get("RUNPOD_ENDPOINT_ID"):
+        raise SystemExit("Missing RUNPOD_API_KEY or RUNPOD_ENDPOINT_ID")
 
-    log.info("Preloading Z-Image-Turbo (first time downloads the model)...")
-    load_pipeline()
-    log.info("Bot is ready")
+    threading.Thread(target=_health_server, daemon=True).start()
+    log.info("Bot is ready (GPU runs on RunPod, on demand)")
 
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))

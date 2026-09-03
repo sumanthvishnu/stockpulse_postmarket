@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import logging
 import os
-import re
 from functools import lru_cache
 from io import BytesIO
 from typing import Iterable
 
 import torch
 from PIL import Image
+
+from safety import PromptBlocked, assert_adult_prompt
 
 log = logging.getLogger("photoreal")
 
@@ -19,30 +20,6 @@ LORA_PATH = os.environ.get("NSFW_LORA_PATH", "").strip()
 STEPS = int(os.environ.get("INFER_STEPS", "9"))
 GUIDANCE = float(os.environ.get("GUIDANCE_SCALE", "0.0"))
 MAX_SIDE = int(os.environ.get("MAX_SIDE", "1024"))
-
-# Explicit underage *requests* only — not a "looks young" visual filter.
-_BLOCKED = re.compile(
-    r"\b("
-    r"child|children|kid|kids|toddler|infant|baby|preteen|underage|minor|"
-    r"loli|lolita|shota|pedophile|pedo|"
-    r"schoolgirl|schoolboy|young girl|young boy|"
-    r"11[- ]year|12[- ]year|13[- ]year|14[- ]year|15[- ]year|16[- ]year|17[- ]year|"
-    r"under 18|under18"
-    r")\b",
-    re.IGNORECASE,
-)
-
-
-class PromptBlocked(ValueError):
-    pass
-
-
-def assert_adult_prompt(text: str) -> None:
-    if text and _BLOCKED.search(text):
-        raise PromptBlocked(
-            "That prompt asks for a minor. This bot only generates adults."
-        )
-
 
 def fit_size(image: Image.Image, max_side: int = MAX_SIDE, multiple: int = 16) -> Image.Image:
     image = image.convert("RGB")
@@ -69,17 +46,20 @@ def image_to_jpeg_bytes(image: Image.Image, quality: int = 92) -> bytes:
 
 @lru_cache(maxsize=1)
 def load_pipeline():
-    """First call downloads ~12–20 GB. Later calls reuse the GPU copy."""
+    """First call downloads ~12–20 GB onto the RunPod volume, then reuses it."""
+    if os.path.isdir("/runpod-volume"):
+        os.environ.setdefault("HF_HOME", "/runpod-volume/huggingface")
+        os.environ.setdefault("HUGGINGFACE_HUB_CACHE", "/runpod-volume/huggingface")
+
     try:
         from diffusers import ZImageImg2ImgPipeline
     except ImportError as exc:
         raise RuntimeError(
-            "diffusers is too old for Z-Image. "
-            "On the pod run: pip install -U 'diffusers>=0.36'"
+            "diffusers is too old for Z-Image. Need diffusers>=0.36"
         ) from exc
 
     if not torch.cuda.is_available():
-        raise RuntimeError("No NVIDIA GPU visible. Rent an RTX 3090, not a CPU box.")
+        raise RuntimeError("No NVIDIA GPU visible on this worker.")
 
     dtype = torch.bfloat16
     log.info("Loading %s on %s ...", MODEL_ID, torch.cuda.get_device_name(0))
