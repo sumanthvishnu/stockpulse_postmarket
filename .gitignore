@@ -5,3 +5,5 @@ __pycache__/
 /site/
 _pytest_*
 *.log
+photoreal-bot/.env
+photoreal-bot/outputs/
