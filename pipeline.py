@@ -20,6 +20,7 @@ import sys
 from datetime import date, datetime, timedelta, timezone
 
 import compliance
+import enrich
 import llm
 import carousel
 import stockpulse_data_fetcher as fetcher
@@ -453,6 +454,7 @@ def generate_carousel(pack, brief, weekly=False):
                     model=(os.environ.get("LLM_MODEL_CAROUSEL") or None)))
             html, leftover = carousel.build(pack, prose, weekly=weekly)
             issues = carousel.validate(html, pack)
+            issues += carousel.budget_issues(prose)
             prose_flat = _prose_text(prose)
             issues += compliance.number_lock(prose_flat, pack)
             issues += compliance.calendar_lock(prose_flat, pack)
@@ -796,6 +798,8 @@ def main():
         return
 
     weekly = tdate.weekday() == 4   # Friday -> WEEKLY MARKET WRAP edition
+    log("== stage 1b/4: enrichment (Trendlyne MCP + econ calendar) ==")
+    enrich.run(pack)
     log("== stage 2/4: compile report (LLM + lint) ==")
     report_html, report_issues = generate_with_lint("report", pack)
     log("== stage 2b/4: distill story brief from the report ==")
@@ -832,12 +836,44 @@ def main():
 
     carousel_url = site_url(f"{tdate.isoformat()}/carousel.html")
     pdf_url = site_url(f"{tdate.isoformat()}/{pdf_name(tdate)}")
-    notify(tdate, pack, pdf_path, carousel_url, pdf_url, all_issues,
-           carousel_fallback=carousel_fallback, brief_fallback=brief_fallback)
+    if os.environ.get("NOTIFY", "1") == "1":
+        notify(tdate, pack, pdf_path, carousel_url, pdf_url, all_issues,
+               carousel_fallback=carousel_fallback, brief_fallback=brief_fallback)
+    else:
+        # Deferral mode (workflow sets NOTIFY=0): the message is sent by the
+        # post-publish step via --notify-only, after the site is verified
+        # live, so the links in the message can never 404.
+        payload = {"pdf_name": pdf_name(tdate), "carousel_url": carousel_url,
+                   "pdf_url": pdf_url, "issues": all_issues,
+                   "carousel_fallback": carousel_fallback,
+                   "brief_fallback": brief_fallback}
+        with open(os.path.join(day_dir, "notify_payload.json"), "w",
+                  encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False)
+        log("  [notify] deferred until the site is verified live")
 
     log(f"\nDone. PDF: {pdf_path}\nCarousel: {day_dir}/carousel.html"
         f"\nCarousel URL: {carousel_url}\nReport URL: {pdf_url}")
 
 
+def notify_only():
+    """Post-publish entry point: send the Telegram message for TRADE_DATE
+    using the payload the main run left in site/<date>/. Called by the
+    workflow only AFTER the pages deploy is confirmed live."""
+    tdate = parse_trade_date()
+    day_dir = os.path.join(SITE, tdate.isoformat())
+    payload = json.load(open(os.path.join(day_dir, "notify_payload.json"),
+                             encoding="utf-8"))
+    pack = json.load(open(os.path.join(day_dir, "datapack.json"),
+                          encoding="utf-8"))
+    notify(tdate, pack, os.path.join(day_dir, payload["pdf_name"]),
+           payload["carousel_url"], payload["pdf_url"], payload["issues"],
+           carousel_fallback=payload.get("carousel_fallback", False),
+           brief_fallback=payload.get("brief_fallback", False))
+
+
 if __name__ == "__main__":
-    main()
+    if "--notify-only" in sys.argv:
+        notify_only()
+    else:
+        main()

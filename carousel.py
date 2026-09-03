@@ -532,6 +532,57 @@ def build(pack, prose, weekly=False):
     return html, leftover
 
 
+# ------------------------------------------------------- text-fit budgets --
+# The slides are a fixed 1080x1080 with clamp guards; these budgets keep the
+# LLM inside the space so the clamps never have to fire. Checked in code
+# (pipeline feeds violations back into the retry loop), not left to the model.
+BUDGETS = {
+    "headline": 70, "subline": 90, "hero_text": 150, "why_head": 40,
+    "bonus_title": 40, "bonus_text": 120,
+    "movers_note_gainers": 110, "movers_note_losers": 110,
+    "watch_text": 130, "alert_title": 45, "alert_text": 130,
+    "cta_headline": 60, "cta_sub": 90, "next_text": 110,
+    "caption_a": 500, "caption_b": 500,
+}
+
+
+def budget_issues(prose):
+    """Return one issue per prose field that exceeds its character budget."""
+    issues = []
+    for field, limit in BUDGETS.items():
+        v = str((prose or {}).get(field) or "")
+        if len(v) > limit:
+            issues.append(f"'{field}' is {len(v)} chars (budget {limit}) - "
+                          "shorten it; the slide has fixed space")
+    for i, row in enumerate((prose or {}).get("why") or [], 1):
+        if len(str(row.get("title", ""))) > 30:
+            issues.append(f"why[{i}].title over 30 chars - shorten")
+        if len(str(row.get("desc", ""))) > 90:
+            issues.append(f"why[{i}].desc over 90 chars - shorten")
+        if len(str(row.get("badge", ""))) > 24:
+            issues.append(f"why[{i}].badge over 24 chars - shorten")
+    for i, l in enumerate((prose or {}).get("lessons") or [], 1):
+        if len(str(l)) > 100:
+            issues.append(f"lessons[{i}] over 100 chars - shorten")
+    # calendar emojis render with 'JULY 17' printed on the glyph on phones
+    flat = _flat(prose)
+    for e in ("\U0001F4C5", "\U0001F4C6", "\U0001F5D3"):
+        if e in flat:
+            issues.append(f"calendar emoji {e} renders a printed 'July 17' "
+                          "date on phones - pick a different emoji")
+    return issues
+
+
+def _flat(node):
+    if isinstance(node, str):
+        return node
+    if isinstance(node, dict):
+        return " ".join(_flat(v) for v in node.values())
+    if isinstance(node, list):
+        return " ".join(_flat(v) for v in node)
+    return ""
+
+
 def validate(html, pack):
     """Structural + house-style checks. Returns list of issues."""
     issues = []

@@ -5,12 +5,24 @@ One pipeline, on a schedule, no manual steps:
 ```
 21:00 IST (Mon-Fri, GitHub Actions cron)
   ├─ fetch NSE datapack (fixed v3.5 fetcher, 0 gaps)
+  ├─ ENRICH the pack (Trendlyne MCP: Nifty/Bank Nifty pivot levels + RSI,
+  │    GIFT Nifty evening cue, dated mover news; ForexFactory econ calendar)
   ├─ OpenAI compiles the report HTML (SEBI-compliant)  → PDF
   ├─ OpenAI distills a STORY BRIEF from the report (JSON)
   ├─ OpenAI writes carousel prose FROM THE BRIEF (+ anti-repeat memory)
   │    → code renders it through the fixed template (8 slides)
-  └─ Telegram message: links to the carousel + PDF, plus the PDF attached
+  ├─ headless-Chrome layout check (overflow/clipping per slide, warns on Telegram)
+  ├─ publish site → gh-pages
+  └─ Telegram message (only AFTER the carousel URL is verified live, so
+     links can never 404): carousel + PDF links, PDF attached
 ```
+
+Quality gates every run must pass: compliance lint, number lock (every
+numeral traces to the datapack), calendar lock (no "tomorrow" before a closed
+day), anti-repeat check vs the last 5 days, per-field character budgets, and
+a rendered overflow/clipping check on all 8 slides. Failures retry with
+feedback; persistent failures ship computed-from-the-pack output with a loud
+Telegram warning.
 
 The carousel follows the day's report, not a fresh reading of the raw pack:
 the report is distilled into a story brief (drivers, mood, one-liner, what to
@@ -33,8 +45,11 @@ PNGs, and post. Nothing is posted automatically.
 | Path | What it is |
 |---|---|
 | `stockpulse_data_fetcher.py` | Fetcher v3.5 — NSE archives + derived metrics |
-| `pipeline.py` | Orchestrator (fetch → report → story brief → carousel → PDF → site → Telegram) |
+| `enrich.py` | Enrichment stage — adds `derived.enrichment` (Trendlyne levels/news, GIFT Nifty, econ calendar) |
+| `trendlyne_mcp.py` | Trendlyne MCP client (streamable HTTP, browser UA, SSE parsing) |
+| `pipeline.py` | Orchestrator (fetch → enrich → report → story brief → carousel → PDF → site → Telegram) |
 | `carousel.py` | Carousel renderer (deterministic numbers + LLM prose + computed fallback) |
+| `layout_check.py` | Headless-Chrome overflow/clipping check on all 8 slides |
 | `llm.py` | OpenAI-compatible LLM client (Kimi/DeepSeek-swappable) |
 | `compliance.py` | SEBI/house-style linter (spec §6) |
 | `skills/report.md` | System prompt = your post-market report skill |
@@ -81,17 +96,22 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 | Secret | Value |
 |---|---|
 | `OPENAI_API_KEY` | your OpenAI key (`sk-...`) |
+| `TRENDLYNE_MCP_TOKEN` | your Trendlyne MCP token (the long hex string from your MCP URL, after `?token=`) |
 | `TELEGRAM_BOT_TOKEN` | bot token from BotFather |
 | `TELEGRAM_CHAT_ID` | numeric chat id from step 3 |
 
 Optional (defaults used if unset): `LLM_BASE_URL` (default OpenAI), `LLM_MODEL`
-(default `gpt-4o-mini`), `LLM_MODEL_CAROUSEL` (default: same as `LLM_MODEL`).
+(default `gpt-4o`), `LLM_MODEL_CAROUSEL` (default: same as `LLM_MODEL`).
 
-**Model recommendation.** `gpt-4o-mini` is fine for the report and the story
-brief (extraction tasks), but it is the main reason the old carousel prose
-felt flat. Set `LLM_MODEL_CAROUSEL=gpt-4o` — the prose call is ~2K tokens, so
-the added cost is a few paise per day and the writing quality jump is large.
-For Kimi later, set `LLM_BASE_URL=https://api.moonshot.ai/v1` and the models
+Without `TRENDLYNE_MCP_TOKEN` the run still works: index levels, the GIFT
+Nifty cue and mover catalysts are logged as gaps and the report's Data Gaps
+Register discloses them, exactly as before.
+
+**Model recommendation.** Both stages default to `gpt-4o` — the report and
+the carousel prose are brand-facing writing, and at one report + one carousel
+per day the cost delta vs mini is small (see Cost notes). Test it for a few
+days; to downgrade later set the `LLM_MODEL` secret to `gpt-4o-mini`. For
+Kimi later, set `LLM_BASE_URL=https://api.moonshot.ai/v1` and the models
 to Kimi ones — no code change.
 
 **Fallback behaviour (loud, not silent).** If the carousel LLM fails all
@@ -110,10 +130,11 @@ message with the carousel + report links.
 
 ## Cost & timing notes
 
-- **Cost:** `gpt-4o-mini` on a ~60 KB pack costs roughly **Rs 0.5-1 per day**
-  (well under Rs 30/month). The pack is already trimmed to ~6% of its raw size.
-- **Time:** the whole run is ~2-4 minutes (fetch ~30s, two LLM calls, PDF
-  render, Telegram).
+- **Cost:** `gpt-4o` on a ~60 KB pack costs roughly **Rs 15-25 per day**
+  (~Rs 400-600/month). Downgrade path: set `LLM_MODEL=gpt-4o-mini` to go back
+  to ~Rs 0.5-1 per day. The pack is already trimmed to ~6% of its raw size.
+- **Time:** the whole run is ~4-6 minutes (fetch ~30s, enrichment ~1 min,
+  three LLM calls, PDF render, Telegram).
 - **Trading days only:** the pipeline checks the NSE holiday calendar and
   sends "markets closed" instead of a report on holidays.
 - **Weekends:** the cron is Mon-Fri; a manual run on a weekend for a past
@@ -132,18 +153,31 @@ message instead of sending it.
 
 ---
 
-## Known limitations (disclosed, by design)
+## Enrichment feeds (what closed the old "wire-only" gaps)
 
-In the automated run the LLM has no web access, so the report's **Data Gaps
-Register** lists these as unavailable rather than inventing them:
+The enrichment stage (`enrich.py`) runs right after the fetch and adds
+`derived.enrichment` to the pack before the LLM sees it:
 
-- Next-session economic calendar
-- Analyst support/resistance levels (the report uses option-chain-derived
-  strikes instead — primary data)
-- Dated news driver attribution (falls back to "No identifiable catalyst")
-- GIFT Nifty evening level
+| Feed | Source | Used for |
+|---|---|---|
+| Nifty / Bank Nifty pivot levels + RSI + SMA insight | Trendlyne MCP | Section 12 technical levels ("Trendlyne technical desk") |
+| GIFT Nifty evening level + premium vs Nifty close | Trendlyne MCP (SGXNIFTY-CFD) | Sections 10/13 next-day cue, with capture time |
+| Dated news for the top Nifty 50 movers | Trendlyne MCP | Section 4/7 "Why" column, story brief drivers |
+| Next-session economic calendar (IST times) | ForexFactory weekly XML | Section 13 watchlist |
 
-These can be added later as small enrichment fetches (most have free APIs).
+Same-day live cues (GIFT Nifty, the econ calendar) are skipped on backfill
+runs and disclosed as gaps instead of being backfilled from stale data. Every
+gap lands in `failures` and surfaces in the Data Gaps Register. The
+Trendlyne pivots are also registered with the compliance levels-lock, so a
+real pivot that lands on a round number is never misread as an invented
+level.
+
+## Remaining limitations (disclosed, by design)
+
+- ATM implied volatility needs Zerodha Kite keys (optional in the fetcher).
+- Results calendar for the next session is not fetched (Trendlyne has it;
+  can be added to `enrich.py` later).
+- FII/DII cash history beyond today stays limited to what the pack holds.
 
 **Calendar wording is locked, not left to the model.** The fetcher computes
 `derived.next_trading_session` (next trading day = weekends + the NSE holiday

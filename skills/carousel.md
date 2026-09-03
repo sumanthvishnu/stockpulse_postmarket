@@ -23,6 +23,36 @@ the authoritative narrative:
 If the brief contradicts your reading of the raw datapack, the brief wins on
 narrative; the datapack wins on every number.
 
+## THE 8 SLIDES YOU ARE WRITING FOR (context)
+
+1. BANNER COVER (dark): banner + your headline, subline, stat pill.
+2. SNAPSHOT (white): 3 index cards (Nifty, Sensex, Bank Nifty), 2x2 stat
+   grid (India VIX with direction, breadth, FII net cash, DII net cash),
+   hero box with your hero_text. No tile is ever left blank.
+3. WHY IT HAPPENED (dark): your why_head + exactly 4 icon rows. Never a 5th
+   row — merge two related drivers instead.
+4. SECTOR SCORECARD (white): 6 sector rows (top 3 / bottom 3 by daily %;
+   by 5-day % in the weekly edition) + one bonus card (your bonus_title /
+   bonus_text).
+5. TOP MOVERS (dark): top 4 gainers and top 4 losers from Nifty 50, plus
+   one callout note per column (your movers_note_*).
+6. TECHNICAL LEVELS (white): price hero with 3 badges, 2 level cards
+   (Nifty, Bank Nifty, option-chain derived), and a full-width WHAT TO
+   WATCH box (your watch_text). Automated runs carry no attributed expert
+   quotes, so the fallback box is the standard — and you must never invent
+   a quote or an attribution.
+7. KEY LESSONS (dark): exactly 4 numbered lessons + an alert box for the
+   next event (your alert_title / alert_text). Bigger text beats more items.
+8. CTA (white): bookmark, your cta_headline / cta_sub, a 4-stat grid that
+   repeats slide 2's numbers exactly, next-session box (your next_text),
+   CTA pill, SwarmIQ row, @getstockpulse, SEBI disclaimer ending
+   "Not investment advice."
+
+FRIDAY editions: the banner says WEEKLY MARKET WRAP, week-level numbers come
+from `derived.five_day_change_pct`, slide 6 is framed "For Next Week",
+slide 7 lessons are "This Week" lessons. Friday's session is the closing act;
+movers and levels remain Friday's.
+
 ## OUTPUT FORMAT (strict)
 
 Return ONLY a JSON object. No markdown fences, no commentary before or after.
@@ -68,6 +98,10 @@ the SHAPE, not text to copy):
 
 ## FIELD RULES
 
+- LENGTH IS A HARD LIMIT (machine-checked; overruns fail the build):
+  headline <= 70 chars, subline <= 90, hero_text <= 150, why titles <= 30,
+  why descs <= 90, why badges <= 24, lessons <= 100 each, watch/alert/next
+  texts <= 130, cta_headline <= 60, cta_sub <= 90, captions <= 500.
 - `why`: exactly 4 rows. `badge` a short data chip (3-5 words) whose number
   MUST come from the datapack.
 - EMOJI DISCIPLINE: each `why` emoji must depict that row's specific driver
@@ -76,18 +110,27 @@ the SHAPE, not text to copy):
   reuse yesterday's emoji cast when the drivers differ, and never default to
   🌍 or 🏦 unless global cues or banks genuinely are that row's driver. The
   prompt's ANTI-REPETITION block lists emojis you have used recently.
+  NEVER use 📅, 📆 or 🗓️ anywhere: on phones these glyphs render with a
+  printed "July 17" date that has nothing to do with today.
+- `movers_note_gainers` / `movers_note_losers`: refer ONLY to the Nifty 50
+  names shown on the slide (the top 4 gainers / losers in
+  `derived.nifty50_movers`) or to the group as a whole. Never name a
+  broader-market stock that is not displayed — the slide must not contradict
+  itself.
 - `sector_reasons`: keyed by the SHORT sector names you expect the day's 6
   sectors to be. The renderer picks the top 3 and bottom 3 sectors by daily %
   change (by 5-day change in the weekly edition); any missing reason gets a
   rank-based fallback. Provide reasons for at least the sectors you mention
   in `why`/`lessons`.
-- `lessons`: exactly 4, past tense, observational.
-- `captions`: under 500 characters each including hashtags. Exactly 5
-  hashtags each, always including #Nifty and #IndianStockMarket, with the
-  remaining hashtags reflecting TODAY'S drivers (e.g. a pharma-led day gets
-  #NiftyPharma, an IT-led day gets #NiftyIT). End with
-  "Not investment advice." Include the line
-  "Daily wrap every evening @getstockpulse".
+- `lessons`: exactly 4, past tense, observational. A wrap describes what
+  happened; it never tells anyone what to do next.
+- `captions`: under 500 characters each including hashtags. Caption A opens
+  with the day's most surprising fact; Caption B uses a different hook. Each
+  carries 2-3 data points, one watch line, then the CTA line
+  "Daily wrap every evening @getstockpulse", then "Not investment advice."
+  Exactly 5 hashtags each, always including #Nifty and #IndianStockMarket,
+  with the remaining hashtags reflecting TODAY'S drivers (e.g. a pharma-led
+  day gets #NiftyPharma, an IT-led day gets #NiftyIT).
 - Use `\n` for line breaks inside captions (double `\n\n` between blocks).
 - `alert_title` / `alert_text` / `next_text` / `watch_text`: refer to the
   NEXT TRADING SESSION, never the next calendar day. Your prompt contains a
@@ -111,14 +154,19 @@ A repeat fails the build and you will be asked to rewrite.
 ## WRITING RULES
 
 - Short sentences, 6-10 words. Past tense, settled ("closed", "ended",
-  "fell", "led the gains").
-- NO em dashes, no hyphens joining thoughts. "200 week" not "200-week".
+  "fell", "led the gains"). Plain language, like a smart friend explaining
+  the market.
+- NO em dashes, no hyphens joining thoughts. "200 week" not "200-week",
+  "5 session" not "5-session". Use a full stop or a new line instead.
 - No AI-sounding words: worth noting, furthermore, moreover, in conclusion,
   delve, leverage, robust, pivotal, it is important to highlight.
 - Currency "Rs", never the rupee glyph. Numbers in plain form: 24,000 not
   "the 24K level".
 - Banned instruction words even if a source used them: buy, sell, long,
-  short, target, stop loss, SL, invest, recommend. Levels and zones are fine.
+  short, target, stop loss, SL, invest, recommend. Levels and zones are
+  always fine. Instructions are not.
+- Never invent an analyst name or quote. Slide 6's WHAT TO WATCH box is
+  built from the report's own outlook lines only.
 - Green up, red down, orange neutral (the renderer handles colour).
 
 ## NUMBERS (copy from the datapack only, never invent)
@@ -134,6 +182,8 @@ All figures you quote must already exist in `derived.*`:
 - Support/resistance -> `derived.options_NIFTY.max_put_oi_strike` /
   `max_call_oi_strike`; Bank Nifty pivot = `derived.options_BANKNIFTY.max_pain`
 - Global (Brent, DXY, US) -> `derived.global_markets.markets`
+- GIFT Nifty cue / next-session events (when present) ->
+  `derived.enrichment.gift_nifty` / `derived.enrichment.econ_calendar`
 
 If a number is not in the pack, do not quote it. Do not invent analyst names
 or quotes. Do not carry figures over from a previous day.

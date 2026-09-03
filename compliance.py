@@ -155,6 +155,16 @@ def _levels_lock(html, pack):
             v = o.get(k)
             if isinstance(v, (int, float)):
                 allowed.add(float(v))
+    # Enrichment technical levels (Trendlyne pivots) are verified desk levels,
+    # so they belong in the allowed set - otherwise a pivot like 23950 that
+    # lands on a round strike-scale number gets false-flagged as invented.
+    enr = pack.get("derived", {}).get("enrichment", {})
+    for idx_name in ("NIFTY", "BANKNIFTY"):
+        lv = enr.get("index_levels", {}).get(idx_name) or {}
+        for k in ("pivot", "r1", "r2", "r3", "s1", "s2", "s3"):
+            v = lv.get(k)
+            if isinstance(v, (int, float)):
+                allowed.add(float(v))
     if not allowed:
         return []
     t = _strip_markup(html)

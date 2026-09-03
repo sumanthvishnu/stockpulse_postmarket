@@ -75,6 +75,9 @@ jobs:
         if: steps.guard.outputs.run == 'true'
         run: pip install -r requirements.txt
 
+      - uses: browser-actions/setup-chrome@v1
+        if: steps.guard.outputs.run == 'true'
+
       - name: Run pipeline
         if: steps.guard.outputs.run == 'true'
         env:
@@ -82,11 +85,26 @@ jobs:
           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
           LLM_MODEL_CAROUSEL: ${{ secrets.LLM_MODEL_CAROUSEL }}
+          TRENDLYNE_MCP_TOKEN: ${{ secrets.TRENDLYNE_MCP_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TRADE_DATE: ${{ github.event.inputs.date || '' }}
           GH_PAGES_BASE: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+          NOTIFY: "0"
         run: python pipeline.py
+
+      - name: Rendered layout check (carousel overflow)
+        if: steps.guard.outputs.run == 'true'
+        run: |
+          set -euo pipefail
+          today=$(TZ=Asia/Kolkata date +%F)
+          tdate="${{ github.event.inputs.date || '' }}"
+          if [ -n "$tdate" ]; then
+            today=$(date -d "$(echo $tdate | sed 's/\([0-9]\{2\}\)-\([0-9]\{2\}\)-\([0-9]\{4\}\)/\3-\2-\1/')" +%F)
+          fi
+          html="site/${today}/carousel.html"
+          [ -f "$html" ] || { echo "no carousel built (holiday/abort) - skipping"; exit 0; }
+          python layout_check.py "$html" --payload "site/${today}/notify_payload.json"
 
       - name: Commit daily datapack (state for ban-list diff)
         if: steps.guard.outputs.run == 'true'
@@ -158,6 +176,39 @@ jobs:
           done
           echo "could not publish site after 3 attempts" >&2
           exit 1
+
+      # Telegram goes out only AFTER the carousel URL is confirmed live, so
+      # the links in the message can never 404 (previously the message was
+      # sent inside the pipeline, minutes before Pages finished deploying).
+      - name: Verify site is live, then send Telegram
+        if: steps.guard.outputs.run == 'true'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TRADE_DATE: ${{ github.event.inputs.date || '' }}
+          GH_PAGES_BASE: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+        run: |
+          set -euo pipefail
+          today=$(TZ=Asia/Kolkata date +%F)
+          tdate="${{ github.event.inputs.date || '' }}"
+          if [ -n "$tdate" ]; then
+            today=$(date -d "$(echo $tdate | sed 's/\([0-9]\{2\}\)-\([0-9]\{2\}\)-\([0-9]\{4\}\)/\3-\2-\1/')" +%F)
+          fi
+          payload="site/${today}/notify_payload.json"
+          [ -f "$payload" ] || { echo "no notify payload (holiday/abort) - nothing to send"; exit 0; }
+          url="${GH_PAGES_BASE}/${today}/carousel.html"
+          live=0
+          for i in $(seq 1 24); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$url" || true)
+            if [ "$code" = "200" ]; then live=1; echo "live after $((i*20))s: $url"; break; fi
+            echo "attempt $i: HTTP $code - waiting 20s (Pages still deploying)"
+            sleep 20
+          done
+          if [ "$live" != "1" ]; then
+            echo "site not live after 8 minutes - sending Telegram anyway with a warning"
+            python -c "import json; p='$payload'; d=json.load(open(p)); d.setdefault('issues',[]).append('site was not live when this was sent - links may 404 for a few minutes'); json.dump(d, open(p,'w'), ensure_ascii=False)"
+          fi
+          python pipeline.py --notify-only
 
       - name: Tell me on Telegram if the run broke
         if: failure()

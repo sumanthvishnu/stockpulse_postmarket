@@ -37,6 +37,11 @@ Return ONLY a JSON object. No markdown fences, no commentary.
 - Every number in `stat`, `one_liner`, `flows_line`, `watch_next` and
   `lesson_seeds` must already exist in the datapack. Never invent, round
   beyond two decimals, or carry over a prior day's figure.
+- The datapack may carry `derived.enrichment`: use `mover_catalysts` (dated
+  news per top mover) to sharpen driver `detail`, `econ_calendar` (next
+  session's events with IST times) and `gift_nifty` (evening level and
+  premium/discount) to sharpen `watch_next`. If a block is absent or
+  stale-flagged, ignore it — never invent the catalyst.
 - `watch_next` must refer to the NEXT TRADING SESSION named in the CALENDAR
   block of the user message. Never write "tomorrow" unless that block says
   the next session is the next calendar day.
