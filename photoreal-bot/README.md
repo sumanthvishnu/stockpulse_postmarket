@@ -1,6 +1,6 @@
 # Personal photoreal Telegram bot
 
-Jork-style flow: **send a photo → tap a preset → get a batch**.
+Jork-style flow: **send up to 10 photos at once → tap a preset → every photo is converted**.
 
 - Model: [Z-Image-Turbo](https://huggingface.co/Tongyi-MAI/Z-Image-Turbo) (photoreal, fast)
 - Runs on a rented RTX 3090 (Vast.ai / RunPod), not on your laptop

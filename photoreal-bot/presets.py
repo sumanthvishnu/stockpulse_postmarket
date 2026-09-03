@@ -92,6 +92,5 @@ STRENGTHS = {
     "restyle": {"title": "Restyle", "value": 0.72},
 }
 
-BATCH_CHOICES = (2, 4, 8)
 DEFAULT_STRENGTH = "balanced"
-DEFAULT_BATCH = 4
+MAX_PHOTOS = 10

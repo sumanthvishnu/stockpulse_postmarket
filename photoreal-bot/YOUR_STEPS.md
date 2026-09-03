@@ -97,13 +97,13 @@ Next session: rent from **your** template instead of a blank PyTorch image. The 
 
 ## How to use the bot
 
-1. Send a **photo** of an adult (clear face, decent light).
-2. Optional: write a caption on the photo (`red dress, hotel window, night`).
+1. In Telegram, attach **up to 10 photos** and send them **as one album** (tap the photos, then Send). That is the Jork-style batch.
+2. Optional: caption on the album (`red dress, hotel window, night`) applies to every photo.
 3. Tap a **preset**.
-4. Wait. You get a batch of 4 photoreal images back as an album.
-5. Buttons under the result: keep likeness / restyle / again / batch of 8.
+4. The bot converts **each** photo, 1:1, and sends all results back as an album. 10 in → 10 out.
+5. After that you can Keep likeness / Restyle / Again (all photos) or /clear and send a new set.
 
-Default is photo-to-image (Jork-style): same person, new scene/look.
+You can also add photos one by one up to 10, then tap the preset. Album is faster.
 
 ---
 
