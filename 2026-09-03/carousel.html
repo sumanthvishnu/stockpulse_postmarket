@@ -85,9 +85,9 @@
     letter-spacing:.01em;
   }
   .cover-mid{flex:1;display:flex;flex-direction:column;justify-content:center;}
-  .headline{font-size:66px;font-weight:800;line-height:1.08;letter-spacing:-.01em;}
+  .headline{font-size:66px;font-weight:800;line-height:1.08;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
   .headline .hl{color:var(--orange);}
-  .subline{font-size:27px;font-weight:500;color:#94A3B8;margin-top:26px;line-height:1.4;}
+  .subline{font-size:27px;font-weight:500;color:#94A3B8;margin-top:26px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .stat-pill{
     display:inline-flex;align-items:center;gap:14px;margin-top:38px;
     padding:22px 34px;border-radius:18px;font-size:30px;font-weight:800;
@@ -132,7 +132,7 @@
   }
   .hero-box.flip{background:var(--white);color:var(--navy);border:1px solid #E2E8F0;}
   .hb-label{font-size:22px;font-weight:700;color:var(--orange);}
-  .hb-text{font-size:34px;font-weight:800;margin-top:10px;line-height:1.15;}
+  .hb-text{font-size:34px;font-weight:800;margin-top:10px;line-height:1.15;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 
   /* ---- why rows ---- */
   .why-row{
@@ -142,8 +142,8 @@
   }
   .why-emoji{font-size:52px;line-height:1;flex-shrink:0;}
   .why-txt{flex:1;}
-  .why-title{font-size:30px;font-weight:800;}
-  .why-desc{font-size:22px;font-weight:500;color:#94A3B8;margin-top:8px;line-height:1.35;}
+  .why-title{font-size:30px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .why-desc{font-size:22px;font-weight:500;color:#94A3B8;margin-top:8px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .why-badge{
     font-size:20px;font-weight:800;color:var(--orange);white-space:nowrap;
     background:rgba(249,115,22,.14);padding:10px 18px;border-radius:12px;flex-shrink:0;
@@ -186,8 +186,10 @@
   .mv-pct.up{color:#86EFAC;}
   .mv-pct.down{color:#FCA5A5;}
   .mv-note{
-    font-size:19px;font-weight:600;color:#94A3B8;line-height:1.35;
-    background:rgba(255,255,255,.04);border-radius:14px;padding:18px 22px;
+    font-size:20px;font-weight:600;color:#CBD5E1;line-height:1.35;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;padding:18px 22px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   }
 
   /* ---- levels ---- */
@@ -228,7 +230,7 @@
     width:56px;height:56px;border-radius:14px;background:rgba(249,115,22,.14);
     display:flex;align-items:center;justify-content:center;
   }
-  .lesson-txt{font-size:26px;font-weight:700;line-height:1.3;align-self:center;}
+  .lesson-txt{font-size:26px;font-weight:700;line-height:1.3;align-self:center;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
   .alert-box{
     background:rgba(249,115,22,.14);border:1.5px solid var(--orange);border-radius:18px;
     padding:26px 30px;display:flex;gap:20px;align-items:center;
@@ -239,18 +241,18 @@
 
   /* ---- CTA ---- */
   .cta-emoji{font-size:80px;}
-  .cta-head{font-size:56px;font-weight:800;line-height:1.08;margin-top:16px;}
+  .cta-head{font-size:56px;font-weight:800;line-height:1.08;margin-top:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
   .cta-head .hl{color:var(--orange);}
   .cta-sub{font-size:26px;font-weight:500;color:var(--muted);margin-top:16px;line-height:1.4;}
   .cta-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
   .cta-stat{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:16px;padding:22px 18px;text-align:center;}
   .cs-lab{font-size:17px;font-weight:700;color:var(--muted);}
-  .cs-val{font-size:30px;font-weight:800;margin-top:6px;color:var(--navy);}
+  .cs-val{font-size:27px;font-weight:800;margin-top:6px;color:var(--navy);white-space:nowrap;}
   .cs-val.up{color:var(--green);}
   .cs-val.down{color:var(--red);}
   .next-box{background:var(--navy);border-radius:16px;padding:24px 28px;color:#fff;display:flex;gap:18px;align-items:center;}
   .next-box .ne{font-size:40px;}
-  .next-box .nt{font-size:22px;font-weight:600;line-height:1.3;}
+  .next-box .nt{font-size:22px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .next-box .nt b{color:var(--orange);}
   .cta-pill{
     background:var(--orange);color:#fff;text-align:center;border-radius:100px;
@@ -328,8 +330,8 @@
               <div class="banner-pill">THURSDAY · SEPTEMBER 3, 2026</div>
             </div>
             <div class="cover-mid">
-              <div class="headline">Nifty 50 <span class="hl">continues its decline</span> in mixed markets</div>
-              <div class="subline">Nifty 50 dips for the fourth straight session.</div>
+              <div class="headline">Nifty 50 <span class="hl">dips amid</span> mixed market cues</div>
+              <div class="subline">The index dropped by 0.17%, continuing its losing streak.</div>
               <div class="stat-pill down"><span class="dot down"></span>Nifty 23,873.45 · down 41.00 pts (0.17%)</div>
             </div>
           </div>
@@ -364,8 +366,8 @@
               </div>
               <div class="index-card down">
                 <div class="ic-name">Sensex</div>
-                <div class="ic-val">76,152.86</div>
-                <div class="ic-chg down">down 0.55%</div>
+                <div class="ic-val">76,570.35</div>
+                <div class="ic-chg down">down 0.49%</div>
               </div>
               <div class="index-card up">
                 <div class="ic-name">Bank Nifty</div>
@@ -397,7 +399,7 @@
             </div>
             <div class="hero-box" style="flex:0;">
               <div class="hb-label">THE DAY IN ONE LINE</div>
-              <div class="hb-text">Diverse market performance as Nifty 50 closes lower.</div>
+              <div class="hb-text">Nifty 50 marked its fourth consecutive loss, falling 0.17% today.</div>
             </div>
           </div>
         </div>
@@ -423,27 +425,27 @@
             <div class="counter">03 / 08</div>
           </div>
           <div class="body" style="justify-content:space-between;">
-            <div class="section-h">Key Drivers of Today's Market</div>
+            <div class="section-h">Key Market Drivers</div>
             <div style="display:flex;flex-direction:column;gap:22px;flex:1;justify-content:center;">
               <div class="why-row">
-                <div class="why-emoji">📉</div>
-                <div class="why-txt"><div class="why-title">Nifty 50 Decline</div><div class="why-desc">Nifty 50 fell by 41 points.</div></div>
-                <div class="why-badge">-0.17%</div>
+                <div class="why-emoji">💻</div>
+                <div class="why-txt"><div class="why-title">IT Sector Decline</div><div class="why-desc">Tech Mahindra's ESG rating impacts.</div></div>
+                <div class="why-badge">-264.05 pts</div>
               </div>
               <div class="why-row">
-                <div class="why-emoji">💰</div>
-                <div class="why-txt"><div class="why-title">FII Outflow</div><div class="why-desc">Foreign investors sold heavily.</div></div>
-                <div class="why-badge">Rs 2,345.87 Cr</div>
+                <div class="why-emoji">🏦</div>
+                <div class="why-txt"><div class="why-title">Bank Sector Focus</div><div class="why-desc">HDFC Bank gains on FCNR(B).</div></div>
+                <div class="why-badge">+0.83%</div>
               </div>
               <div class="why-row">
-                <div class="why-emoji">📈</div>
-                <div class="why-txt"><div class="why-title">DII Inflow</div><div class="why-desc">Domestic investors increased holdings.</div></div>
-                <div class="why-badge">Rs 4,977.46 Cr</div>
+                <div class="why-emoji">🚢</div>
+                <div class="why-txt"><div class="why-title">Adani Ports Surge</div><div class="why-desc">Shares rise after media release.</div></div>
+                <div class="why-badge">+2.02%</div>
               </div>
               <div class="why-row">
-                <div class="why-emoji">🔍</div>
-                <div class="why-txt"><div class="why-title">No Major Catalyst</div><div class="why-desc">Lack of clear market mover.</div></div>
-                <div class="why-badge">N/A</div>
+                <div class="why-emoji">🛒</div>
+                <div class="why-txt"><div class="why-title">FMCG Weakness</div><div class="why-desc">Sector declines 0.62%.</div></div>
+                <div class="why-badge">-284.9 pts</div>
               </div>
             </div>
           </div>
@@ -471,16 +473,16 @@
           <div class="body" style="justify-content:space-between;">
             <div class="section-h">Sector scorecard</div>
             <div style="display:flex;flex-direction:column;gap:16px;flex:1;justify-content:center;">
-              <div class="sec-row up"><div class="sec-name">Realty</div><div class="sec-reason">strongest sector</div><div class="sec-pct up">+2.58%</div></div>
-              <div class="sec-row up"><div class="sec-name">Media</div><div class="sec-reason">second strongest</div><div class="sec-pct up">+1.74%</div></div>
+              <div class="sec-row up"><div class="sec-name">Realty</div><div class="sec-reason">Positive momentum supports gains.</div><div class="sec-pct up">+2.58%</div></div>
+              <div class="sec-row up"><div class="sec-name">Media</div><div class="sec-reason">Sector advances with strong gains.</div><div class="sec-pct up">+1.74%</div></div>
               <div class="sec-row up"><div class="sec-name">Private Bank</div><div class="sec-reason">third strongest</div><div class="sec-pct up">+0.51%</div></div>
-              <div class="sec-row down"><div class="sec-name">IT</div><div class="sec-reason">biggest drag</div><div class="sec-pct down">-0.85%</div></div>
-              <div class="sec-row down"><div class="sec-name">FMCG</div><div class="sec-reason">second weakest</div><div class="sec-pct down">-0.62%</div></div>
+              <div class="sec-row down"><div class="sec-name">IT</div><div class="sec-reason">Tech Mahindra's ESG rating decline.</div><div class="sec-pct down">-0.85%</div></div>
+              <div class="sec-row down"><div class="sec-name">FMCG</div><div class="sec-reason">Sector dragged by weak performance.</div><div class="sec-pct down">-0.62%</div></div>
               <div class="sec-row down"><div class="sec-name">Auto</div><div class="sec-reason">weakest sector</div><div class="sec-pct down">-0.52%</div></div>
             </div>
             <div class="bonus-card">
-              <b>Flows Recap</b>
-              <span>FIIs sold Rs 2,345.87 Cr, DIIs bought Rs 4,977.46 Cr.</span>
+              <b>Market Breadth</b>
+              <span>Advances surpass declines with a 1.7:1 ratio.</span>
             </div>
           </div>
         </div>
@@ -514,7 +516,7 @@
                 <div class="mv-item"><span class="mv-sym">Axis Bank</span><span class="mv-pct up">+1.04%</span></div>
                 <div class="mv-item"><span class="mv-sym">HDFC Bank</span><span class="mv-pct up">+0.83%</span></div>
                 <div class="mv-item"><span class="mv-sym">Tata Consumer</span><span class="mv-pct up">+0.71%</span></div>
-                <div class="mv-note">LUMINO topped gainers with a 34.54% rise.</div>
+                <div class="mv-note">Adani Ports led the gains in Nifty 50 with a 2.02% rise.</div>
               </div>
               <div class="mv-col">
                 <div class="mv-head down">Top losers</div>
@@ -522,7 +524,7 @@
                 <div class="mv-item"><span class="mv-sym">Tech M</span><span class="mv-pct down">-1.54%</span></div>
                 <div class="mv-item"><span class="mv-sym">Trent</span><span class="mv-pct down">-1.29%</span></div>
                 <div class="mv-item"><span class="mv-sym">Cipla</span><span class="mv-pct down">-1.28%</span></div>
-                <div class="mv-note">SALASAR led losers, dropping 10.09%.</div>
+                <div class="mv-note">BAJAJ-AUTO was the top loser, down by 1.73%.</div>
               </div>
             </div>
           </div>
@@ -574,7 +576,7 @@
             </div>
             <div style="display:flex;gap:22px;flex:0;">
               <div class="quote-box" style="flex:1;">
-                <div class="qb-text"><b>What to watch</b> · Watch for ONGC and COALINDIA dividends tomorrow.</div>
+                <div class="qb-text"><b>What to watch</b> · Tomorrow, watch ONGC and COALINDIA for dividend actions.</div>
                 <div class="qb-who">Option chain derived · NSE F&amp;O bhavcopy</div>
               </div>
             </div>
@@ -604,14 +606,14 @@
           <div class="body" style="justify-content:space-between;">
             <div class="section-h">What today taught us</div>
             <div style="display:flex;flex-direction:column;gap:18px;flex:1;justify-content:center;">
-              <div class="lesson"><div class="lesson-num">1</div><div class="lesson-txt">Nifty 50 declined for four consecutive days.</div></div>
-              <div class="lesson"><div class="lesson-num">2</div><div class="lesson-txt">Mixed performance with more advances in broader markets.</div></div>
-              <div class="lesson"><div class="lesson-num">3</div><div class="lesson-txt">Significant outflows from FIIs balanced by DII inflows.</div></div>
-              <div class="lesson"><div class="lesson-num">4</div><div class="lesson-txt">Market lacked a clear catalyst today.</div></div>
+              <div class="lesson"><div class="lesson-num">1</div><div class="lesson-txt">Nifty 50 continues its losing streak for the fourth session.</div></div>
+              <div class="lesson"><div class="lesson-num">2</div><div class="lesson-txt">Broader markets show resilience with midcap and smallcap gains.</div></div>
+              <div class="lesson"><div class="lesson-num">3</div><div class="lesson-txt">Positive market breadth with more advances than declines.</div></div>
+              <div class="lesson"><div class="lesson-num">4</div><div class="lesson-txt">Global markets exhibit mixed trends, with US indices closing higher.</div></div>
             </div>
             <div class="alert-box">
               <div class="ae">⚡</div>
-              <div class="at"><b>Corporate Action Alert.</b> Tomorrow, watch ONGC and COALINDIA for dividend actions.</div>
+              <div class="at"><b>Upcoming Events.</b> Watch for dividend actions in ONGC and COALINDIA tomorrow.</div>
             </div>
           </div>
         </div>
@@ -638,8 +640,8 @@
           <div class="body" style="justify-content:space-between;">
             <div>
               <div class="cta-emoji">🔖</div>
-              <div class="cta-head">Discover <span class="hl">market insights</span> with us</div>
-              <div class="cta-sub">Stay updated on daily market trends.</div>
+              <div class="cta-head">Stay <span class="hl">Informed</span> on Market Moves</div>
+              <div class="cta-sub">Catch the latest updates and insights daily.</div>
             </div>
             <div class="cta-stats">
               <div class="cta-stat"><div class="cs-lab">Nifty close</div><div class="cs-val down">23,873 · -0.17%</div></div>
@@ -648,8 +650,8 @@
               <div class="cta-stat"><div class="cs-lab">DII net</div><div class="cs-val up">+4,977 Cr</div></div>
             </div>
             <div class="next-box">
-              <div class="ne">📅</div>
-              <div class="nt"><b>Next up.</b> Prepare for ONGC and COALINDIA dividends in tomorrow's session.</div>
+              <div class="ne">🔭</div>
+              <div class="nt"><b>Next up.</b> Watch ONGC and COALINDIA for dividend actions on Friday.</div>
             </div>
             <div class="cta-pill">Join early access · link in bio</div>
             <div class="swarm-row">Powered by <b>SwarmIQ</b> · multi source market intelligence</div>
@@ -691,9 +693,9 @@
 
 <script>
   /* ---------- captions ---------- */
-  var capA = "Nifty 50 fell for the 4th session, closing down 41 points. \ud83d\udcc9\nMixed signals as broader markets showed diverse moves.\n#Nifty #IndianStockMarket #Nifty50 #FII #MarketUpdate\nNot investment advice. Daily wrap every evening @getstockpulse";
+  var capA = "Adani Ports led gains with a 2.02% rise. Tech Mahindra's fall dragged IT. FIIs net sold Rs 2,345.87 Cr while DIIs bought Rs 4,977.46 Cr.\n\nWatch ONGC and COALINDIA for dividends.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyIT #NiftyFMCG #MarketWrap";
 
-  var capB = "FIIs recorded an outflow of Rs 2,345.87 Cr, while DIIs bought Rs 4,977.46 Cr. \ud83d\udcb0\nNo clear catalyst, but watch for dividend actions soon.\n#Nifty #IndianStockMarket #DII #Nifty50 #Dividends\nNot investment advice. Daily wrap every evening @getstockpulse";
+  var capB = "Market breadth positive with 1.7 times more advances. Nifty 50 down for fourth straight session. Global cues mixed, US indices up.\n\nEyes on ONGC, COALINDIA dividends.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #AdaniPorts #HDFCBank #TechMahindra";
 
   document.getElementById('capA').value = capA;
   document.getElementById('capB').value = capB;

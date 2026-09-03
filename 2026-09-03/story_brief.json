@@ -1,40 +1,40 @@
 {
- "one_liner": "Nifty 50 declines for the fourth session, while broader market shows mixed performance.",
+ "one_liner": "Nifty 50 dips 0.17% amid mixed market cues, marking fourth consecutive loss.",
  "mood": "mixed",
  "drivers": [
   {
-   "emoji": "📉",
-   "title": "Nifty 50 Decline",
-   "detail": "Nifty 50 closed down 41.0 points.",
-   "stat": "-0.17%"
+   "emoji": "💻",
+   "title": "IT Sector Decline",
+   "detail": "Tech Mahindra drops 1.54% after ESG rating disclosure.",
+   "stat": "-264.05 pts"
   },
   {
-   "emoji": "💰",
-   "title": "FII Outflow",
-   "detail": "FIIs recorded a net outflow of Rs 2,345.87 Cr.",
-   "stat": "Rs 2,345.87 Cr"
+   "emoji": "🏦",
+   "title": "Bank Sector Focus",
+   "detail": "HDFC Bank gains amid FCNR(B) deposit surge.",
+   "stat": "+0.83%"
   },
   {
-   "emoji": "📈",
-   "title": "DII Inflow",
-   "detail": "DIIs saw a net inflow of Rs 4,977.46 Cr.",
-   "stat": "Rs 4,977.46 Cr"
+   "emoji": "🚢",
+   "title": "Adani Ports Surge",
+   "detail": "Adani Ports rises 2.02% post media release.",
+   "stat": "+2.02%"
   },
   {
-   "emoji": "🔍",
-   "title": "No Identifiable Catalyst",
-   "detail": "No identifiable catalyst in the datapack.",
-   "stat": "N/A"
+   "emoji": "🛒",
+   "title": "FMCG Sector Weakness",
+   "detail": "FMCG sector drags with 0.62% decline.",
+   "stat": "-284.9 pts"
   }
  ],
- "flows_line": "FIIs sold Rs 2,345.87 Cr and DIIs bought Rs 4,977.46 Cr in the cash segment.",
- "watch_next": "Corporate actions include ONGC and COALINDIA dividends in the next session.",
+ "flows_line": "FIIs net sold Rs 2,345.87 Cr, while DIIs net bought Rs 4,977.46 Cr.",
+ "watch_next": "Tomorrow, watch ONGC and COALINDIA for dividend actions and F&O ban list.",
  "week_pct": -0.9,
  "lesson_seeds": [
-  "Nifty 50 has declined for four consecutive sessions.",
-  "The broader market shows mixed performance with more advances than declines.",
-  "FIIs recorded significant outflows while DIIs had inflows.",
-  "No identifiable catalyst affected market movements today."
+  "Nifty 50 continues its losing streak for the fourth session.",
+  "Broader markets show resilience with midcap and smallcap gains.",
+  "Positive market breadth with more advances than declines.",
+  "Global markets exhibit mixed trends, with US indices closing higher."
  ],
  "source": "llm"
 }
