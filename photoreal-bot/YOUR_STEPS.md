@@ -80,8 +80,12 @@ That’s the last setup screen you should ever need.
 
 1. In Telegram, open **your** bot → Start.
 2. Send **up to 10 photos as one album**.
-3. Tap a preset.
+3. **Type what you want** (custom prompt), *or* tap a preset.
 4. Wait. Results come back as an album.
+
+Examples of a custom prompt: `same person, hotel room at night, red dress, window city lights`.
+
+A caption on the album also counts as the prompt — then tap **Run**.
 
 After this, you never open RunPod or Railway unless something breaks.
 

@@ -56,9 +56,19 @@ def _photos(context: ContextTypes.DEFAULT_TYPE) -> list[bytes]:
     return context.user_data.setdefault("photos", [])
 
 
-def _preset_keyboard() -> InlineKeyboardMarkup:
-    rows, row = [], []
+def _preset_keyboard(extra: str = "") -> InlineKeyboardMarkup:
+    rows = []
+    if extra:
+        label = extra if len(extra) <= 40 else extra[:37] + "..."
+        rows.append([InlineKeyboardButton(f"Run: {label}", callback_data="p:custom")])
+    else:
+        rows.append(
+            [InlineKeyboardButton("Custom prompt", callback_data="p:custom")]
+        )
+    row = []
     for key, spec in PRESETS.items():
+        if key == "custom":
+            continue
         row.append(InlineKeyboardButton(spec["title"], callback_data=f"p:{key}"))
         if len(row) == 2:
             rows.append(row)
@@ -84,15 +94,16 @@ def _result_keyboard() -> InlineKeyboardMarkup:
 
 
 def _queue_text(n: int, extra: str = "") -> str:
-    extra_line = f"\nCaption: {extra}" if extra else ""
+    extra_line = f"\nYour prompt: {extra}" if extra else ""
+    if extra:
+        action = "Tap Run to use that prompt, or pick a preset."
+    else:
+        action = "Type your own prompt, or tap a preset."
+    cap = f"{n}/{MAX_PHOTOS}"
     if n >= MAX_PHOTOS:
-        return (
-            f"Got {n}/{MAX_PHOTOS} photos (max). Pick a preset to convert all of them."
-            f"{extra_line}"
-        )
+        return f"Got {cap} photos (max). {action}{extra_line}"
     return (
-        f"Got {n}/{MAX_PHOTOS} photos. Send more as an album (or one by one), "
-        f"or pick a preset to convert all of them."
+        f"Got {cap} photos. Send more, type a custom prompt, or tap a preset."
         f"{extra_line}"
     )
 
@@ -115,7 +126,7 @@ async def _send_queue_prompt(bot, chat_id: int, context: ContextTypes.DEFAULT_TY
                 chat_id=chat_id,
                 message_id=msg_id,
                 text=text,
-                reply_markup=_preset_keyboard(),
+                reply_markup=_preset_keyboard(extra),
             )
             return
         except Exception:
@@ -123,7 +134,7 @@ async def _send_queue_prompt(bot, chat_id: int, context: ContextTypes.DEFAULT_TY
     sent = await bot.send_message(
         chat_id=chat_id,
         text=text,
-        reply_markup=_preset_keyboard(),
+        reply_markup=_preset_keyboard(extra),
     )
     context.user_data["prompt_msg_id"] = sent.message_id
 
@@ -134,7 +145,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
     await update.message.reply_text(
         "Personal photoreal bot. Adults only.\n\n"
-        f"Send up to {MAX_PHOTOS} photos as one album, then tap a preset.\n"
+        f"Send up to {MAX_PHOTOS} photos as one album.\n"
+        "Then type your own prompt, or tap a preset.\n"
         "Every photo is converted, 1:1.\n\n"
         "First batch after a break can take ~1 minute while the GPU wakes up.\n"
         "/clear — empty the queue"
@@ -147,6 +159,7 @@ async def clear_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
     context.user_data["photos"] = []
     context.user_data["extra"] = ""
+    context.user_data["await_custom"] = False
     context.user_data.pop("prompt_msg_id", None)
     await update.message.reply_text("Queue cleared. Send up to 10 photos.")
 
@@ -203,11 +216,14 @@ async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
     if not _photos(context):
         await update.message.reply_text(
-            f"Send up to {MAX_PHOTOS} photos first (album is best), then a preset."
+            f"Send up to {MAX_PHOTOS} photos first, then type your prompt "
+            "or tap a preset."
         )
         return
     context.user_data["extra"] = update.message.text.strip()
-    await _send_queue_prompt(context.bot, update.effective_chat.id, context)
+    context.user_data["preset"] = "custom"
+    context.user_data["await_custom"] = False
+    await _run_job(update, context)
 
 
 async def _run_job(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -295,6 +311,7 @@ async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     if raw == "clear":
         context.user_data["photos"] = []
         context.user_data["extra"] = ""
+        context.user_data["await_custom"] = False
         context.user_data.pop("prompt_msg_id", None)
         await query.edit_message_text("Queue cleared. Send up to 10 photos.")
         return
@@ -302,6 +319,14 @@ async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     if raw.startswith("p:"):
         key = raw.split(":", 1)[1]
         if key not in PRESETS:
+            return
+        if key == "custom" and not (context.user_data.get("extra") or "").strip():
+            context.user_data["await_custom"] = True
+            context.user_data["preset"] = "custom"
+            await query.edit_message_text(
+                "Send your prompt as a text message. "
+                "It will be applied to all queued photos."
+            )
             return
         context.user_data["preset"] = key
         await _run_job(update, context)

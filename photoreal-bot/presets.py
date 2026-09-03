@@ -8,6 +8,10 @@ _PHOTO = (
 )
 
 PRESETS = {
+    "custom": {
+        "title": "Custom prompt",
+        "prompt": _PHOTO,
+    },
     "golden": {
         "title": "Golden hour",
         "prompt": (
@@ -79,10 +83,6 @@ PRESETS = {
             "overhead industrial lights, documentary sports photo, "
             "realistic muscle and skin"
         ),
-    },
-    "custom": {
-        "title": "Use my caption",
-        "prompt": _PHOTO,
     },
 }
 
