@@ -13,11 +13,14 @@ import time
 import requests
 
 
-def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3):
+def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3,
+         model=None):
     # Empty-string env vars (an unset GitHub secret is injected as "") must
     # fall back to defaults, else the URL becomes "/chat/completions".
     base = (os.environ.get("LLM_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
-    model = os.environ.get("LLM_MODEL") or "gpt-4o-mini"
+    # A caller (e.g. the carousel prose pass) can pin a stronger model via
+    # LLM_MODEL_CAROUSEL without touching the report model.
+    model = (model or os.environ.get("LLM_MODEL") or "gpt-4o-mini")
     key = ((os.environ.get("OPENAI_API_KEY") or "").strip()
            or (os.environ.get("LLM_API_KEY") or "").strip())
     if not key:

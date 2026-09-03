@@ -1,0 +1,1019 @@
+diff --git a/.github/workflows/daily.yml b/.github/workflows/daily.yml
+index 65dfaee..2aa97cf 100644
+--- a/.github/workflows/daily.yml
++++ b/.github/workflows/daily.yml
+@@ -81,6 +81,7 @@ jobs:
+           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+           LLM_MODEL: ${{ secrets.LLM_MODEL }}
++          LLM_MODEL_CAROUSEL: ${{ secrets.LLM_MODEL_CAROUSEL }}
+           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+           TRADE_DATE: ${{ github.event.inputs.date || '' }}
+diff --git a/README.md b/README.md
+index 58a3240..ed9e92b 100644
+--- a/README.md
++++ b/README.md
+@@ -6,10 +6,23 @@ One pipeline, on a schedule, no manual steps:
+ 21:00 IST (Mon-Fri, GitHub Actions cron)
+   ├─ fetch NSE datapack (fixed v3.5 fetcher, 0 gaps)
+   ├─ OpenAI compiles the report HTML (SEBI-compliant)  → PDF
+-  ├─ OpenAI builds the carousel HTML (8 slides + PNG download + captions)
++  ├─ OpenAI distills a STORY BRIEF from the report (JSON)
++  ├─ OpenAI writes carousel prose FROM THE BRIEF (+ anti-repeat memory)
++  │    → code renders it through the fixed template (8 slides)
+   └─ Telegram message: links to the carousel + PDF, plus the PDF attached
+ ```
+ 
++The carousel follows the day's report, not a fresh reading of the raw pack:
++the report is distilled into a story brief (drivers, mood, one-liner, what to
++watch), and the carousel prose must compress THAT. Every Friday the carousel
++ships the WEEKLY MARKET WRAP edition (week-level numbers from
++`derived.five_day_change_pct`, Friday as the closing act).
++
++Each day's prose JSON is archived in `data/prose_YYYY-MM-DD.json`; the next
++run gets the last 5 days as a DO-NOT-REPEAT block (headlines, row titles,
++lessons, emojis) plus a code-level repeat check that forces a rewrite. This
++is what keeps the text and emojis from going stale.
++
+ You open the carousel link in your browser, review the slides, download the
+ PNGs, and post. Nothing is posted automatically.
+ 
+@@ -20,10 +33,12 @@ PNGs, and post. Nothing is posted automatically.
+ | Path | What it is |
+ |---|---|
+ | `stockpulse_data_fetcher.py` | Fetcher v3.5 — NSE archives + derived metrics |
+-| `pipeline.py` | Orchestrator (fetch → LLM → lint → PDF → site → Telegram) |
++| `pipeline.py` | Orchestrator (fetch → report → story brief → carousel → PDF → site → Telegram) |
++| `carousel.py` | Carousel renderer (deterministic numbers + LLM prose + computed fallback) |
+ | `llm.py` | OpenAI-compatible LLM client (Kimi/DeepSeek-swappable) |
+ | `compliance.py` | SEBI/house-style linter (spec §6) |
+ | `skills/report.md` | System prompt = your post-market report skill |
++| `skills/brief.md` | System prompt = story-brief distiller (report → JSON brief) |
+ | `skills/carousel.md` | System prompt = your carousel skill |
+ | `trim_datapack.py` | Shrinks a full pack for manual Claude use |
+ | `.github/workflows/daily.yml` | The 9 PM IST scheduler |
+@@ -70,8 +85,20 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
+ | `TELEGRAM_CHAT_ID` | numeric chat id from step 3 |
+ 
+ Optional (defaults used if unset): `LLM_BASE_URL` (default OpenAI), `LLM_MODEL`
+-(default `gpt-4o-mini`). For Kimi later, set `LLM_BASE_URL=https://api.moonshot.ai/v1`
+-and `LLM_MODEL` to a Kimi model — no code change.
++(default `gpt-4o-mini`), `LLM_MODEL_CAROUSEL` (default: same as `LLM_MODEL`).
++
++**Model recommendation.** `gpt-4o-mini` is fine for the report and the story
++brief (extraction tasks), but it is the main reason the old carousel prose
++felt flat. Set `LLM_MODEL_CAROUSEL=gpt-4o` — the prose call is ~2K tokens, so
++the added cost is a few paise per day and the writing quality jump is large.
++For Kimi later, set `LLM_BASE_URL=https://api.moonshot.ai/v1` and the models
++to Kimi ones — no code change.
++
++**Fallback behaviour (loud, not silent).** If the carousel LLM fails all
++retries, the run no longer ships a static canned text: prose is COMPUTED from
++the datapack (real top/bottom sectors, breadth, flows, streak, option
++levels), and the Telegram message carries a prominent "CAROUSEL USED
++FALLBACK PROSE" warning so you know to review before posting.
+ 
+ ### 5. Test it
+ Repo → **Actions → "StockPulse Daily Post-Market" → Run workflow** (leave the
+diff --git a/carousel.py b/carousel.py
+index 2daa3db..7c124f4 100644
+--- a/carousel.py
++++ b/carousel.py
+@@ -104,9 +104,181 @@ def hl(text):
+             "</span>" + text[m.end():])
+ 
+ 
++# Emoji per sector, used by the deterministic fallback so even a no-LLM run
++# gets iconography that matches the actual day's drivers.
++SECTOR_EMOJI = {
++    "IT": "💻", "Bank": "🏦", "Financials": "💳", "Auto": "🚗",
++    "Metal": "🏭", "FMCG": "🧴", "Realty": "🏠", "Pharma": "💊",
++    "Healthcare": "🏥", "Energy": "⚡", "Oil & Gas": "🛢️",
++    "PSU Bank": "🏛️", "Private Bank": "🏦", "Media": "📡",
++    "Consumer Durables": "🛋️", "Infra": "🏗️",
++}
++
++
++# ------------------------------------------------------------- day facts ---
++def day_facts(pack):
++    """Deterministic narrative facts computed from the locked datapack.
++
++    Shared by the story-brief fallback (pipeline.deterministic_brief) and the
++    carousel fallback prose, so a no-LLM run still tells THAT day's story -
++    computed from real numbers, never a static canned text."""
++    d = pack["derived"]
++    idx = d["indices"]
++    nifty = idx["Nifty 50"]
++    gm = d.get("global_markets", {}).get("markets", {})
++    breadth = d["breadth"]
++    cash = d.get("fii_dii_cash_summary") or {}
++    f5 = d.get("five_day_change_pct") or {}
++
++    present = [(k, idx[k]["pct_chg"]) for k in SECTORAL
++               if k in idx and idx[k].get("pct_chg") is not None]
++    present.sort(key=lambda x: -x[1])
++
++    def short(name):
++        return SECTOR_SHORT.get(name, name.replace("Nifty ", ""))
++
++    return {
++        "nifty_close": nifty["close"], "nifty_pct": nifty["pct_chg"],
++        "nifty_pts": nifty["pts_chg"], "nifty_up": (nifty["pct_chg"] or 0) >= 0,
++        "bank_pct": idx["Nifty Bank"]["pct_chg"],
++        "vix": d.get("vix", {}).get("current"),
++        "vix_pct": idx.get("India VIX", {}).get("pct_chg"),
++        "sensex_pct": (gm.get("Sensex") or {}).get("pct_chg"),
++        "advances": breadth["advances"], "declines": breadth["declines"],
++        "breadth_pos": breadth["advances"] >= breadth["declines"],
++        "fii": cash.get("fii_net_cr"), "dii": cash.get("dii_net_cr"),
++        "top_sectors": [(short(n), p) for n, p in present[:3]],
++        "bottom_sectors": [(short(n), p) for n, p in present[-3:][::-1]],
++        "streak": d.get("nifty_streak") or {},
++        "week_pct": f5.get("Nifty 50"),
++        "support": (d.get("options_NIFTY") or {}).get("max_put_oi_strike"),
++        "resistance": (d.get("options_NIFTY") or {}).get("max_call_oi_strike"),
++    }
++
++
++def _flows_line(f):
++    """Human phrase for the FII/DII combination."""
++    fii, dii = f["fii"], f["dii"]
++    if fii is None and dii is None:
++        return "Flow data was unavailable"
++    if fii is not None and dii is not None:
++        if fii >= 0 and dii >= 0:
++            return "FII and DII both bought"
++        if fii < 0 and dii < 0:
++            return "FII and DII both sold"
++        return ("FII bought while DII sold" if fii >= 0
++                else "FII sold while DII bought")
++    who = "FII" if fii is not None else "DII"
++    v = fii if fii is not None else dii
++    return f"{who} were net {'buyers' if v >= 0 else 'sellers'}"
++
++
+ # ------------------------------------------------------------- prose model --
++def fallback_prose(pack, weekly=False):
++    """Computed-from-the-pack prose for a no-LLM run. Direction-, sector-,
++    breadth- and flow-aware, so even the fallback is that day's story."""
++    f = day_facts(pack)
++    dirw = "up" if f["nifty_up"] else "down"
++    top1 = f["top_sectors"][0] if f["top_sectors"] else ("-", 0.0)
++    bot1 = f["bottom_sectors"][0] if f["bottom_sectors"] else ("-", 0.0)
++    wk = f["week_pct"]
++
++    if weekly and wk is not None:
++        headline = (f"*Nifty* ended the week {'up' if wk >= 0 else 'down'} "
++                    f"{abs(wk):.2f}%.")
++        hero_text = (f"Nifty {'gained' if wk >= 0 else 'lost'} "
++                     f"{abs(wk):.2f}% over the week and closed Friday at "
++                     f"{fnum(f['nifty_close'])}.")
++        first_lesson = (f"Nifty moved {wk:+.2f}% across the week's sessions.")
++    else:
++        headline = (f"*Nifty* closed {dirw} as {top1[0]} "
++                    f"{'led' if f['nifty_up'] else 'resisted the fall'}.")
++        hero_text = (f"Nifty closed {dirw} {abs(f['nifty_pct']):.2f}% at "
++                     f"{fnum(f['nifty_close'])}. {top1[0]} led the sectors "
++                     f"while {bot1[0]} lagged.")
++        first_lesson = (f"{top1[0]} was the strongest sector, "
++                        f"{top1[1]:+.2f}% on the day.")
++
++    streak = f["streak"]
++    streak_lesson = None
++    if streak.get("sessions", 0) >= 2:
++        streak_lesson = (f"Nifty has now closed {streak['direction']} "
++                         f"{streak['sessions']} sessions in a row.")
++
++    br_word = ("positive" if f["breadth_pos"] else "weak")
++    why = []
++    for name, pct in f["top_sectors"][:2]:
++        why.append({"emoji": SECTOR_EMOJI.get(name, "📈"), "title": f"{name} led",
++                    "desc": f"{name} was among the strongest sectors.",
++                    "badge": f"{name} {pct:+.2f}%"})
++    if f["bottom_sectors"]:
++        name, pct = f["bottom_sectors"][0]
++        why.append({"emoji": SECTOR_EMOJI.get(name, "📉"),
++                    "title": f"{name} dragged",
++                    "desc": f"{name} was the weakest pocket of the session.",
++                    "badge": f"{name} {pct:+.2f}%"})
++    why.append({"emoji": "📊", "title": f"Breadth stayed {br_word}",
++                "desc": (f"{f['advances']:,} advances versus "
++                         f"{f['declines']:,} declines."),
++                "badge": f"{f['advances']:,} : {f['declines']:,}"})
++    why = why[:4]
++
++    lessons = [first_lesson,
++               (f"Breadth was {br_word}: {f['advances']:,} advances versus "
++                f"{f['declines']:,} declines."),
++               _flows_line(f) + " in the cash market."]
++    if streak_lesson:
++        lessons.append(streak_lesson)
++    elif f["vix"] is not None:
++        lessons.append(f"India VIX closed at {fnum(f['vix'])}.")
++    lessons = lessons[:4]
++
++    sup, res = f["support"], f["resistance"]
++    watch = (f"Support at {sup:,.0f} and resistance at {res:,.0f} bracket the "
++             f"next session." if sup and res else
++             "Watch the option chain levels for the next session.")
++
++    pct_s = f"{abs(f['nifty_pct']):.2f}%"
++    caption_a = (f"Nifty closed {dirw} {pct_s} at {fnum(f['nifty_close'])}.\\n\\n"
++                 f"{top1[0]} led, {bot1[0]} lagged. Breadth: {f['advances']:,} "
++                 f"advances vs {f['declines']:,} declines.\\n\\n"
++                 f"Daily wrap every evening @getstockpulse\\n\\n"
++                 f"Not investment advice.\\n\\n"
++                 f"#Nifty #IndianStockMarket #StockMarket #MarketWrap #Investing")
++    caption_b = (f"{_flows_line(f)} today.\\n\\n"
++                 f"Nifty {dirw} {pct_s}, breadth {br_word}.\\n\\n"
++                 f"Daily wrap every evening @getstockpulse\\n\\n"
++                 f"Not investment advice.\\n\\n"
++                 f"#Nifty #IndianStockMarket #FIIDII #MarketWrap #Trading")
++
++    return {
++        "headline": headline,
++        "subline": f"{_flows_line(f)}. Breadth stayed {br_word}.",
++        "hero_text": hero_text,
++        "why_head": ("Why the market moved this week" if weekly
++                     else "Why the market moved"),
++        "why": why,
++        "sector_reasons": {},
++        "bonus_title": "Breadth check",
++        "bonus_text": (f"{f['advances']:,} advances versus {f['declines']:,} "
++                       f"declines."),
++        "movers_note_gainers": "Gainers closed firm into the close.",
++        "movers_note_losers": "Losers stayed under pressure all session.",
++        "watch_text": watch,
++        "lessons": lessons,
++        "alert_title": "Watch the next session",
++        "alert_text": "Fresh global cues arrive before the next open.",
++        "cta_headline": "Save this and *check back at the close*.",
++        "cta_sub": "Follow for the full picture every evening.",
++        "next_text": "Global cues and corporate actions land next session.",
++        "caption_a": caption_a,
++        "caption_b": caption_b,
++    }
++
++
+ def default_prose():
+-    """Neutral prose so a failed LLM still yields a valid, correct carousel."""
++    """Neutral prose for MOCK dry-runs only (no datapack in scope). The live
++    failure path uses fallback_prose(pack), which is computed from the pack."""
+     return {
+         "headline": "*Nifty* ended the day lower.",
+         "subline": "A muted session for Indian equities.",
+@@ -149,12 +321,11 @@ def default_prose():
+ 
+ 
+ # ------------------------------------------------------------------- build --
+-def build(pack, prose):
++def build(pack, prose, weekly=False):
+     d = pack["derived"]
+     tdate = date.fromisoformat(pack["meta"]["trading_date"])
+     prose = {**default_prose(), **(prose or {})}
+     wd = WDAYS[tdate.weekday()]
+-    m = {k: None for k in ("")}  # noop
+     idx = d["indices"]
+     gm = d.get("global_markets", {}).get("markets", {})
+ 
+@@ -184,6 +355,25 @@ def build(pack, prose):
+                   f"{chg_word(nifty['pct_chg'])} "
+                   f"{abs(nifty['pts_chg']):.2f} pts "
+                   f"({abs(nifty['pct_chg']):.2f}%)")
++    week_pct = (d.get("five_day_change_pct") or {}).get("Nifty 50")
++    if weekly and week_pct is not None:
++        cover_pill += f" · week {week_pct:+.2f}%"
++
++    # --- weekly-wrap header labels (Friday edition) ----------------------
++    headers = {
++        "BANNER_TITLE": "WEEKLY MARKET WRAP" if weekly else "POST MARKET ANALYSIS",
++        "S2_TITLE": "Where the market closed",
++        "HERO_LABEL": "THE WEEK IN ONE LINE" if weekly else "THE DAY IN ONE LINE",
++        "S4_TITLE": "The week by sector" if weekly else "Sector scorecard",
++        "S5_TITLE": ("Friday's big movers" if weekly
++                     else "The day's big movers"),
++        "S6_TITLE": "Levels that matter",
++        "S7_TITLE": ("What this week taught us" if weekly
++                     else "What today taught us"),
++    }
++    date_pill = (f"WEEKLY WRAP · {MONTHS_SHORT[tdate.month - 1]} "
++                 f"{tdate.day}, {tdate.year}" if weekly else
++                 f"{wd} · {MONTHS[tdate.month - 1]} {tdate.day}, {tdate.year}")
+ 
+     # --- snapshot -------------------------------------------------------
+     cards = [
+@@ -205,17 +395,26 @@ def build(pack, prose):
+          cash_note(dii, "domestic inflows", "domestic outflows")),
+     ]
+ 
+-    # --- sectors (top 3 + bottom 3 by daily % change) --------------------
+-    present = [(k, idx[k]["pct_chg"]) for k in SECTORAL
+-               if k in idx and idx[k].get("pct_chg") is not None]
++    # --- sectors (top 3 + bottom 3; weekly edition ranks by 5-day move) ---
++    f5 = d.get("five_day_change_pct") or {}
++    if weekly and any(k in f5 for k in SECTORAL):
++        present = [(k, f5[k]) for k in SECTORAL if f5.get(k) is not None]
++    else:
++        present = [(k, idx[k]["pct_chg"]) for k in SECTORAL
++                   if k in idx and idx[k].get("pct_chg") is not None]
+     present.sort(key=lambda x: -x[1])
+     picks = present[:3] + present[-3:][::-1]
+     reasons = prose.get("sector_reasons") or {}
+ 
+     def sec_row(name, pct, i):
+         short = SECTOR_SHORT.get(name, name.replace("Nifty ", ""))
+-        reason = reasons.get(short) or (
+-            "led the day" if pct >= 0 else "lagged the day")
++        # Rank-aware fallback beats the old generic "led/lagged the day".
++        fallback = ("strongest sector" if i == 0 else
++                    "second strongest" if i == 1 else
++                    "third strongest" if i == 2 else
++                    "biggest drag" if i == 3 else
++                    "second weakest" if i == 4 else "weakest sector")
++        reason = reasons.get(short) or fallback
+         return short, up_down(pct), reason, signed(pct)
+ 
+     secs = [sec_row(n, p, i) for i, (n, p) in enumerate(picks)]
+@@ -253,7 +452,8 @@ def build(pack, prose):
+ 
+     model = {
+         "PAGEHEAD_DATE": f"{wd.capitalize()}, {tdate.day} {MONTHS[tdate.month - 1]} {tdate.year}",
+-        "DATE_PILL": f"{wd} · {MONTHS[tdate.month - 1]} {tdate.day}, {tdate.year}",
++        "DATE_PILL": date_pill,
++        **headers,
+         "HEADLINE": hl(prose.get("headline")),
+         "SUBLINE": prose.get("subline") or "",
+         "STAT_PILL_CLASS": stat_class,
+@@ -320,7 +520,9 @@ def build(pack, prose):
+         # captions (JS strings)
+         "CAPTION_A": json.dumps(prose.get("caption_a") or ""),
+         "CAPTION_B": json.dumps(prose.get("caption_b") or ""),
+-        "DL_PREFIX": f"stockpulse-postmarket-{tdate.day}{MONTHS_SHORT[tdate.month - 1]}-",
++        "DL_PREFIX": (f"stockpulse-weeklywrap-{tdate.day}{MONTHS_SHORT[tdate.month - 1]}-"
++                      if weekly else
++                      f"stockpulse-postmarket-{tdate.day}{MONTHS_SHORT[tdate.month - 1]}-"),
+     }
+ 
+     html = open(TEMPLATE, encoding="utf-8").read()
+diff --git a/carousel_template.html b/carousel_template.html
+index adfe8e2..8429f13 100644
+--- a/carousel_template.html
++++ b/carousel_template.html
+@@ -324,7 +324,7 @@
+           </div>
+           <div class="body">
+             <div class="banner">
+-              <div class="banner-title">POST MARKET ANALYSIS</div>
++              <div class="banner-title">{{BANNER_TITLE}}</div>
+               <div class="banner-pill">{{DATE_PILL}}</div>
+             </div>
+             <div class="cover-mid">
+@@ -355,7 +355,7 @@
+             <div class="counter" style="color:#0F2744">02 / 08</div>
+           </div>
+           <div class="body" style="justify-content:space-between;">
+-            <div><div class="section-h">Where the market closed</div></div>
++            <div><div class="section-h">{{S2_TITLE}}</div></div>
+             <div class="index-row" style="flex:0;">
+               <div class="index-card {{IDX1_CLASS}}">
+                 <div class="ic-name">{{IDX1_NAME}}</div>
+@@ -396,7 +396,7 @@
+               </div>
+             </div>
+             <div class="hero-box" style="flex:0;">
+-              <div class="hb-label">THE DAY IN ONE LINE</div>
++              <div class="hb-label">{{HERO_LABEL}}</div>
+               <div class="hb-text">{{HERO_TEXT}}</div>
+             </div>
+           </div>
+@@ -469,7 +469,7 @@
+             <div class="counter" style="color:#0F2744">04 / 08</div>
+           </div>
+           <div class="body" style="justify-content:space-between;">
+-            <div class="section-h">Sector scorecard</div>
++            <div class="section-h">{{S4_TITLE}}</div>
+             <div style="display:flex;flex-direction:column;gap:16px;flex:1;justify-content:center;">
+               <div class="sec-row {{SEC1_CLASS}}"><div class="sec-name">{{SEC1_NAME}}</div><div class="sec-reason">{{SEC1_REASON}}</div><div class="sec-pct {{SEC1_CLASS}}">{{SEC1_PCT}}</div></div>
+               <div class="sec-row {{SEC2_CLASS}}"><div class="sec-name">{{SEC2_NAME}}</div><div class="sec-reason">{{SEC2_REASON}}</div><div class="sec-pct {{SEC2_CLASS}}">{{SEC2_PCT}}</div></div>
+@@ -506,7 +506,7 @@
+             <div class="counter">05 / 08</div>
+           </div>
+           <div class="body" style="justify-content:space-between;">
+-            <div class="section-h">The day's big movers</div>
++            <div class="section-h">{{S5_TITLE}}</div>
+             <div class="mv-cols">
+               <div class="mv-col">
+                 <div class="mv-head up">Top gainers</div>
+@@ -548,7 +548,7 @@
+             <div class="counter" style="color:#0F2744">06 / 08</div>
+           </div>
+           <div class="body" style="justify-content:space-between;">
+-            <div class="section-h">Levels that matter</div>
++            <div class="section-h">{{S6_TITLE}}</div>
+             <div class="price-hero" style="flex:0;">
+               <div class="ph-left">
+                 <div class="ph-label">Nifty 50 close</div>
+@@ -602,7 +602,7 @@
+             <div class="counter">07 / 08</div>
+           </div>
+           <div class="body" style="justify-content:space-between;">
+-            <div class="section-h">What today taught us</div>
++            <div class="section-h">{{S7_TITLE}}</div>
+             <div style="display:flex;flex-direction:column;gap:18px;flex:1;justify-content:center;">
+               <div class="lesson"><div class="lesson-num">1</div><div class="lesson-txt">{{LESSON1}}</div></div>
+               <div class="lesson"><div class="lesson-num">2</div><div class="lesson-txt">{{LESSON2}}</div></div>
+diff --git a/llm.py b/llm.py
+index ecfe8f5..1ed79cd 100644
+--- a/llm.py
++++ b/llm.py
+@@ -13,11 +13,14 @@ import time
+ import requests
+ 
+ 
+-def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3):
++def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3,
++         model=None):
+     # Empty-string env vars (an unset GitHub secret is injected as "") must
+     # fall back to defaults, else the URL becomes "/chat/completions".
+     base = (os.environ.get("LLM_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
+-    model = os.environ.get("LLM_MODEL") or "gpt-4o-mini"
++    # A caller (e.g. the carousel prose pass) can pin a stronger model via
++    # LLM_MODEL_CAROUSEL without touching the report model.
++    model = (model or os.environ.get("LLM_MODEL") or "gpt-4o-mini")
+     key = ((os.environ.get("OPENAI_API_KEY") or "").strip()
+            or (os.environ.get("LLM_API_KEY") or "").strip())
+     if not key:
+diff --git a/pipeline.py b/pipeline.py
+index 512d38c..8d297ec 100644
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -267,17 +267,174 @@ def _prose_text(prose):
+     return " ".join(acc)
+ 
+ 
+-def generate_carousel(pack):
+-    """LLM writes prose JSON; code renders it through the fixed template.
++# ----------------------------------------------------------- story brief ---
++def deterministic_brief(pack):
++    """Story brief computed from the locked datapack. Used when MOCK_LLM=1 and
++    as the fallback if the brief LLM call keeps failing - so the carousel
++    still tells THAT day's story even with no model available."""
++    f = carousel.day_facts(pack)
++    drivers = []
++    for name, pct in f["top_sectors"][:2]:
++        drivers.append({"emoji": carousel.SECTOR_EMOJI.get(name, "📈"),
++                        "title": f"{name} led",
++                        "detail": f"{name} was among the strongest sectors.",
++                        "stat": f"{name} {pct:+.2f}%"})
++    if f["bottom_sectors"]:
++        name, pct = f["bottom_sectors"][0]
++        drivers.append({"emoji": carousel.SECTOR_EMOJI.get(name, "📉"),
++                        "title": f"{name} dragged",
++                        "detail": f"{name} was the weakest pocket.",
++                        "stat": f"{name} {pct:+.2f}%"})
++    br_word = "positive" if f["breadth_pos"] else "weak"
++    drivers.append({"emoji": "📊", "title": f"Breadth stayed {br_word}",
++                    "detail": (f"{f['advances']:,} advances versus "
++                               f"{f['declines']:,} declines."),
++                    "stat": f"{f['advances']:,} : {f['declines']:,}"})
++    return {
++        "one_liner": (f"Nifty closed {'up' if f['nifty_up'] else 'down'} "
++                      f"{abs(f['nifty_pct']):.2f}% at "
++                      f"{f['nifty_close']:,.2f}."),
++        "mood": ("risk-on" if f["nifty_up"] and f["breadth_pos"] else
++                 "risk-off" if not f["nifty_up"] and not f["breadth_pos"] else
++                 "mixed"),
++        "drivers": drivers[:4],
++        "flows_line": carousel._flows_line(f),
++        "watch_next": (f"Support {f['support']:,.0f}, resistance "
++                       f"{f['resistance']:,.0f}."
++                       if f["support"] and f["resistance"] else ""),
++        "week_pct": f["week_pct"],
++        "lesson_seeds": [],
++        "source": "deterministic",
++    }
++
++
++def generate_story_brief(pack, report_html):
++    """Stage 2b: distill the day's report into a compact story brief that the
++    carousel pass then compresses into slides. This is what makes the carousel
++    follow THAT day's report instead of re-interpreting the raw pack.
++
++    Returns (brief_dict, fell_back_bool)."""
++    if MOCK:
++        return deterministic_brief(pack), False
++    system = open(os.path.join(REPO, "skills", "brief.md"),
++                  encoding="utf-8").read()
++    base_user = ("DATAPACK (JSON):\n" + pack_json(pack) +
++                 "\n\nPOST-MARKET REPORT (HTML, already compiled and linted "
++                 "from the same datapack):\n" + report_html)
++    base_user += calendar_brief(pack)
++    issues = []
++    for attempt in range(1, 4):
++        user = base_user
++        if issues:
++            user += ("\n\nYour previous response had problems. Return the FULL "
++                     "corrected JSON object, fixing exactly these issues:\n- " +
++                     "\n- ".join(issues))
++        try:
++            brief = parse_json_lenient(llm.chat(
++                system, user, max_tokens=2500, temperature=0.3))
++            flat = _prose_text(brief)
++            issues = (compliance.number_lock(flat, pack) +
++                      compliance.calendar_lock(flat, pack))
++            if not issues:
++                brief["source"] = "llm"
++                log("  [brief] story brief extracted from report")
++                return brief, False
++        except Exception as e:  # noqa: BLE001
++            issues = [f"brief generation error: {e}"]
++        log(f"  [brief] attempt {attempt}: {issues}")
++    log("  [brief] falling back to deterministic brief from the datapack")
++    return deterministic_brief(pack), True
++
++
++# ------------------------------------------------------ anti-repetition ----
++def _prose_path(tdate):
++    return os.path.join(DATA, f"prose_{tdate.isoformat()}.json")
++
++
++def save_prose(tdate, prose):
++    """Persist each day's carousel prose so future runs can ban repeats."""
++    os.makedirs(DATA, exist_ok=True)
++    with open(_prose_path(tdate), "w", encoding="utf-8") as f:
++        json.dump(prose, f, ensure_ascii=False, indent=1)
++
++
++def recent_prose_memory(tdate, n=5):
++    """Load the last n days' prose (before tdate) and build a DO-NOT-REPEAT
++    block for the prompt plus sets for the code-level repeat check."""
++    past = []
++    if os.path.isdir(DATA):
++        for fn in sorted(os.listdir(DATA)):
++            m = re.fullmatch(r"prose_(\d{4}-\d{2}-\d{2})\.json", fn)
++            if not m or m.group(1) >= tdate.isoformat():
++                continue
++            try:
++                past.append((m.group(1), json.load(
++                    open(os.path.join(DATA, fn), encoding="utf-8"))))
++            except Exception:  # noqa: BLE001 - a corrupt memory file is skippable
++                continue
++    past = past[-n:]
++    headlines, emojis, titles, lessons = set(), set(), set(), set()
++    for _, p in past:
++        h = re.sub(r"\s+", " ", re.sub(r"[*_]", "",
++                                       str(p.get("headline", "")))).strip().lower()
++        if h:
++            headlines.add(h)
++        for row in (p.get("why") or []):
++            if row.get("emoji"):
++                emojis.add(row["emoji"])
++            if row.get("title"):
++                titles.add(row["title"].strip().lower())
++        for l in (p.get("lessons") or []):
++            if l:
++                lessons.add(l.strip().lower())
++    if not past:
++        return "", headlines, emojis
++    lines = ["ANTI-REPETITION (hard rule): these come from your previous "
++             f"{len(past)} carousel(s). Do NOT reuse or lightly paraphrase "
++             "any of them - same meaning in different words counts as a "
++             "repeat. Today's drivers decide today's wording."]
++    if headlines:
++        lines.append("Headlines already used: " + " | ".join(sorted(headlines)))
++    if titles:
++        lines.append("'Why' row titles already used: "
++                     + " | ".join(sorted(titles)))
++    if lessons:
++        lines.append("Lessons already used: " + " | ".join(sorted(lessons)))
++    if emojis:
++        lines.append("Emojis already used (avoid unless the driver genuinely "
++                     "repeats): " + " ".join(sorted(emojis)))
++    return "\n\n" + "\n".join(lines), headlines, emojis
++
++
++def generate_carousel(pack, brief, weekly=False):
++    """LLM writes prose JSON, guided by the day's story brief (distilled from
++    the report) and an anti-repetition memory of recent days; code renders it
++    through the fixed template.
+ 
+     Never crashes the run: any LLM/parse error is retried with feedback, and
+-    after 3 attempts it falls back to neutral prose with correct numbers."""
++    after 3 attempts it falls back to prose COMPUTED from the datapack (not a
++    static canned text). Returns (html, prose, issues, fell_back)."""
+     system = open(os.path.join(REPO, "skills", "carousel.md"),
+                   encoding="utf-8").read()
+-    base_user = ("Here is today's datapack (JSON). Write the carousel prose "
+-                 "content model as a JSON object.\n\n" + pack_json(pack))
++    tdate = date.fromisoformat(pack["meta"]["trading_date"])
++    memory_block, seen_headlines, seen_emojis = recent_prose_memory(tdate)
++
++    base_user = ("Here is today's datapack (JSON), followed by THE DAY'S "
++                 "STORY - the brief distilled from today's post-market "
++                 "report. Your prose must be a compression of that story, "
++                 "not a fresh interpretation of the raw numbers.\n\n"
++                 "DATAPACK:\n" + pack_json(pack) +
++                 "\n\nTHE DAY'S STORY (from the report, authoritative "
++                 "narrative):\n" + json.dumps(brief, ensure_ascii=False,
++                                              indent=1))
++    if weekly:
++        base_user += ("\n\nEDITION: today is Friday, so this is the WEEKLY "
++                      "MARKET WRAP edition. Frame the headline, hero text, "
++                      "lessons and captions around the WEEK (the datapack's "
++                      "five_day_change_pct), with Friday's session as the "
++                      "closing act. Movers and levels stay Friday's.")
+     base_user += calendar_brief(pack)
+-    sample = os.path.join(REPO, "prose27.json")
++    base_user += memory_block
+     issues = []
+     for attempt in range(1, 4):
+         user = base_user
+@@ -287,26 +444,41 @@ def generate_carousel(pack):
+                      "\n- ".join(issues))
+         try:
+             if MOCK:
+-                prose = (json.load(open(sample, encoding="utf-8"))
+-                         if os.path.exists(sample) else carousel.default_prose())
++                # Dry runs exercise the computed prose (prose27.json belongs to
++                # a past session and would fail the number-lock anyway).
++                prose = carousel.fallback_prose(pack, weekly=weekly)
+             else:
+                 prose = parse_json_lenient(llm.chat(
+-                    system, user, max_tokens=8000, temperature=0.4))
+-            html, leftover = carousel.build(pack, prose)
++                    system, user, max_tokens=8000, temperature=0.85,
++                    model=(os.environ.get("LLM_MODEL_CAROUSEL") or None)))
++            html, leftover = carousel.build(pack, prose, weekly=weekly)
+             issues = carousel.validate(html, pack)
+             prose_flat = _prose_text(prose)
+             issues += compliance.number_lock(prose_flat, pack)
+             issues += compliance.calendar_lock(prose_flat, pack)
+             if leftover:
+                 issues += [f"unfilled template tokens: {leftover}"]
++            # code-level repeat check (the prompt ban alone is not reliable)
++            h = re.sub(r"\s+", " ", re.sub(
++                r"[*_]", "", str(prose.get("headline", "")))).strip().lower()
++            if h and h in seen_headlines:
++                issues += [f"headline repeats a previous day: '{h}' - write a "
++                           "fresh one from today's drivers"]
++            day_emojis = {r.get("emoji") for r in (prose.get("why") or [])
++                          if r.get("emoji")}
++            if day_emojis and day_emojis == seen_emojis:
++                issues += ["the exact emoji set was already used - pick emojis "
++                           "that depict today's specific drivers"]
+             if not issues:
+-                return html, prose, []
++                return html, prose, [], False
+         except Exception as e:  # noqa: BLE001 - LLM/parse failure must not kill the run
+             issues = [f"carousel generation error: {e}"]
+         log(f"  [carousel] attempt {attempt}: {issues}")
+-    log("  [carousel] falling back to neutral prose (numbers still locked)")
+-    html, _ = carousel.build(pack, carousel.default_prose())
+-    return html, carousel.default_prose(), (issues or ["used fallback prose"])
++    log("  [carousel] LLM failed - using computed fallback prose "
++        "(numbers AND story from the datapack)")
++    prose = carousel.fallback_prose(pack, weekly=weekly)
++    html, _ = carousel.build(pack, prose, weekly=weekly)
++    return html, prose, (issues or ["used fallback prose"]), True
+ 
+ 
+ def minimal_report(pack):
+@@ -513,7 +685,8 @@ def tg_escape(s):
+     return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+ 
+ 
+-def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues):
++def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues,
++           carousel_fallback=False, brief_fallback=False):
+     import requests
+     d = pack["derived"]
+     n50 = d["indices"]["Nifty 50"]
+@@ -534,6 +707,16 @@ def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues):
+         f"🎠 <a href=\"{tg_escape(carousel_url)}\">Carousel (open in browser, download slides)</a>",
+         f"📄 <a href=\"{tg_escape(pdf_url)}\">Report (PDF)</a>",
+     ]
++    if carousel_fallback:
++        # Loud, not buried: fallback prose means yesterday's-style generic
++        # wording is exactly what you must NOT post without a look.
++        lines.append("")
++        lines.append("‼️ CAROUSEL USED FALLBACK PROSE (LLM failed all "
++                     "retries). Text was computed from the datapack - correct "
++                     "but plain. Review before posting.")
++    if brief_fallback:
++        lines.append("⚠️ Story brief fell back to datapack-computed (report "
++                     "distillation failed); carousel may be less narrative.")
+     if issues:
+         lines.append("")
+         # issue strings contain report HTML fragments (<td>, <tr>...), which
+@@ -612,11 +795,16 @@ def main():
+             "19:00 IST, or use a past trading date.")
+         return
+ 
++    weekly = tdate.weekday() == 4   # Friday -> WEEKLY MARKET WRAP edition
+     log("== stage 2/4: compile report (LLM + lint) ==")
+     report_html, report_issues = generate_with_lint("report", pack)
+-    log("== stage 3/4: build carousel (LLM prose + template) ==")
+-    carousel_html, carousel_prose, carousel_issues = generate_carousel(pack)
++    log("== stage 2b/4: distill story brief from the report ==")
++    brief, brief_fallback = generate_story_brief(pack, report_html)
++    log("== stage 3/4: build carousel (story brief + anti-repeat memory) ==")
++    carousel_html, carousel_prose, carousel_issues, carousel_fallback = \
++        generate_carousel(pack, brief, weekly=weekly)
+     all_issues = report_issues + carousel_issues
++    save_prose(tdate, carousel_prose)
+ 
+     log("== stage 4/4: render + publish + notify ==")
+     day_dir = os.path.join(SITE, tdate.isoformat())
+@@ -636,12 +824,16 @@ def main():
+     with open(os.path.join(day_dir, "datapack.json"), "w",
+               encoding="utf-8") as f:
+         json.dump(pack, f, ensure_ascii=False, default=str)
++    with open(os.path.join(day_dir, "story_brief.json"), "w",
++              encoding="utf-8") as f:
++        json.dump(brief, f, ensure_ascii=False, indent=1)
+ 
+     archive_pack(tdate)
+ 
+     carousel_url = site_url(f"{tdate.isoformat()}/carousel.html")
+     pdf_url = site_url(f"{tdate.isoformat()}/{pdf_name(tdate)}")
+-    notify(tdate, pack, pdf_path, carousel_url, pdf_url, all_issues)
++    notify(tdate, pack, pdf_path, carousel_url, pdf_url, all_issues,
++           carousel_fallback=carousel_fallback, brief_fallback=brief_fallback)
+ 
+     log(f"\nDone. PDF: {pdf_path}\nCarousel: {day_dir}/carousel.html"
+         f"\nCarousel URL: {carousel_url}\nReport URL: {pdf_url}")
+diff --git a/prose27.json b/prose27.json
+deleted file mode 100644
+index 9e35144..0000000
+--- a/prose27.json
++++ /dev/null
+@@ -1,38 +0,0 @@
+-{
+-  "headline": "Pharma stood tall while *Nifty* slipped.",
+-  "subline": "Defensives led, but breadth stayed weak across the tape.",
+-  "hero_text": "Nifty fell 0.48% but Pharma and Healthcare rose. Breadth stayed weak: 867 advances against 1,716 declines.",
+-  "why_head": "Why the market slipped",
+-  "why": [
+-    {"emoji": "💊", "title": "Pharma and healthcare led", "desc": "Defensive rotation lifted Cipla and healthcare names.", "badge": "Pharma up 0.84%"},
+-    {"emoji": "🏦", "title": "PSU banks dragged", "desc": "State lenders slipped while private names steadied.", "badge": "PSU Bank down 0.94%"},
+-    {"emoji": "🏭", "title": "Metals stayed soft", "desc": "Metal index fell with commodity prices muted.", "badge": "Metal down 0.86%"},
+-    {"emoji": "🌍", "title": "Flows split again", "desc": "FII sold while DII bought heavily, a familiar pattern.", "badge": "DII +4,977 Cr"}
+-  ],
+-  "sector_reasons": {
+-    "Pharma": "Defensive bid led the day.",
+-    "Healthcare": "Tracked pharma higher.",
+-    "Consumer Durables": "Steady demand names rose.",
+-    "PSU Bank": "State lenders led the fall.",
+-    "Media": "Weakest pocket of the session.",
+-    "Metal": "Commodity names stayed soft."
+-  },
+-  "bonus_title": "Breadth check",
+-  "bonus_text": "867 advances versus 1,716 declines. Weak breadth under a mild index fall.",
+-  "movers_note_gainers": "Adani names and Kotak led. Delivery stayed above 55%, a healthy sign.",
+-  "movers_note_losers": "Hindalco and HDFC Bank led the fall. Delivery above 57% hints at real selling.",
+-  "watch_text": "Support at 24,000 and resistance at 24,300 bracket the next session.",
+-  "lessons": [
+-    "Defensives led a down tape, a classic risk off tilt.",
+-    "Breadth was weak: 867 advances versus 1,716 declines.",
+-    "DII buying of Rs 4,977 Cr cushioned FII selling.",
+-    "VIX rose 4.76%, nudging caution higher."
+-  ],
+-  "alert_title": "Watch the next session",
+-  "alert_text": "Global cues and the weekly options expiry land ahead of the next session.",
+-  "cta_headline": "Save this and *check back at the close*.",
+-  "cta_sub": "A defensive day with weak breadth. Follow for the full picture every evening.",
+-  "next_text": "Global cues and corporate actions land next session.",
+-  "caption_a": "Nifty slipped 0.48% but pharma and healthcare led, a classic defensive day.\n\nBreadth stayed weak: 867 advances versus 1,716 declines.\n\nDII bought Rs 4,977 Cr while FII sold Rs 298 Cr.\n\nWatch: support at 24,000, resistance at 24,300.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #StockMarketIndia #Pharma #MarketWrap",
+-  "caption_b": "Follow the flows, not just the headline.\n\nFII sold Rs 298 Cr but DII bought Rs 4,977 Cr, cushioning the fall.\n\nAdani names and Kotak led gains on healthy delivery. Hindalco led losses.\n\nVIX rose 4.76%, caution ticked higher.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #FIIDII #NiftyPharma #MarketWrap"
+-}
+diff --git a/skills/brief.md b/skills/brief.md
+new file mode 100644
+index 0000000..13f3431
+--- /dev/null
++++ b/skills/brief.md
+@@ -0,0 +1,48 @@
++# StockPulse Story Brief — Report Distiller
++
++You distill today's StockPulse post-market report into a compact STORY BRIEF
++that the carousel writer will compress into slides. The report HTML is
++already compiled and compliance-checked; your job is extraction, not
++rewriting. The carousel must follow the report's narrative, so fidelity to
++the report matters more than style.
++
++## OUTPUT FORMAT (strict)
++
++Return ONLY a JSON object. No markdown fences, no commentary.
++
++```json
++{
++  "one_liner": "string, the day's story in one sentence, <= 15 words",
++  "mood": "risk-on | risk-off | mixed",
++  "drivers": [
++    {"emoji": "single emoji depicting THIS driver",
++     "title": "3-5 words",
++     "detail": "one sentence, <= 12 words",
++     "stat": "short data chip whose number exists in the datapack"}
++  ],
++  "flows_line": "one sentence on FII/DII cash flows",
++  "watch_next": "one sentence on what matters next session",
++  "week_pct": null,
++  "lesson_seeds": ["4 short observational lessons from the report"]
++}
++```
++
++## RULES
++
++- `drivers`: exactly 4, ordered by importance, taken from the report's own
++  driver attribution. Each `emoji` must depict the specific driver (a pharma
++  move gets a pill, a crude move gets an oil drum, an IT rally gets a
++  laptop). Do NOT default to 🌍 for flows or 🏦 for banks unless banks or
++  global cues genuinely are that row's driver.
++- Every number in `stat`, `one_liner`, `flows_line`, `watch_next` and
++  `lesson_seeds` must already exist in the datapack. Never invent, round
++  beyond two decimals, or carry over a prior day's figure.
++- `watch_next` must refer to the NEXT TRADING SESSION named in the CALENDAR
++  block of the user message. Never write "tomorrow" unless that block says
++  the next session is the next calendar day.
++- `week_pct`: copy `derived.five_day_change_pct["Nifty 50"]` when present,
++  else null.
++- Banned words even if the report used them: buy, sell, long, short, target,
++  stop loss, invest, recommend. No em dashes. Currency "Rs".
++- If the report's Data Gaps Register says driver attribution was unavailable,
++  say so plainly in one driver row rather than inventing a catalyst.
+diff --git a/skills/carousel.md b/skills/carousel.md
+index 910b6c5..f3f1868 100644
+--- a/skills/carousel.md
++++ b/skills/carousel.md
+@@ -1,10 +1,27 @@
+ # StockPulse Post-Market Carousel — Prose Content Model
+ 
+-You write the WORDS for the StockPulse Instagram carousel (post-market mode).
+-You do NOT write HTML, CSS or any numbers that the datapack already contains.
+-The layout, and every numeric value, are assembled deterministically from the
+-datapack by code. Your job is the narrative: headlines, reasons, lessons and
+-captions, in the StockPulse voice.
++You write the WORDS for the StockPulse Instagram carousel (post-market mode;
++on Fridays, the WEEKLY MARKET WRAP edition). You do NOT write HTML, CSS or
++any numbers that the datapack already contains. The layout and every numeric
++value are assembled deterministically from the datapack by code. Your job is
++the narrative: headlines, reasons, lessons and captions, in the StockPulse
++voice.
++
++## THE STORY COMES FROM THE REPORT, NOT FROM YOU
++
++The user message contains THE DAY'S STORY: a brief distilled from today's
++post-market report (which was itself compiled from the datapack). Treat it as
++the authoritative narrative:
++
++- `headline`, `subline` and `hero_text` must retell the brief's `one_liner`
++  and `mood` in carousel language. Do not invent a different angle.
++- The 4 `why` rows map 1:1 onto the brief's `drivers` (same order, same
++  facts); you may rephrase the wording, never the meaning.
++- `lessons` grow out of the brief's `lesson_seeds`.
++- `watch_text`, `alert_text` and `next_text` grow out of `watch_next`.
++
++If the brief contradicts your reading of the raw datapack, the brief wins on
++narrative; the datapack wins on every number.
+ 
+ ## OUTPUT FORMAT (strict)
+ 
+@@ -13,74 +30,83 @@ Return ONLY a JSON object. No markdown fences, no commentary before or after.
+ JSON VALIDITY IS MACHINE-CHECKED. A malformed response fails the build and is
+ retried, so follow these exactly:
+ - No trailing commas (the last item in every object/array has no comma).
+-- Captions must be single-line strings using \\n for line breaks. NEVER put a
++- Captions must be single-line strings using \n for line breaks. NEVER put a
+   literal line break inside quotes.
+ - No comments (no // or #). No unquoted keys. Every string in double quotes.
+ 
++Schema (types and shapes only — every value below is a placeholder describing
++the SHAPE, not text to copy):
++
+ ```json
+ {
+-  "headline": "Pharma stood tall while *Nifty* slipped.",
+-  "subline": "Defensives led, but breadth stayed weak across the tape.",
+-  "hero_text": "Nifty fell 0.48% but Pharma and Healthcare rose. Breadth stayed weak: 867 advances against 1,716 declines.",
+-  "why_head": "Why the market slipped",
++  "headline": "string with ONE *orange highlight* phrase of 2-6 words",
++  "subline": "string, one sentence",
++  "hero_text": "string, the day (or week) in one line, <= 25 words",
++  "why_head": "string, 4-6 words",
+   "why": [
+-    {"emoji": "💊", "title": "Pharma and healthcare led", "desc": "Defensive rotation lifted Cipla and healthcare names.", "badge": "Pharma up 0.84%"},
+-    {"emoji": "🏦", "title": "PSU banks dragged", "desc": "State lenders slipped while private names steadied.", "badge": "PSU Bank down 0.94%"},
+-    {"emoji": "🏭", "title": "Metals stayed soft", "desc": "Metal index fell with commodity prices muted.", "badge": "Metal down 0.86%"},
+-    {"emoji": "🌍", "title": "Flows split again", "desc": "FII sold while DII bought heavily, a familiar pattern.", "badge": "DII +4,977 Cr"}
+-  ],
+-  "sector_reasons": {
+-    "Pharma": "Defensive bid led the day.",
+-    "Healthcare": "Tracked pharma higher.",
+-    "Consumer Durables": "Steady demand names rose.",
+-    "PSU Bank": "State lenders led the fall.",
+-    "Media": "Weakest pocket of the session.",
+-    "Metal": "Commodity names stayed soft."
+-  },
+-  "bonus_title": "Breadth check",
+-  "bonus_text": "867 advances versus 1,716 declines. Weak breadth under a mild index fall.",
+-  "movers_note_gainers": "Adani names and Kotak led. Delivery stayed above 55%, a healthy sign.",
+-  "movers_note_losers": "Hindalco and HDFC Bank led the fall. Delivery above 57% hints at real selling.",
+-  "watch_text": "Support at 24,000 and resistance at 24,300 bracket the next session.",
+-  "lessons": [
+-    "Defensives led a down tape, a classic risk off tilt.",
+-    "Breadth was weak: 867 advances versus 1,716 declines.",
+-    "DII buying of Rs 4,977 Cr cushioned FII selling.",
+-    "VIX rose 4.76%, nudging caution higher."
++    {"emoji": "single emoji depicting THIS row's driver",
++     "title": "3-5 words",
++     "desc": "one sentence, <= 12 words",
++     "badge": "short data chip whose number MUST come from the datapack"}
+   ],
+-  "alert_title": "Watch the next session",
+-  "alert_text": "Global cues and the weekly options expiry land ahead of the next session.",
+-  "cta_headline": "Save this and *check back at the close*.",
+-  "cta_sub": "A defensive day with weak breadth. Follow for the full picture every evening.",
+-  "next_text": "Global cues and corporate actions land next session.",
+-  "caption_a": "Nifty slipped 0.48% but pharma and healthcare led.\n\nBreadth stayed weak: 867 advances versus 1,716 declines.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #StockMarketIndia #Pharma #MarketWrap",
+-  "caption_b": "Follow the flows, not just the headline.\n\nFII sold Rs 298 Cr but DII bought Rs 4,977 Cr.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #FIIDII #NiftyPharma #MarketWrap"
++  "sector_reasons": {"SectorShortName": "short reason string"},
++  "bonus_title": "string",
++  "bonus_text": "string",
++  "movers_note_gainers": "string",
++  "movers_note_losers": "string",
++  "watch_text": "string about the NEXT TRADING SESSION",
++  "lessons": ["string", "string", "string", "string"],
++  "alert_title": "string",
++  "alert_text": "string about the NEXT TRADING SESSION",
++  "cta_headline": "string with ONE *orange highlight* phrase",
++  "cta_sub": "string",
++  "next_text": "string about the NEXT TRADING SESSION",
++  "caption_a": "single-line string with \\n breaks",
++  "caption_b": "single-line string with \\n breaks"
+ }
+ ```
+ 
+ ## FIELD RULES
+ 
+-- `headline` / `cta_headline`: wrap the key phrase you want highlighted in
+-  orange with asterisks, e.g. `*Nifty*`. One highlight only, 2-6 words.
+-- `why`: exactly 4 rows. `emoji` a single relevant emoji. `badge` a short data
+-  chip (3-5 words) whose number MUST come from the datapack.
++- `why`: exactly 4 rows. `badge` a short data chip (3-5 words) whose number
++  MUST come from the datapack.
++- EMOJI DISCIPLINE: each `why` emoji must depict that row's specific driver
++  (pharma = 💊, crude = 🛢️, IT = 💻, metals = 🏭, autos = 🚗, rate/yield
++  story = 📉 or 📈, rupee = 💱, gold = 🥇, elections/policy = 🏛️). Never
++  reuse yesterday's emoji cast when the drivers differ, and never default to
++  🌍 or 🏦 unless global cues or banks genuinely are that row's driver. The
++  prompt's ANTI-REPETITION block lists emojis you have used recently.
+ - `sector_reasons`: keyed by the SHORT sector names you expect the day's 6
+   sectors to be. The renderer picks the top 3 and bottom 3 sectors by daily %
+-  change; any missing reason gets a generic fallback. Provide reasons for at
+-  least the sectors you mention in `why`/`lessons`.
++  change (by 5-day change in the weekly edition); any missing reason gets a
++  rank-based fallback. Provide reasons for at least the sectors you mention
++  in `why`/`lessons`.
+ - `lessons`: exactly 4, past tense, observational.
+-- `captions`: under 500 characters each including hashtags. Exactly 5 hashtags
+-  each, always including #Nifty and #IndianStockMarket. End with
++- `captions`: under 500 characters each including hashtags. Exactly 5
++  hashtags each, always including #Nifty and #IndianStockMarket, with the
++  remaining hashtags reflecting TODAY'S drivers (e.g. a pharma-led day gets
++  #NiftyPharma, an IT-led day gets #NiftyIT). End with
+   "Not investment advice." Include the line
+   "Daily wrap every evening @getstockpulse".
+ - Use `\n` for line breaks inside captions (double `\n\n` between blocks).
+-- `alert_title` / `alert_text` / `next_text` / `watch_text`: refer to the NEXT
+-  TRADING SESSION, never the next calendar day. Your prompt contains a
++- `alert_title` / `alert_text` / `next_text` / `watch_text`: refer to the
++  NEXT TRADING SESSION, never the next calendar day. Your prompt contains a
+   CALENDAR block that names the exact next session. Use that weekday/date
+   ("on Monday", "next session") — NEVER write "tomorrow", "tomorrow's ..."
+   or "next morning" unless the CALENDAR block says the next session IS the
+-  next calendar day (weekends and NSE holidays close the market; a Friday run
+-  must talk about Monday, not Saturday).
++  next calendar day.
++- WEEKLY EDITION (Fridays only): the prompt marks it with "EDITION: ...
++  WEEKLY MARKET WRAP". Frame `headline`, `hero_text`, `lessons` and the
++  captions around the WEEK, using `derived.five_day_change_pct` for
++  week-level numbers; Friday's session is the closing act. Movers and levels
++  remain Friday's.
++
++## ANTI-REPETITION (hard rule)
++
++Your prompt may contain an ANTI-REPETITION block listing headlines, row
++titles, lessons and emojis used in recent carousels. Do NOT reuse or lightly
++paraphrase any of them. Same meaning in different words counts as a repeat.
++A repeat fails the build and you will be asked to rewrite.
+ 
+ ## WRITING RULES
+ 
+@@ -100,6 +126,7 @@ retried, so follow these exactly:
+ All figures you quote must already exist in `derived.*`:
+ 
+ - Index closes/changes -> `derived.indices`
++- Week-level changes -> `derived.five_day_change_pct`
+ - Breadth -> `derived.breadth`
+ - FII/DII cash -> `derived.fii_dii_cash_summary`
+ - Movers + delivery % -> `derived.nifty50_movers`

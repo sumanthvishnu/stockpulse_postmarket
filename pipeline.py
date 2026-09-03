@@ -267,17 +267,174 @@ def _prose_text(prose):
     return " ".join(acc)
 
 
-def generate_carousel(pack):
-    """LLM writes prose JSON; code renders it through the fixed template.
+# ----------------------------------------------------------- story brief ---
+def deterministic_brief(pack):
+    """Story brief computed from the locked datapack. Used when MOCK_LLM=1 and
+    as the fallback if the brief LLM call keeps failing - so the carousel
+    still tells THAT day's story even with no model available."""
+    f = carousel.day_facts(pack)
+    drivers = []
+    for name, pct in f["top_sectors"][:2]:
+        drivers.append({"emoji": carousel.SECTOR_EMOJI.get(name, "📈"),
+                        "title": f"{name} led",
+                        "detail": f"{name} was among the strongest sectors.",
+                        "stat": f"{name} {pct:+.2f}%"})
+    if f["bottom_sectors"]:
+        name, pct = f["bottom_sectors"][0]
+        drivers.append({"emoji": carousel.SECTOR_EMOJI.get(name, "📉"),
+                        "title": f"{name} dragged",
+                        "detail": f"{name} was the weakest pocket.",
+                        "stat": f"{name} {pct:+.2f}%"})
+    br_word = "positive" if f["breadth_pos"] else "weak"
+    drivers.append({"emoji": "📊", "title": f"Breadth stayed {br_word}",
+                    "detail": (f"{f['advances']:,} advances versus "
+                               f"{f['declines']:,} declines."),
+                    "stat": f"{f['advances']:,} : {f['declines']:,}"})
+    return {
+        "one_liner": (f"Nifty closed {'up' if f['nifty_up'] else 'down'} "
+                      f"{abs(f['nifty_pct']):.2f}% at "
+                      f"{f['nifty_close']:,.2f}."),
+        "mood": ("risk-on" if f["nifty_up"] and f["breadth_pos"] else
+                 "risk-off" if not f["nifty_up"] and not f["breadth_pos"] else
+                 "mixed"),
+        "drivers": drivers[:4],
+        "flows_line": carousel._flows_line(f),
+        "watch_next": (f"Support {f['support']:,.0f}, resistance "
+                       f"{f['resistance']:,.0f}."
+                       if f["support"] and f["resistance"] else ""),
+        "week_pct": f["week_pct"],
+        "lesson_seeds": [],
+        "source": "deterministic",
+    }
+
+
+def generate_story_brief(pack, report_html):
+    """Stage 2b: distill the day's report into a compact story brief that the
+    carousel pass then compresses into slides. This is what makes the carousel
+    follow THAT day's report instead of re-interpreting the raw pack.
+
+    Returns (brief_dict, fell_back_bool)."""
+    if MOCK:
+        return deterministic_brief(pack), False
+    system = open(os.path.join(REPO, "skills", "brief.md"),
+                  encoding="utf-8").read()
+    base_user = ("DATAPACK (JSON):\n" + pack_json(pack) +
+                 "\n\nPOST-MARKET REPORT (HTML, already compiled and linted "
+                 "from the same datapack):\n" + report_html)
+    base_user += calendar_brief(pack)
+    issues = []
+    for attempt in range(1, 4):
+        user = base_user
+        if issues:
+            user += ("\n\nYour previous response had problems. Return the FULL "
+                     "corrected JSON object, fixing exactly these issues:\n- " +
+                     "\n- ".join(issues))
+        try:
+            brief = parse_json_lenient(llm.chat(
+                system, user, max_tokens=2500, temperature=0.3))
+            flat = _prose_text(brief)
+            issues = (compliance.number_lock(flat, pack) +
+                      compliance.calendar_lock(flat, pack))
+            if not issues:
+                brief["source"] = "llm"
+                log("  [brief] story brief extracted from report")
+                return brief, False
+        except Exception as e:  # noqa: BLE001
+            issues = [f"brief generation error: {e}"]
+        log(f"  [brief] attempt {attempt}: {issues}")
+    log("  [brief] falling back to deterministic brief from the datapack")
+    return deterministic_brief(pack), True
+
+
+# ------------------------------------------------------ anti-repetition ----
+def _prose_path(tdate):
+    return os.path.join(DATA, f"prose_{tdate.isoformat()}.json")
+
+
+def save_prose(tdate, prose):
+    """Persist each day's carousel prose so future runs can ban repeats."""
+    os.makedirs(DATA, exist_ok=True)
+    with open(_prose_path(tdate), "w", encoding="utf-8") as f:
+        json.dump(prose, f, ensure_ascii=False, indent=1)
+
+
+def recent_prose_memory(tdate, n=5):
+    """Load the last n days' prose (before tdate) and build a DO-NOT-REPEAT
+    block for the prompt plus sets for the code-level repeat check."""
+    past = []
+    if os.path.isdir(DATA):
+        for fn in sorted(os.listdir(DATA)):
+            m = re.fullmatch(r"prose_(\d{4}-\d{2}-\d{2})\.json", fn)
+            if not m or m.group(1) >= tdate.isoformat():
+                continue
+            try:
+                past.append((m.group(1), json.load(
+                    open(os.path.join(DATA, fn), encoding="utf-8"))))
+            except Exception:  # noqa: BLE001 - a corrupt memory file is skippable
+                continue
+    past = past[-n:]
+    headlines, emojis, titles, lessons = set(), set(), set(), set()
+    for _, p in past:
+        h = re.sub(r"\s+", " ", re.sub(r"[*_]", "",
+                                       str(p.get("headline", "")))).strip().lower()
+        if h:
+            headlines.add(h)
+        for row in (p.get("why") or []):
+            if row.get("emoji"):
+                emojis.add(row["emoji"])
+            if row.get("title"):
+                titles.add(row["title"].strip().lower())
+        for l in (p.get("lessons") or []):
+            if l:
+                lessons.add(l.strip().lower())
+    if not past:
+        return "", headlines, emojis
+    lines = ["ANTI-REPETITION (hard rule): these come from your previous "
+             f"{len(past)} carousel(s). Do NOT reuse or lightly paraphrase "
+             "any of them - same meaning in different words counts as a "
+             "repeat. Today's drivers decide today's wording."]
+    if headlines:
+        lines.append("Headlines already used: " + " | ".join(sorted(headlines)))
+    if titles:
+        lines.append("'Why' row titles already used: "
+                     + " | ".join(sorted(titles)))
+    if lessons:
+        lines.append("Lessons already used: " + " | ".join(sorted(lessons)))
+    if emojis:
+        lines.append("Emojis already used (avoid unless the driver genuinely "
+                     "repeats): " + " ".join(sorted(emojis)))
+    return "\n\n" + "\n".join(lines), headlines, emojis
+
+
+def generate_carousel(pack, brief, weekly=False):
+    """LLM writes prose JSON, guided by the day's story brief (distilled from
+    the report) and an anti-repetition memory of recent days; code renders it
+    through the fixed template.
 
     Never crashes the run: any LLM/parse error is retried with feedback, and
-    after 3 attempts it falls back to neutral prose with correct numbers."""
+    after 3 attempts it falls back to prose COMPUTED from the datapack (not a
+    static canned text). Returns (html, prose, issues, fell_back)."""
     system = open(os.path.join(REPO, "skills", "carousel.md"),
                   encoding="utf-8").read()
-    base_user = ("Here is today's datapack (JSON). Write the carousel prose "
-                 "content model as a JSON object.\n\n" + pack_json(pack))
+    tdate = date.fromisoformat(pack["meta"]["trading_date"])
+    memory_block, seen_headlines, seen_emojis = recent_prose_memory(tdate)
+
+    base_user = ("Here is today's datapack (JSON), followed by THE DAY'S "
+                 "STORY - the brief distilled from today's post-market "
+                 "report. Your prose must be a compression of that story, "
+                 "not a fresh interpretation of the raw numbers.\n\n"
+                 "DATAPACK:\n" + pack_json(pack) +
+                 "\n\nTHE DAY'S STORY (from the report, authoritative "
+                 "narrative):\n" + json.dumps(brief, ensure_ascii=False,
+                                              indent=1))
+    if weekly:
+        base_user += ("\n\nEDITION: today is Friday, so this is the WEEKLY "
+                      "MARKET WRAP edition. Frame the headline, hero text, "
+                      "lessons and captions around the WEEK (the datapack's "
+                      "five_day_change_pct), with Friday's session as the "
+                      "closing act. Movers and levels stay Friday's.")
     base_user += calendar_brief(pack)
-    sample = os.path.join(REPO, "prose27.json")
+    base_user += memory_block
     issues = []
     for attempt in range(1, 4):
         user = base_user
@@ -287,26 +444,41 @@ def generate_carousel(pack):
                      "\n- ".join(issues))
         try:
             if MOCK:
-                prose = (json.load(open(sample, encoding="utf-8"))
-                         if os.path.exists(sample) else carousel.default_prose())
+                # Dry runs exercise the computed prose (prose27.json belongs to
+                # a past session and would fail the number-lock anyway).
+                prose = carousel.fallback_prose(pack, weekly=weekly)
             else:
                 prose = parse_json_lenient(llm.chat(
-                    system, user, max_tokens=8000, temperature=0.4))
-            html, leftover = carousel.build(pack, prose)
+                    system, user, max_tokens=8000, temperature=0.85,
+                    model=(os.environ.get("LLM_MODEL_CAROUSEL") or None)))
+            html, leftover = carousel.build(pack, prose, weekly=weekly)
             issues = carousel.validate(html, pack)
             prose_flat = _prose_text(prose)
             issues += compliance.number_lock(prose_flat, pack)
             issues += compliance.calendar_lock(prose_flat, pack)
             if leftover:
                 issues += [f"unfilled template tokens: {leftover}"]
+            # code-level repeat check (the prompt ban alone is not reliable)
+            h = re.sub(r"\s+", " ", re.sub(
+                r"[*_]", "", str(prose.get("headline", "")))).strip().lower()
+            if h and h in seen_headlines:
+                issues += [f"headline repeats a previous day: '{h}' - write a "
+                           "fresh one from today's drivers"]
+            day_emojis = {r.get("emoji") for r in (prose.get("why") or [])
+                          if r.get("emoji")}
+            if day_emojis and day_emojis == seen_emojis:
+                issues += ["the exact emoji set was already used - pick emojis "
+                           "that depict today's specific drivers"]
             if not issues:
-                return html, prose, []
+                return html, prose, [], False
         except Exception as e:  # noqa: BLE001 - LLM/parse failure must not kill the run
             issues = [f"carousel generation error: {e}"]
         log(f"  [carousel] attempt {attempt}: {issues}")
-    log("  [carousel] falling back to neutral prose (numbers still locked)")
-    html, _ = carousel.build(pack, carousel.default_prose())
-    return html, carousel.default_prose(), (issues or ["used fallback prose"])
+    log("  [carousel] LLM failed - using computed fallback prose "
+        "(numbers AND story from the datapack)")
+    prose = carousel.fallback_prose(pack, weekly=weekly)
+    html, _ = carousel.build(pack, prose, weekly=weekly)
+    return html, prose, (issues or ["used fallback prose"]), True
 
 
 def minimal_report(pack):
@@ -513,7 +685,8 @@ def tg_escape(s):
     return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 
 
-def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues):
+def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues,
+           carousel_fallback=False, brief_fallback=False):
     import requests
     d = pack["derived"]
     n50 = d["indices"]["Nifty 50"]
@@ -534,6 +707,16 @@ def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues):
         f"🎠 <a href=\"{tg_escape(carousel_url)}\">Carousel (open in browser, download slides)</a>",
         f"📄 <a href=\"{tg_escape(pdf_url)}\">Report (PDF)</a>",
     ]
+    if carousel_fallback:
+        # Loud, not buried: fallback prose means yesterday's-style generic
+        # wording is exactly what you must NOT post without a look.
+        lines.append("")
+        lines.append("‼️ CAROUSEL USED FALLBACK PROSE (LLM failed all "
+                     "retries). Text was computed from the datapack - correct "
+                     "but plain. Review before posting.")
+    if brief_fallback:
+        lines.append("⚠️ Story brief fell back to datapack-computed (report "
+                     "distillation failed); carousel may be less narrative.")
     if issues:
         lines.append("")
         # issue strings contain report HTML fragments (<td>, <tr>...), which
@@ -612,11 +795,16 @@ def main():
             "19:00 IST, or use a past trading date.")
         return
 
+    weekly = tdate.weekday() == 4   # Friday -> WEEKLY MARKET WRAP edition
     log("== stage 2/4: compile report (LLM + lint) ==")
     report_html, report_issues = generate_with_lint("report", pack)
-    log("== stage 3/4: build carousel (LLM prose + template) ==")
-    carousel_html, carousel_prose, carousel_issues = generate_carousel(pack)
+    log("== stage 2b/4: distill story brief from the report ==")
+    brief, brief_fallback = generate_story_brief(pack, report_html)
+    log("== stage 3/4: build carousel (story brief + anti-repeat memory) ==")
+    carousel_html, carousel_prose, carousel_issues, carousel_fallback = \
+        generate_carousel(pack, brief, weekly=weekly)
     all_issues = report_issues + carousel_issues
+    save_prose(tdate, carousel_prose)
 
     log("== stage 4/4: render + publish + notify ==")
     day_dir = os.path.join(SITE, tdate.isoformat())
@@ -636,12 +824,16 @@ def main():
     with open(os.path.join(day_dir, "datapack.json"), "w",
               encoding="utf-8") as f:
         json.dump(pack, f, ensure_ascii=False, default=str)
+    with open(os.path.join(day_dir, "story_brief.json"), "w",
+              encoding="utf-8") as f:
+        json.dump(brief, f, ensure_ascii=False, indent=1)
 
     archive_pack(tdate)
 
     carousel_url = site_url(f"{tdate.isoformat()}/carousel.html")
     pdf_url = site_url(f"{tdate.isoformat()}/{pdf_name(tdate)}")
-    notify(tdate, pack, pdf_path, carousel_url, pdf_url, all_issues)
+    notify(tdate, pack, pdf_path, carousel_url, pdf_url, all_issues,
+           carousel_fallback=carousel_fallback, brief_fallback=brief_fallback)
 
     log(f"\nDone. PDF: {pdf_path}\nCarousel: {day_dir}/carousel.html"
         f"\nCarousel URL: {carousel_url}\nReport URL: {pdf_url}")

@@ -6,9 +6,22 @@ One pipeline, on a schedule, no manual steps:
 21:00 IST (Mon-Fri, GitHub Actions cron)
   ├─ fetch NSE datapack (fixed v3.5 fetcher, 0 gaps)
   ├─ OpenAI compiles the report HTML (SEBI-compliant)  → PDF
-  ├─ OpenAI builds the carousel HTML (8 slides + PNG download + captions)
+  ├─ OpenAI distills a STORY BRIEF from the report (JSON)
+  ├─ OpenAI writes carousel prose FROM THE BRIEF (+ anti-repeat memory)
+  │    → code renders it through the fixed template (8 slides)
   └─ Telegram message: links to the carousel + PDF, plus the PDF attached
 ```
+
+The carousel follows the day's report, not a fresh reading of the raw pack:
+the report is distilled into a story brief (drivers, mood, one-liner, what to
+watch), and the carousel prose must compress THAT. Every Friday the carousel
+ships the WEEKLY MARKET WRAP edition (week-level numbers from
+`derived.five_day_change_pct`, Friday as the closing act).
+
+Each day's prose JSON is archived in `data/prose_YYYY-MM-DD.json`; the next
+run gets the last 5 days as a DO-NOT-REPEAT block (headlines, row titles,
+lessons, emojis) plus a code-level repeat check that forces a rewrite. This
+is what keeps the text and emojis from going stale.
 
 You open the carousel link in your browser, review the slides, download the
 PNGs, and post. Nothing is posted automatically.
@@ -20,10 +33,12 @@ PNGs, and post. Nothing is posted automatically.
 | Path | What it is |
 |---|---|
 | `stockpulse_data_fetcher.py` | Fetcher v3.5 — NSE archives + derived metrics |
-| `pipeline.py` | Orchestrator (fetch → LLM → lint → PDF → site → Telegram) |
+| `pipeline.py` | Orchestrator (fetch → report → story brief → carousel → PDF → site → Telegram) |
+| `carousel.py` | Carousel renderer (deterministic numbers + LLM prose + computed fallback) |
 | `llm.py` | OpenAI-compatible LLM client (Kimi/DeepSeek-swappable) |
 | `compliance.py` | SEBI/house-style linter (spec §6) |
 | `skills/report.md` | System prompt = your post-market report skill |
+| `skills/brief.md` | System prompt = story-brief distiller (report → JSON brief) |
 | `skills/carousel.md` | System prompt = your carousel skill |
 | `trim_datapack.py` | Shrinks a full pack for manual Claude use |
 | `.github/workflows/daily.yml` | The 9 PM IST scheduler |
@@ -70,8 +85,20 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 | `TELEGRAM_CHAT_ID` | numeric chat id from step 3 |
 
 Optional (defaults used if unset): `LLM_BASE_URL` (default OpenAI), `LLM_MODEL`
-(default `gpt-4o-mini`). For Kimi later, set `LLM_BASE_URL=https://api.moonshot.ai/v1`
-and `LLM_MODEL` to a Kimi model — no code change.
+(default `gpt-4o-mini`), `LLM_MODEL_CAROUSEL` (default: same as `LLM_MODEL`).
+
+**Model recommendation.** `gpt-4o-mini` is fine for the report and the story
+brief (extraction tasks), but it is the main reason the old carousel prose
+felt flat. Set `LLM_MODEL_CAROUSEL=gpt-4o` — the prose call is ~2K tokens, so
+the added cost is a few paise per day and the writing quality jump is large.
+For Kimi later, set `LLM_BASE_URL=https://api.moonshot.ai/v1` and the models
+to Kimi ones — no code change.
+
+**Fallback behaviour (loud, not silent).** If the carousel LLM fails all
+retries, the run no longer ships a static canned text: prose is COMPUTED from
+the datapack (real top/bottom sectors, breadth, flows, streak, option
+levels), and the Telegram message carries a prominent "CAROUSEL USED
+FALLBACK PROSE" warning so you know to review before posting.
 
 ### 5. Test it
 Repo → **Actions → "StockPulse Daily Post-Market" → Run workflow** (leave the
