@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 *continues its decline* in mixed markets",
+ "subline": "Nifty 50 dips for the fourth straight session.",
+ "hero_text": "Diverse market performance as Nifty 50 closes lower.",
+ "why_head": "Key Drivers of Today's Market",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "Nifty 50 Decline",
+   "desc": "Nifty 50 fell by 41 points.",
+   "badge": "-0.17%"
+  },
+  {
+   "emoji": "💰",
+   "title": "FII Outflow",
+   "desc": "Foreign investors sold heavily.",
+   "badge": "Rs 2,345.87 Cr"
+  },
+  {
+   "emoji": "📈",
+   "title": "DII Inflow",
+   "desc": "Domestic investors increased holdings.",
+   "badge": "Rs 4,977.46 Cr"
+  },
+  {
+   "emoji": "🔍",
+   "title": "No Major Catalyst",
+   "desc": "Lack of clear market mover.",
+   "badge": "N/A"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Realty": "Gained from positive sentiment.",
+  "Nifty Media": "Benefited from sector-specific news.",
+  "Nifty IT": "Dragged down by profit-booking.",
+  "Nifty Auto": "Decline due to weak sales data.",
+  "Nifty FMCG": "Pressured by cost concerns.",
+  "Nifty Financial Services": "Inflow supported gains."
+ },
+ "bonus_title": "Flows Recap",
+ "bonus_text": "FIIs sold Rs 2,345.87 Cr, DIIs bought Rs 4,977.46 Cr.",
+ "movers_note_gainers": "LUMINO topped gainers with a 34.54% rise.",
+ "movers_note_losers": "SALASAR led losers, dropping 10.09%.",
+ "watch_text": "Watch for ONGC and COALINDIA dividends tomorrow.",
+ "lessons": [
+  "Nifty 50 declined for four consecutive days.",
+  "Mixed performance with more advances in broader markets.",
+  "Significant outflows from FIIs balanced by DII inflows.",
+  "Market lacked a clear catalyst today."
+ ],
+ "alert_title": "Corporate Action Alert",
+ "alert_text": "Tomorrow, watch ONGC and COALINDIA for dividend actions.",
+ "cta_headline": "Discover *market insights* with us",
+ "cta_sub": "Stay updated on daily market trends.",
+ "next_text": "Prepare for ONGC and COALINDIA dividends in tomorrow's session.",
+ "caption_a": "Nifty 50 fell for the 4th session, closing down 41 points. 📉\nMixed signals as broader markets showed diverse moves.\n#Nifty #IndianStockMarket #Nifty50 #FII #MarketUpdate\nNot investment advice. Daily wrap every evening @getstockpulse",
+ "caption_b": "FIIs recorded an outflow of Rs 2,345.87 Cr, while DIIs bought Rs 4,977.46 Cr. 💰\nNo clear catalyst, but watch for dividend actions soon.\n#Nifty #IndianStockMarket #DII #Nifty50 #Dividends\nNot investment advice. Daily wrap every evening @getstockpulse"
+}
