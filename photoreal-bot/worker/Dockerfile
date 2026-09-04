@@ -12,7 +12,8 @@ ENV HF_HUB_ENABLE_HF_TRANSFER=1 \
 COPY photoreal-bot/worker/requirements.txt /app/requirements.txt
 COPY photoreal-bot/worker/patch_diffusers.py /app/patch_diffusers.py
 RUN pip install --no-cache-dir -r /app/requirements.txt \
-    && python /app/patch_diffusers.py
+    && python /app/patch_diffusers.py \
+    && pip uninstall -y flash-attn flash_attn 2>/dev/null || true
 
 COPY photoreal-bot/generate.py photoreal-bot/safety.py photoreal-bot/presets.py /app/
 COPY photoreal-bot/worker/handler.py /app/handler.py

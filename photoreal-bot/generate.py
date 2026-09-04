@@ -53,34 +53,29 @@ def image_to_jpeg_bytes(image: Image.Image, quality: int = 92) -> bytes:
     return buf.getvalue()
 
 
-def _patch_diffusers_nn() -> None:
-    """Some diffusers builds use `nn.*` in lora_pipeline.py without importing nn."""
-    try:
-        import diffusers
-
-        path = os.path.join(os.path.dirname(diffusers.__file__), "loaders", "lora_pipeline.py")
-        if not os.path.isfile(path):
-            return
-        with open(path, encoding="utf-8") as fh:
-            text = fh.read()
-        if "from torch import nn" in text:
-            return
-        if "import torch" not in text:
-            return
-        text = text.replace("import torch\n", "import torch\nfrom torch import nn\n", 1)
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write(text)
-        log.info("Patched diffusers lora_pipeline.py missing `nn` import")
-    except Exception:
-        log.exception("Could not patch diffusers nn import")
-
-
 @lru_cache(maxsize=1)
 def load_pipeline():
     """First call downloads ~12–20 GB onto the RunPod volume, then reuses it."""
     if os.path.isdir("/runpod-volume"):
         os.environ.setdefault("HF_HOME", "/runpod-volume/huggingface")
         os.environ.setdefault("HUGGINGFACE_HUB_CACHE", "/runpod-volume/huggingface")
+
+    import sys
+    import types
+
+    dummy = types.ModuleType("flash_attn")
+    dummy.flash_attn_func = None
+    dummy.flash_attn_varlen_func = None
+    for name in (
+        "flash_attn",
+        "flash_attn_2_cuda",
+        "flash_attn_3",
+        "flash_attn.flash_attn_interface",
+        "flash_attn_interface",
+        "flashattn_hopper",
+        "sageattention",
+    ):
+        sys.modules[name] = dummy
 
     try:
         from diffusers import ZImageImg2ImgPipeline
