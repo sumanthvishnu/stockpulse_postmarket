@@ -616,6 +616,35 @@ def global_snippet(pack):
             "</th><th>Chg (pts)</th><th>Chg %</th></tr>" + rows + "</table>")
 
 
+def levels_snippet(pack):
+    """Pre-built technical-levels table (section 12) from the enrichment
+    block's Trendlyne pivots. Without this the model sometimes skipped the
+    levels entirely even when they were present in the pack (observed on the
+    04-Sep run). Returns '' when nothing usable was retrieved, so the caller
+    can omit the embed instruction."""
+    il = ((pack.get("derived") or {}).get("enrichment") or {}).get(
+        "index_levels") or {}
+    rows = ""
+    for label, name in (("NIFTY", "Nifty 50"), ("BANKNIFTY", "Bank Nifty")):
+        v = il.get(label) or {}
+        if v.get("stale_warning") or not isinstance(v.get("pivot"), (int, float)):
+            continue
+        def f(x):
+            return f"{x:,.2f}" if isinstance(x, (int, float)) else "n/a"
+        rows += (f"<tr><td>{name}</td><td>{f(v.get('pivot'))}</td>"
+                 f"<td>{f(v.get('s1'))}</td><td>{f(v.get('s2'))}</td>"
+                 f"<td>{f(v.get('r1'))}</td><td>{f(v.get('r2'))}</td>"
+                 f"<td>{f(v.get('rsi'))}</td>"
+                 f"<td>{v.get('sma_insight') or ''}</td>"
+                 f"<td>{v.get('source', 'Trendlyne technical desk')}, "
+                 f"{v.get('asof_ist', '')}</td></tr>")
+    if not rows:
+        return ""
+    return ("<table class='levels'><tr><th>Index</th><th>Pivot</th>"
+            "<th>S1</th><th>S2</th><th>R1</th><th>R2</th><th>RSI(14)</th>"
+            "<th>SMA insight</th><th>Source</th></tr>" + rows + "</table>")
+
+
 def generate_with_lint(kind, pack):
     """Generate report/carousel HTML, lint it, retry with feedback."""
     system = open(os.path.join(REPO, "skills", f"{kind}.md"),
@@ -633,6 +662,17 @@ def generate_with_lint(kind, pack):
             "markets table in section 10.\n\n"
             "DERIVATIVES DASHBOARD:\n" + derivatives_snippet(pack) +
             "\n\nGLOBAL MARKETS TABLE:\n" + global_snippet(pack) + "\n")
+        lvl = levels_snippet(pack)
+        if lvl:
+            base_user += (
+                "\nA third pre-computed table is provided below. Embed it "
+                "VERBATIM in section 12 after the derivatives dashboard - it "
+                "carries the day's technical levels retrieved from the "
+                "Trendlyne technical desk (keep the Source column as-is; it "
+                "is the attribution). If it is absent from this prompt, no "
+                "levels were retrieved today and section 12 uses the "
+                "option-chain levels only.\n\n"
+                "TECHNICAL LEVELS (Trendlyne technical desk):\n" + lvl + "\n")
     html = None
     issues = []
     for attempt in range(1, 6):

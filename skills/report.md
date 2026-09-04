@@ -177,11 +177,13 @@ commentary before or after. Requirements:
     "high PCR = bullish"; max pain matters most on/just before expiry — on
     other days present it without predictive framing.
     **Technical levels**: in addition to the option-chain levels (tagged
-    "option-chain derived, primary data"), include the pivot levels from
-    `enrichment.index_levels` when present: pivot, R1/R2/R3, S1/S2/S3, plus
-    RSI(14) and the SMA insight line — attribute each as "Trendlyne
-    technical desk, retrieved [checked_ist]". Never generate levels from
-    your own reasoning.
+    "option-chain derived, primary data"), a pre-computed TECHNICAL LEVELS
+    table is provided in your prompt whenever `enrichment.index_levels` has
+    usable (non-stale) entries: embed it VERBATIM in this section (like the
+    derivatives and global tables), and add at most one line of context
+    around it. When the table is not in your prompt, no desk levels were
+    retrieved — the option-chain levels stand alone and the absence goes in
+    the Data Gaps Register. Never generate levels from your own reasoning.
     **F&O ban list** from `derived.fo_ban` — its `trade_date` is the NEXT
     trading day; report it as such and include entries/exits if present. If
     its `stale_warning` is true, report the ban list as unavailable and name

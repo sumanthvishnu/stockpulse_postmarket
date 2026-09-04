@@ -53,7 +53,9 @@ def _gap(pack, source, reason):
 # ------------------------------------------------------------------ blocks -
 def _index_levels(enr, pack, is_today):
     out = {}
-    for label, code in (("NIFTY", "NIFTY"), ("BANKNIFTY", "NIFTY BANK")):
+    # Trendlyne index codes: "NIFTY" and "BANKNIFTY" (NOT "NIFTY BANK" -
+    # that returns Stock-not-found; verified live against the MCP)
+    for label, code in (("NIFTY", "NIFTY"), ("BANKNIFTY", "BANKNIFTY")):
         text = tly.call("get_overview_news_corp_events",
                         {"stock_code": code, "type": "technical"})
         tly.polite_pause()
@@ -71,6 +73,11 @@ def _index_levels(enr, pack, is_today):
         if piv:
             piv["rsi"] = tly.parse_rsi(text)
             piv["sma_insight"] = tly.parse_sma_insight(text)
+            # round raw pivots (the feed emits 57457.11666...) so the pack,
+            # the report table and the number lock all see the same value
+            for k, val in list(piv.items()):
+                if isinstance(val, float):
+                    piv[k] = round(val, 2)
             piv["source"] = "Trendlyne technical desk"
             piv["asof_ist"] = _now().strftime("%Y-%m-%d %H:%M IST")
             out[label] = piv
