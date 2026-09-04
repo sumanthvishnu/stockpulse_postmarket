@@ -1,4 +1,4 @@
-"""Z-Image-Turbo img2img worker. Loaded once, then reused for every Telegram job."""
+"""Photoreal img2img worker. Prefers Z-Image-Turbo; falls back to SDXL."""
 
 from __future__ import annotations
 
@@ -14,7 +14,6 @@ import torch
 import torch.nn as nn
 from PIL import Image
 
-# Broken diffusers wheels use `nn` / `torch` in lora_pipeline.py without imports.
 builtins.torch = torch
 builtins.nn = nn
 
@@ -23,6 +22,9 @@ from safety import PromptBlocked, assert_adult_prompt
 log = logging.getLogger("photoreal")
 
 MODEL_ID = os.environ.get("MODEL_ID", "Tongyi-MAI/Z-Image-Turbo")
+FALLBACK_MODEL_ID = os.environ.get(
+    "FALLBACK_MODEL_ID", "stabilityai/sdxl-turbo"
+)
 LORA_PATH = os.environ.get("NSFW_LORA_PATH", "").strip()
 STEPS = int(os.environ.get("INFER_STEPS", "9"))
 GUIDANCE = float(os.environ.get("GUIDANCE_SCALE", "0.0"))
@@ -52,36 +54,64 @@ def image_to_jpeg_bytes(image: Image.Image, quality: int = 92) -> bytes:
     return buf.getvalue()
 
 
+def _load_zimage(dtype):
+    from diffusers import ZImageImg2ImgPipeline
+
+    pipe = ZImageImg2ImgPipeline.from_pretrained(MODEL_ID, torch_dtype=dtype)
+    pipe._photoreal_kind = "zimage"
+    return pipe
+
+
+def _load_sdxl(dtype):
+    from diffusers import AutoPipelineForImage2Image
+
+    pipe = AutoPipelineForImage2Image.from_pretrained(
+        FALLBACK_MODEL_ID,
+        torch_dtype=dtype,
+        variant="fp16",
+        use_safetensors=True,
+    )
+    pipe._photoreal_kind = "sdxl"
+    return pipe
+
+
 @lru_cache(maxsize=1)
 def load_pipeline():
-    """First call downloads ~12–20 GB onto the RunPod volume, then reuses it."""
+    """First call downloads weights onto the RunPod volume, then reuses them."""
     if os.path.isdir("/runpod-volume"):
         os.environ.setdefault("HF_HOME", "/runpod-volume/huggingface")
         os.environ.setdefault("HUGGINGFACE_HUB_CACHE", "/runpod-volume/huggingface")
 
-    from attn_stub import disable_broken_attn
-
-    disable_broken_attn()
-
     try:
-        from diffusers import ZImageImg2ImgPipeline
-    except Exception as exc:
-        raise RuntimeError(f"Could not load Z-Image pipeline: {exc}") from exc
+        from attn_stub import disable_broken_attn
+
+        disable_broken_attn()
+    except Exception:
+        log.exception("attn stub failed")
 
     if not torch.cuda.is_available():
         raise RuntimeError("No NVIDIA GPU visible on this worker.")
 
-    dtype = torch.bfloat16
-    log.info("Loading %s on %s ...", MODEL_ID, torch.cuda.get_device_name(0))
-    pipe = ZImageImg2ImgPipeline.from_pretrained(MODEL_ID, torch_dtype=dtype)
+    dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+    log.info("Loading model on %s ...", torch.cuda.get_device_name(0))
+
+    try:
+        pipe = _load_zimage(dtype)
+        log.info("Loaded Z-Image-Turbo")
+    except Exception:
+        log.exception("Z-Image failed; using SDXL img2img fallback")
+        dtype = torch.float16
+        pipe = _load_sdxl(dtype)
+        log.info("Loaded fallback %s", FALLBACK_MODEL_ID)
+
     pipe.to("cuda")
     pipe.set_progress_bar_config(disable=True)
-
     if LORA_PATH:
-        log.info("Loading LoRA %s", LORA_PATH)
-        pipe.load_lora_weights(LORA_PATH)
-
-    log.info("Pipeline ready")
+        try:
+            pipe.load_lora_weights(LORA_PATH)
+        except Exception:
+            log.exception("LoRA load failed")
+    log.info("Pipeline ready (%s)", getattr(pipe, "_photoreal_kind", "?"))
     return pipe
 
 
@@ -102,6 +132,13 @@ def generate_batch(
     pipe = load_pipeline()
     strength = min(0.95, max(0.25, float(strength)))
     count = min(8, max(1, int(count)))
+    kind = getattr(pipe, "_photoreal_kind", "zimage")
+    if kind == "sdxl":
+        steps = int(os.environ.get("SDXL_STEPS", "6"))
+        guidance = float(os.environ.get("SDXL_GUIDANCE", "0.0"))
+    else:
+        steps = STEPS
+        guidance = GUIDANCE
 
     if seed is None:
         seed = int.from_bytes(os.urandom(4), "little")
@@ -113,12 +150,12 @@ def generate_batch(
             prompt=full,
             image=init,
             strength=strength,
-            num_inference_steps=STEPS,
-            guidance_scale=GUIDANCE,
+            num_inference_steps=steps,
+            guidance_scale=guidance,
             generator=g,
         ).images[0]
         out.append(result)
-        log.info("Generated %s/%s seed=%s", i + 1, count, seed + i)
+        log.info("Generated %s/%s seed=%s kind=%s", i + 1, count, seed + i, kind)
     return out
 
 
