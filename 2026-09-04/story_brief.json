@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 edges up 0.10% amid mixed sectoral performance.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "📊",
+   "title": "Tata Steel Meet",
+   "detail": "Tata Steel announced an analyst/investor meet.",
+   "stat": "2.49% gain for Tata Steel"
+  },
+  {
+   "emoji": "📊",
+   "title": "Bharti Airtel Meet",
+   "detail": "Bharti Airtel announced an analyst/investor meet.",
+   "stat": "-1.55% for Bharti Airtel"
+  },
+  {
+   "emoji": "📈",
+   "title": "Market Breadth",
+   "detail": "Positive breadth with 1,406 advances.",
+   "stat": "1.184 advance-decline ratio"
+  },
+  {
+   "emoji": "💹",
+   "title": "Institutional Flows",
+   "detail": "DIIs net buyers, FIIs net sellers.",
+   "stat": "Rs 8,930.12 Cr DII inflow"
+  }
+ ],
+ "flows_line": "FIIs were net sellers at Rs 3,111.94 Cr; DIIs net buyers at Rs 8,930.12 Cr.",
+ "watch_next": "GIFT Nifty suggests a positive opening for Monday, 07 September 2026.",
+ "week_pct": -1.15,
+ "lesson_seeds": [
+  "Nifty 50 closed slightly higher despite mixed sectoral performance.",
+  "Tata Steel and Bharti Airtel moved on analyst/investor meet news.",
+  "Positive market breadth with more advances than declines.",
+  "DIIs' buying outpaced FIIs' selling, supporting the market."
+ ],
+ "source": "llm"
+}
