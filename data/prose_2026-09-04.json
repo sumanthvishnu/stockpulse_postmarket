@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 *edges up* 0.10% amid a mixed week",
+ "subline": "A week of mixed performance ends with slight gains.",
+ "hero_text": "Nifty 50 ends the week down 1.15%, despite Friday's modest gain.",
+ "why_head": "Why the Market Moved",
+ "why": [
+  {
+   "emoji": "📊",
+   "title": "Tata Steel Meet",
+   "desc": "Tata Steel announced an analyst meet.",
+   "badge": "2.49% gain"
+  },
+  {
+   "emoji": "📊",
+   "title": "Bharti Airtel Meet",
+   "desc": "Bharti Airtel had an investor meet.",
+   "badge": "-1.55% change"
+  },
+  {
+   "emoji": "📈",
+   "title": "Market Breadth",
+   "desc": "Advances outnumbered declines.",
+   "badge": "1.184 adv-decl ratio"
+  },
+  {
+   "emoji": "💹",
+   "title": "Institutional Flows",
+   "desc": "DIIs bought, FIIs sold.",
+   "badge": "Rs 8,930 Cr DII inflow"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Metal": "Boosted by Tata Steel's gain.",
+  "Nifty IT": "Dragged by sectoral weakness.",
+  "Nifty Pharma": "Under pressure from broader market trends.",
+  "Nifty Financial Services": "Supported by DII buying.",
+  "Nifty Realty": "Volatile amid mixed market cues.",
+  "Nifty FMCG": "Slight decline on weak trends."
+ },
+ "bonus_title": "Global Cues",
+ "bonus_text": "US markets ended in red, impacting global sentiment.",
+ "movers_note_gainers": "Tata Steel surged on positive news. Reliance also gained.",
+ "movers_note_losers": "HCL Tech and Bharti Airtel fell as IT and telecom struggled.",
+ "watch_text": "Watch for GIFT Nifty's positive cue as Monday opens.",
+ "lessons": [
+  "Nifty 50 closed the week down despite a mixed sectoral performance.",
+  "Tata Steel and Bharti Airtel were influenced by upcoming meets.",
+  "Market breadth was positive with more advances.",
+  "DII buying provided support against FII selling."
+ ],
+ "alert_title": "Next Session on Monday",
+ "alert_text": "Monitor GIFT Nifty and institutional flows as indicators.",
+ "cta_headline": "Daily Wrap with *Market Insights*",
+ "cta_sub": "Catch the latest market wrap and insights daily.",
+ "next_text": "Get ready for Monday, 07 September 2026.",
+ "caption_a": "Tata Steel climbs on analyst meet news while Nifty 50 closes the week down 1.15%.\n\nDIIs net bought Rs 8,930 Cr, offsetting FII selling.\n\nWatch for positive GIFT Nifty cues as Monday opens.\n\nDaily wrap every evening @getstockpulse\n#Nifty #IndianStockMarket #MarketWrap #GIFTNifty #DIIs",
+ "caption_b": "Nifty 50 edges up 0.10% on Friday, capping a mixed week.\n\nMarket breadth positive with 1,406 advances.\n\nPrepare for Monday with GIFT Nifty's upbeat signal.\n\nDaily wrap every evening @getstockpulse\n#Nifty #IndianStockMarket #TataSteel #BhartiAirtel #InstitutionalFlows"
+}
