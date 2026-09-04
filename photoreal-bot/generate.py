@@ -8,8 +8,15 @@ from functools import lru_cache
 from io import BytesIO
 from typing import Iterable
 
+import builtins
+
 import torch
+import torch.nn as nn
 from PIL import Image
+
+# Broken diffusers wheels reference `nn` in lora_pipeline.py without importing it.
+# Name lookup falls back to builtins, so this avoids a writable site-packages.
+builtins.nn = nn
 
 from safety import PromptBlocked, assert_adult_prompt
 
