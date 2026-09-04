@@ -10,6 +10,12 @@ import sys
 # generate.py lives one directory up; Docker copies it next to this file.
 sys.path.insert(0, os.path.dirname(__file__))
 
+import builtins
+
+import torch.nn as nn
+
+builtins.nn = nn
+
 import runpod
 
 from generate import PromptBlocked, generate_batch, image_from_bytes, jpeg_batch
