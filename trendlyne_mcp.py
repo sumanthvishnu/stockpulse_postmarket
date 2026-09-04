@@ -134,7 +134,7 @@ def parse_sma_insight(text):
 def parse_price(text):
     """Latest traded level from an overview/technical payload."""
     import re
-    for pat in (r"currentPrice\s*\|\s*([\d,]+(?:\.\d+)?)",
+    for pat in (r"currentPrice\s*[:|]\s*([\d,]+(?:\.\d+)?)",
                 r"\"current_price\":\s*([\d.]+)",
                 r"lastPrice\s*[:|]\s*([\d,]+(?:\.\d+)?)"):
         m = re.search(pat, text or "")

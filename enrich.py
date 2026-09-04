@@ -22,7 +22,7 @@ is filtered by publication date and stays valid for backfills.
 import json
 import os
 import re
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as XmlET
 from datetime import date, datetime, timedelta, timezone
 
 import requests
@@ -31,6 +31,10 @@ import trendlyne_mcp as tly
 
 IST = timezone(timedelta(hours=5, minutes=30))
 ET = timezone(timedelta(hours=-4))   # FF calendar publishes US Eastern (EDT)
+# NOTE: the XML module is imported as XmlET, never ET - ET is the US-Eastern
+# timezone constant above. Reusing the name crashes the econ-calendar parse
+# (this exact collision killed the first live run: backfills skip the
+# calendar block, so it only surfaced on a same-day run).
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/128.0 Safari/537.36")
 FF_CALENDAR = "https://nfs.faireconomy.media/ff_calendar_thisweek.xml"
@@ -168,9 +172,31 @@ def _econ_calendar(enr, pack, next_session_iso):
         _gap(pack, "forexfactory:calendar", f"calendar fetch failed: {e}")
         return
     try:
-        root = ET.fromstring(r.content)
-    except ET.ParseError as e:
+        root = XmlET.fromstring(r.content)
+    except XmlET.ParseError as e:
         _gap(pack, "forexfactory:calendar", f"calendar XML parse failed: {e}")
+        return
+    # The weekly feed covers the CURRENT week only (Sun-Fri). On a Friday run
+    # the next session (Monday) is outside the feed; an empty result then is
+    # a coverage gap, not a genuine "no events" - say so honestly.
+    feed_dates = []
+    for ev in root.iter("event"):
+        el = ev.find("date")
+        try:
+            feed_dates.append(datetime.strptime((el.text or "").strip(),
+                                                "%m-%d-%Y").date())
+        except ValueError:
+            continue
+    if feed_dates and date.fromisoformat(next_session_iso) > max(feed_dates):
+        enr["econ_calendar"] = {
+            "for_session": next_session_iso, "events": [],
+            "source": "ForexFactory weekly calendar",
+            "note": (f"feed covers through {max(feed_dates).isoformat()} "
+                     f"only; events for {next_session_iso} publish over the "
+                     "weekend - calendar unavailable for this session")}
+        _gap(pack, "forexfactory:calendar",
+             f"next session {next_session_iso} is beyond the weekly feed's "
+             f"coverage (through {max(feed_dates).isoformat()})")
         return
     events = []
     for ev in root.iter("event"):
@@ -222,17 +248,26 @@ def run(pack):
     enr = {"checked_ist": _now().strftime("%Y-%m-%d %H:%M IST"),
            "backfill_run": not is_today}
 
+    def safe(name, fn, *args):
+        """One feed's bug must never kill the pipeline - record it as a gap
+        and continue with the others."""
+        try:
+            fn(*args)
+        except Exception as e:  # noqa: BLE001
+            _gap(pack, f"enrich:{name}", f"unexpected error: "
+                                         f"{type(e).__name__}: {e}")
+
     if not tly.available():
         _gap(pack, "trendlyne:mcp",
              "Trendlyne MCP unavailable or TRENDLYNE_MCP_TOKEN unset - "
              "skipping index levels, GIFT Nifty and mover catalysts")
     else:
-        _index_levels(enr, pack, is_today)
-        _gift_nifty(enr, pack, is_today)
-        _mover_catalysts(enr, pack, tdate)
+        safe("index_levels", _index_levels, enr, pack, is_today)
+        safe("gift_nifty", _gift_nifty, enr, pack, is_today)
+        safe("mover_catalysts", _mover_catalysts, enr, pack, tdate)
 
     if nxt and is_today:
-        _econ_calendar(enr, pack, nxt)
+        safe("econ_calendar", _econ_calendar, enr, pack, nxt)
     elif not is_today:
         enr["econ_calendar"] = {"note": "skipped on backfill (weekly feed "
                                         "only covers the current week)"}
