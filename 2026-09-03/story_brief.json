@@ -1,40 +1,40 @@
 {
- "one_liner": "Nifty 50 dips 0.17% amid mixed market cues, marking fourth consecutive loss.",
+ "one_liner": "Markets mixed as Nifty 50 dips, but broader indices gain.",
  "mood": "mixed",
  "drivers": [
   {
-   "emoji": "💻",
-   "title": "IT Sector Decline",
-   "detail": "Tech Mahindra drops 1.54% after ESG rating disclosure.",
-   "stat": "-264.05 pts"
+   "emoji": "🚢",
+   "title": "Adani Ports Gains",
+   "detail": "Adani Ports rose 2.02% after a media release.",
+   "stat": "2.02%"
   },
   {
    "emoji": "🏦",
-   "title": "Bank Sector Focus",
-   "detail": "HDFC Bank gains amid FCNR(B) deposit surge.",
-   "stat": "+0.83%"
+   "title": "Axis Bank Rises",
+   "detail": "Axis Bank up 1.04% on credit card industry news.",
+   "stat": "1.04%"
   },
   {
-   "emoji": "🚢",
-   "title": "Adani Ports Surge",
-   "detail": "Adani Ports rises 2.02% post media release.",
-   "stat": "+2.02%"
+   "emoji": "🏦",
+   "title": "HDFC Bank Up",
+   "detail": "HDFC Bank increased 0.83% amid FCNR(B) deposits.",
+   "stat": "0.83%"
   },
   {
-   "emoji": "🛒",
-   "title": "FMCG Sector Weakness",
-   "detail": "FMCG sector drags with 0.62% decline.",
-   "stat": "-284.9 pts"
+   "emoji": "💻",
+   "title": "Tech Mahindra Falls",
+   "detail": "Tech Mahindra dropped 1.54% after ESG rating news.",
+   "stat": "-1.54%"
   }
  ],
- "flows_line": "FIIs net sold Rs 2,345.87 Cr, while DIIs net bought Rs 4,977.46 Cr.",
- "watch_next": "Tomorrow, watch ONGC and COALINDIA for dividend actions and F&O ban list.",
+ "flows_line": "FIIs sold Rs 2,345.87 Cr; DIIs bought Rs 4,977.46 Cr.",
+ "watch_next": "Watch for ONGC and Coal India going ex-dividend tomorrow.",
  "week_pct": -0.9,
  "lesson_seeds": [
-  "Nifty 50 continues its losing streak for the fourth session.",
-  "Broader markets show resilience with midcap and smallcap gains.",
+  "Nifty 50 continues its losing streak.",
+  "Broader indices show resilience despite Nifty 50's dip.",
   "Positive market breadth with more advances than declines.",
-  "Global markets exhibit mixed trends, with US indices closing higher."
+  "FIIs continue to sell, while DIIs are net buyers."
  ],
  "source": "llm"
 }
