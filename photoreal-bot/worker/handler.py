@@ -21,6 +21,7 @@ import torch.nn as nn
 
 builtins.torch = torch
 builtins.nn = nn
+disable_broken_attn()
 
 import runpod
 
