@@ -6,25 +6,13 @@ import base64
 import logging
 import os
 import sys
-import types
 
 # generate.py lives one directory up; Docker copies it next to this file.
 sys.path.insert(0, os.path.dirname(__file__))
 
-# flash-attn on this torch 2.4 image crashes infer_schema. Force SDPA instead.
-_dummy_attn = types.ModuleType("flash_attn")
-_dummy_attn.flash_attn_func = None
-_dummy_attn.flash_attn_varlen_func = None
-for _name in (
-    "flash_attn",
-    "flash_attn_2_cuda",
-    "flash_attn_3",
-    "flash_attn.flash_attn_interface",
-    "flash_attn_interface",
-    "flashattn_hopper",
-    "sageattention",
-):
-    sys.modules[_name] = _dummy_attn
+from attn_stub import disable_broken_attn
+
+disable_broken_attn()
 
 import builtins
 

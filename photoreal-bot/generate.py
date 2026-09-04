@@ -15,7 +15,6 @@ import torch.nn as nn
 from PIL import Image
 
 # Broken diffusers wheels use `nn` / `torch` in lora_pipeline.py without imports.
-# Name lookup falls back to builtins, so this works on a read-only image.
 builtins.torch = torch
 builtins.nn = nn
 
@@ -60,22 +59,9 @@ def load_pipeline():
         os.environ.setdefault("HF_HOME", "/runpod-volume/huggingface")
         os.environ.setdefault("HUGGINGFACE_HUB_CACHE", "/runpod-volume/huggingface")
 
-    import sys
-    import types
+    from attn_stub import disable_broken_attn
 
-    dummy = types.ModuleType("flash_attn")
-    dummy.flash_attn_func = None
-    dummy.flash_attn_varlen_func = None
-    for name in (
-        "flash_attn",
-        "flash_attn_2_cuda",
-        "flash_attn_3",
-        "flash_attn.flash_attn_interface",
-        "flash_attn_interface",
-        "flashattn_hopper",
-        "sageattention",
-    ):
-        sys.modules[name] = dummy
+    disable_broken_attn()
 
     try:
         from diffusers import ZImageImg2ImgPipeline
