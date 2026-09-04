@@ -1,58 +1,51 @@
 {
- "headline": "Nifty 50 *dips amid* mixed market cues",
- "subline": "The index dropped by 0.17%, continuing its losing streak.",
- "hero_text": "Nifty 50 marked its fourth consecutive loss, falling 0.17% today.",
- "why_head": "Key Market Drivers",
+ "headline": "*Nifty* closed down as Realty resisted the fall.",
+ "subline": "FII sold while DII bought. Breadth stayed positive.",
+ "hero_text": "Nifty closed down 0.17% at 23,873.45. Realty led the sectors while IT lagged.",
+ "why_head": "Why the market moved",
  "why": [
   {
+   "emoji": "🏠",
+   "title": "Realty led",
+   "desc": "Realty was among the strongest sectors.",
+   "badge": "Realty +2.58%"
+  },
+  {
+   "emoji": "📡",
+   "title": "Media led",
+   "desc": "Media was among the strongest sectors.",
+   "badge": "Media +1.74%"
+  },
+  {
    "emoji": "💻",
-   "title": "IT Sector Decline",
-   "desc": "Tech Mahindra's ESG rating impacts.",
-   "badge": "-264.05 pts"
+   "title": "IT dragged",
+   "desc": "IT was the weakest pocket of the session.",
+   "badge": "IT -0.85%"
   },
   {
-   "emoji": "🏦",
-   "title": "Bank Sector Focus",
-   "desc": "HDFC Bank gains on FCNR(B).",
-   "badge": "+0.83%"
-  },
-  {
-   "emoji": "🚢",
-   "title": "Adani Ports Surge",
-   "desc": "Shares rise after media release.",
-   "badge": "+2.02%"
-  },
-  {
-   "emoji": "🛒",
-   "title": "FMCG Weakness",
-   "desc": "Sector declines 0.62%.",
-   "badge": "-284.9 pts"
+   "emoji": "📊",
+   "title": "Breadth stayed positive",
+   "desc": "1,631 advances versus 960 declines.",
+   "badge": "1,631 : 960"
   }
  ],
- "sector_reasons": {
-  "IT": "Tech Mahindra's ESG rating decline.",
-  "Bank": "HDFC Bank benefits from FCNR(B) surge.",
-  "FMCG": "Sector dragged by weak performance.",
-  "Realty": "Positive momentum supports gains.",
-  "Media": "Sector advances with strong gains.",
-  "Pharma": "Sector faces selling pressure."
- },
- "bonus_title": "Market Breadth",
- "bonus_text": "Advances surpass declines with a 1.7:1 ratio.",
- "movers_note_gainers": "Adani Ports led the gains in Nifty 50 with a 2.02% rise.",
- "movers_note_losers": "BAJAJ-AUTO was the top loser, down by 1.73%.",
- "watch_text": "Tomorrow, watch ONGC and COALINDIA for dividend actions.",
+ "sector_reasons": {},
+ "bonus_title": "Breadth check",
+ "bonus_text": "1,631 advances versus 960 declines.",
+ "movers_note_gainers": "Gainers closed firm into the close.",
+ "movers_note_losers": "Losers stayed under pressure all session.",
+ "watch_text": "Support at 23,000 and resistance at 24,000 bracket the next session.",
  "lessons": [
-  "Nifty 50 continues its losing streak for the fourth session.",
-  "Broader markets show resilience with midcap and smallcap gains.",
-  "Positive market breadth with more advances than declines.",
-  "Global markets exhibit mixed trends, with US indices closing higher."
+  "Realty was the strongest sector, +2.58% on the day.",
+  "Breadth was positive: 1,631 advances versus 960 declines.",
+  "FII sold while DII bought in the cash market.",
+  "Nifty has now closed down 4 sessions in a row."
  ],
- "alert_title": "Upcoming Events",
- "alert_text": "Watch for dividend actions in ONGC and COALINDIA tomorrow.",
- "cta_headline": "Stay *Informed* on Market Moves",
- "cta_sub": "Catch the latest updates and insights daily.",
- "next_text": "Watch ONGC and COALINDIA for dividend actions on Friday.",
- "caption_a": "Adani Ports led gains with a 2.02% rise. Tech Mahindra's fall dragged IT. FIIs net sold Rs 2,345.87 Cr while DIIs bought Rs 4,977.46 Cr.\n\nWatch ONGC and COALINDIA for dividends.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyIT #NiftyFMCG #MarketWrap",
- "caption_b": "Market breadth positive with 1.7 times more advances. Nifty 50 down for fourth straight session. Global cues mixed, US indices up.\n\nEyes on ONGC, COALINDIA dividends.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #AdaniPorts #HDFCBank #TechMahindra"
+ "alert_title": "Watch the next session",
+ "alert_text": "Fresh global cues arrive before the next open.",
+ "cta_headline": "Save this and *check back at the close*.",
+ "cta_sub": "Follow for the full picture every evening.",
+ "next_text": "Global cues and corporate actions land next session.",
+ "caption_a": "Nifty closed down 0.17% at 23,873.45.\\n\\nRealty led, IT lagged. Breadth: 1,631 advances vs 960 declines.\\n\\nDaily wrap every evening @getstockpulse\\n\\nNot investment advice.\\n\\n#Nifty #IndianStockMarket #StockMarket #MarketWrap #Investing",
+ "caption_b": "FII sold while DII bought today.\\n\\nNifty down 0.17%, breadth positive.\\n\\nDaily wrap every evening @getstockpulse\\n\\nNot investment advice.\\n\\n#Nifty #IndianStockMarket #FIIDII #MarketWrap #Trading"
 }
