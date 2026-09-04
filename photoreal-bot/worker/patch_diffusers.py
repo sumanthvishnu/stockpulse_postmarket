@@ -1,6 +1,8 @@
-"""Fix broken diffusers builds that use `nn` without importing it."""
+"""Prepend missing torch imports in broken diffusers lora_pipeline.py."""
 
 from pathlib import Path
+
+HEADER = "import torch\nfrom torch import nn\n"
 
 
 def main() -> None:
@@ -11,16 +13,10 @@ def main() -> None:
         print("no lora_pipeline.py")
         return
     text = path.read_text(encoding="utf-8")
-    if "from torch import nn" in text:
+    if text.startswith(HEADER):
         print("already patched")
         return
-    if "import torch\n" not in text:
-        print("no import torch to hook")
-        return
-    path.write_text(
-        text.replace("import torch\n", "import torch\nfrom torch import nn\n", 1),
-        encoding="utf-8",
-    )
+    path.write_text(HEADER + text, encoding="utf-8")
     print(f"patched {path}")
 
 

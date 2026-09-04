@@ -14,8 +14,9 @@ import torch
 import torch.nn as nn
 from PIL import Image
 
-# Broken diffusers wheels reference `nn` in lora_pipeline.py without importing it.
-# Name lookup falls back to builtins, so this avoids a writable site-packages.
+# Broken diffusers wheels use `nn` / `torch` in lora_pipeline.py without imports.
+# Name lookup falls back to builtins, so this works on a read-only image.
+builtins.torch = torch
 builtins.nn = nn
 
 from safety import PromptBlocked, assert_adult_prompt
@@ -81,7 +82,6 @@ def load_pipeline():
         os.environ.setdefault("HF_HOME", "/runpod-volume/huggingface")
         os.environ.setdefault("HUGGINGFACE_HUB_CACHE", "/runpod-volume/huggingface")
 
-    _patch_diffusers_nn()
     try:
         from diffusers import ZImageImg2ImgPipeline
     except Exception as exc:

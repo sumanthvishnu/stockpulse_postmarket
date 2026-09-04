@@ -12,8 +12,10 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 import builtins
 
+import torch
 import torch.nn as nn
 
+builtins.torch = torch
 builtins.nn = nn
 
 import runpod
