@@ -1,11 +1,11 @@
 runpod
 diffusers>=0.36.0
-transformers>=4.46.0
+transformers>=4.51.0
 accelerate>=1.1.0
 safetensors
 sentencepiece
 protobuf
-peft
+peft>=0.15.0
 pillow
 huggingface_hub
 hf_transfer

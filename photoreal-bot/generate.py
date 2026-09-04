@@ -21,6 +21,7 @@ STEPS = int(os.environ.get("INFER_STEPS", "9"))
 GUIDANCE = float(os.environ.get("GUIDANCE_SCALE", "0.0"))
 MAX_SIDE = int(os.environ.get("MAX_SIDE", "1024"))
 
+
 def fit_size(image: Image.Image, max_side: int = MAX_SIDE, multiple: int = 16) -> Image.Image:
     image = image.convert("RGB")
     w, h = image.size
@@ -44,6 +45,28 @@ def image_to_jpeg_bytes(image: Image.Image, quality: int = 92) -> bytes:
     return buf.getvalue()
 
 
+def _patch_diffusers_nn() -> None:
+    """Some diffusers builds use `nn.*` in lora_pipeline.py without importing nn."""
+    try:
+        import diffusers
+
+        path = os.path.join(os.path.dirname(diffusers.__file__), "loaders", "lora_pipeline.py")
+        if not os.path.isfile(path):
+            return
+        with open(path, encoding="utf-8") as fh:
+            text = fh.read()
+        if "from torch import nn" in text:
+            return
+        if "import torch" not in text:
+            return
+        text = text.replace("import torch\n", "import torch\nfrom torch import nn\n", 1)
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(text)
+        log.info("Patched diffusers lora_pipeline.py missing `nn` import")
+    except Exception:
+        log.exception("Could not patch diffusers nn import")
+
+
 @lru_cache(maxsize=1)
 def load_pipeline():
     """First call downloads ~12–20 GB onto the RunPod volume, then reuses it."""
@@ -51,12 +74,11 @@ def load_pipeline():
         os.environ.setdefault("HF_HOME", "/runpod-volume/huggingface")
         os.environ.setdefault("HUGGINGFACE_HUB_CACHE", "/runpod-volume/huggingface")
 
+    _patch_diffusers_nn()
     try:
         from diffusers import ZImageImg2ImgPipeline
-    except ImportError as exc:
-        raise RuntimeError(
-            "diffusers is too old for Z-Image. Need diffusers>=0.36"
-        ) from exc
+    except Exception as exc:
+        raise RuntimeError(f"Could not load Z-Image pipeline: {exc}") from exc
 
     if not torch.cuda.is_available():
         raise RuntimeError("No NVIDIA GPU visible on this worker.")

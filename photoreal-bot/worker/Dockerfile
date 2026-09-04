@@ -10,7 +10,9 @@ ENV HF_HUB_ENABLE_HF_TRANSFER=1 \
     HUGGINGFACE_HUB_CACHE=/runpod-volume/huggingface
 
 COPY photoreal-bot/worker/requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+COPY photoreal-bot/worker/patch_diffusers.py /app/patch_diffusers.py
+RUN pip install --no-cache-dir -r /app/requirements.txt \
+    && python /app/patch_diffusers.py
 
 COPY photoreal-bot/generate.py photoreal-bot/safety.py photoreal-bot/presets.py /app/
 COPY photoreal-bot/worker/handler.py /app/handler.py
