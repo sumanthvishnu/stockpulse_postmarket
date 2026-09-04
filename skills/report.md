@@ -103,14 +103,17 @@ commentary before or after. Requirements:
    Nifty Bank, Nifty Midcap 150, Nifty Smallcap 250, India VIX (with
    `derived.vix.pct_of_range` and `window_sessions` context — a VIX number
    without context is noise). Sensex from `derived.global_markets` (tag
-   wire). Add `derived.five_day_change_pct` where present.
+   wire) — if that entry carries `stale_warning: true`, mark Sensex
+   unavailable per the STALENESS RULE instead of quoting the nulled figure.
+   Add `derived.five_day_change_pct` where present.
 4. **What moved the market** — evidence from the pack plus dated catalysts
    from `derived.enrichment.mover_catalysts` where present. If any name in
    `derived.corp_actions.nifty50_ex_t1_t2` rallied today, note the
    dividend-capture interpretation alongside the observed move (T+2
    cross-check). Where nothing is given, write "No identifiable catalyst".
 5. **Sectoral performance** — table from `derived.indices` sectorals +
-   `derived.five_day_change_pct` (Close, Chg pts, Chg %, 5-day %). One-line
+   `derived.five_day_change_pct` (Close, Chg pts, Chg %, 5-day %). Include
+   EVERY sectoral index present in the pack, not a selection. One-line
    driver note only where a verifiable dated driver exists (enrichment
    catalysts or pack evidence); otherwise omit the note.
 6. **Breadth & internals** — `derived.breadth` (advances/declines/unchanged,
@@ -120,13 +123,13 @@ commentary before or after. Requirements:
    a rising index on negative breadth (narrow rally) or a flat frontline on
    strong new highs (broadening tape); name any large-cap in the new-lows
    list.
-7. **Nifty 50 movers** — `derived.nifty50_movers.gainers/losers` with close,
-   chg%, deliv_pct, turnover_cr, and a "Why" column sourced from
-   `enrichment.mover_catalysts` (dated, with source) or pack evidence
-   (corporate actions, bulk deals, sector move). The delivery column is
-   mandatory. Bands: >=60% delivery on a large decline = institutional exit;
-   >=60% on a large advance = accumulation; <15% on a large move =
-   trader-led momentum.
+7. **Nifty 50 movers** — TWO separate tables (top-5 gainers, top-5 losers)
+   from `derived.nifty50_movers.gainers/losers` with close, chg%, deliv_pct,
+   turnover_cr, and a "Why" column sourced from `enrichment.mover_catalysts`
+   (dated, with source) or pack evidence (corporate actions, bulk deals,
+   sector move). The delivery column is mandatory. Bands: >=60% delivery on
+   a large decline = institutional exit; >=60% on a large advance =
+   accumulation; <15% on a large move = trader-led momentum.
 8. **Broader-market movers** — `derived.broader_movers.gainers/losers`
    (non-Nifty-50, turnover >= Rs 100 Cr), 5-8 names with deliv_pct.
    Characterise IPO listing-day pops and low-delivery momentum names as such.
@@ -139,9 +142,13 @@ commentary before or after. Requirements:
 10. **Global context** — a pre-computed GLOBAL MARKETS TABLE is provided in
     your prompt: embed it verbatim (do not retype or recompute its numbers).
     Around it, write prose: label each entry with its `bar_date`; US and Asia
-    bars may be the prior session, Europe/US bars may be intraday. If you
-    state a points change in prose, quote `pts_chg` exactly from the pack —
-    NEVER subtract two values yourself. India 10Y G-sec yield from
+    bars may be the prior session, Europe/US bars may be intraday. If any
+    entry in the table carries `stale_warning: true` (a lagging or
+    wrong-session wire bar, nulled by the pipeline), treat it per the
+    STALENESS RULE: the level is unavailable, name it in the Data Gaps
+    Register, and never quote the nulled figure. If you state a points
+    change in prose, quote `pts_chg` exactly from the pack — NEVER subtract
+    two values yourself. India 10Y G-sec yield from
     `derived.india_10y` (tag wire, quote its `asof_text`); if its
     `stale_warning` is true the quote belongs to another session — report
     the yield as unavailable instead. **GIFT Nifty evening cue**: from

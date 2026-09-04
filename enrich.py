@@ -53,6 +53,12 @@ def _index_levels(enr, pack, is_today):
         text = tly.call("get_overview_news_corp_events",
                         {"stock_code": code, "type": "technical"})
         tly.polite_pause()
+        if text and not tly.parse_pivots(text):
+            # one retry: the desk payload occasionally arrives without the
+            # pivot block on the first call (seen on a BANKNIFTY run)
+            text = tly.call("get_overview_news_corp_events",
+                            {"stock_code": code, "type": "technical"})
+            tly.polite_pause()
         if not text:
             _gap(pack, f"trendlyne:technicals:{label}",
                  "Trendlyne MCP unreachable or returned no technicals")
@@ -72,13 +78,22 @@ def _index_levels(enr, pack, is_today):
             v["stale_warning"] = True
             v["note"] = ("technicals are latest-close based; backfill run, "
                          "so these may reflect a later session")
+        _gap(pack, "trendlyne:technicals:backfill",
+             "index pivot levels reflect the latest close, not the target "
+             "date (backfill run) - excluded from the report by the "
+             "staleness rule")
     if out:
         enr["index_levels"] = out
 
 
 def _gift_nifty(enr, pack, is_today):
     if not is_today:
-        return   # live cue is meaningless for a past date
+        enr["gift_nifty"] = {"note": "live evening cue, skipped on backfill "
+                                     "(meaningless for a past date)"}
+        _gap(pack, "trendlyne:gift_nifty",
+             "GIFT Nifty evening cue not captured - backfill run for a past "
+             "date; the live cue only exists same-evening")
+        return
     text = (tly.call("get_overview_news_corp_events",
                      {"stock_code": "SGXNIFTY-CFD", "type": "technical"}) or
             tly.call("get_overview_news_corp_events",
@@ -221,6 +236,9 @@ def run(pack):
     elif not is_today:
         enr["econ_calendar"] = {"note": "skipped on backfill (weekly feed "
                                         "only covers the current week)"}
+        _gap(pack, "forexfactory:calendar",
+             "next-session economic calendar unavailable - backfill run; the "
+             "weekly feed only covers the current week")
 
     d["enrichment"] = enr
     got = [k for k in ("index_levels", "gift_nifty", "mover_catalysts",

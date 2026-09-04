@@ -154,6 +154,58 @@ def scrub_stale(pack):
                           "source": y10.get("source"), "note": note}
         dropped.append((f"India 10Y (as of {y10.get('asof_text')})", note))
 
+    # --- global wire block: Yahoo serves the latest bar it has, and its
+    # NSE-index feed can lag a full session (observed: a 03-Sep backfill got
+    # the 02-Sep Sensex close, 76,570.35 instead of 76,152.86). The Indian
+    # entries must carry the TARGET date's bar; anything else is nulled so a
+    # wrong-session number can never reach the report or carousel. Asia
+    # routinely lags 1-2 sessions even on good runs, so non-Indian entries
+    # get a wide window and rely on the bar_date label. The Nifty50 wire
+    # level is also cross-checked against the NSE primary close, which
+    # catches a same-date-but-wrong bar.
+    gm = d.get("global_markets") or {}
+    markets = gm.get("markets")
+    tdate_s = (pack.get("meta") or {}).get("trading_date") or ""
+    try:
+        t0 = date.fromisoformat(tdate_s)
+    except ValueError:
+        t0 = None
+    if isinstance(markets, dict) and t0:
+        nse_close = ((d.get("indices") or {}).get("Nifty 50") or {}).get("close")
+        for label, entry in list(markets.items()):
+            if not isinstance(entry, dict):
+                continue
+            bd = entry.get("bar_date")
+            try:
+                bdate = date.fromisoformat(str(bd)) if bd else None
+            except ValueError:
+                bdate = None
+            stale_note = None
+            if label in ("Sensex", "Nifty50", "IndiaVIX"):
+                if bdate != t0:
+                    stale_note = (f"{label} wire bar is dated {bd}, not the "
+                                  f"trading date {tdate_s} (feed lag or "
+                                  "backfill) - omitted rather than published "
+                                  "wrong.")
+            elif bdate is None or bdate > t0 or (t0 - bdate).days > 7:
+                stale_note = (f"{label} wire bar dated {bd} is outside the "
+                              f"valid window for {tdate_s} - omitted.")
+            if (not stale_note and label == "Nifty50"
+                    and isinstance(nse_close, (int, float))
+                    and isinstance(entry.get("level"), (int, float))
+                    and abs(entry["level"] - nse_close) > 0.005 * nse_close):
+                stale_note = (f"Nifty50 wire level {entry['level']:,.2f} "
+                              f"disagrees with the NSE primary close "
+                              f"{nse_close:,.2f} by more than 0.5% - wire "
+                              "entry omitted.")
+            if stale_note:
+                markets[label] = {"ticker": entry.get("ticker"),
+                                  "level": None, "prev_close": None,
+                                  "pts_chg": None, "pct_chg": None,
+                                  "bar_date": bd, "stale_warning": True,
+                                  "note": stale_note}
+                dropped.append((f"{label} wire (bar {bd})", stale_note))
+
     if dropped:
         # Surface each dropped item in the Data Gaps Register. Section 14 of
         # the report skill enumerates every `failures` entry, so registering

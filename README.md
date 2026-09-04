@@ -174,6 +174,11 @@ level.
 
 ## Remaining limitations (disclosed, by design)
 
+- Yahoo's wire feed (Sensex, global markets) can lag a session, especially
+  for NSE indices on backfill runs. The pipeline validates every wire bar's
+  date against the trading date (and cross-checks the Nifty wire level
+  against the NSE primary close); a mismatched entry is nulled and disclosed
+  in the Data Gaps Register rather than published wrong.
 - ATM implied volatility needs Zerodha Kite keys (optional in the fetcher).
 - Results calendar for the next session is not fetched (Trendlyne has it;
   can be added to `enrich.py` later).
