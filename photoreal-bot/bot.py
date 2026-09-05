@@ -147,7 +147,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Personal photoreal bot. Adults only.\n\n"
         f"Send up to {MAX_PHOTOS} photos as one album.\n"
         "Then type your own prompt, or tap a preset.\n"
-        "Every photo is converted, 1:1.\n\n"
+        "Every photo is converted, 1:1.\n"
+        "Default is Keep likeness so the face stays the same person.\n\n"
         "First batch after a break can take ~1 minute while the GPU wakes up.\n"
         "/clear — empty the queue"
     )

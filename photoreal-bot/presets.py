@@ -1,8 +1,15 @@
 """Photoreal camera-style presets. Natural-language prompts work best on Z-Image."""
 
+# Keep the uploaded person. Z-Image otherwise drifts to an East Asian default.
+_IDENTITY = (
+    "image-to-image of the uploaded photograph, keep the exact same person, "
+    "same face, same facial features, same ethnicity, same age, same skin tone, "
+    "same gender, do not replace the face, do not change identity"
+)
+
 # Shared photography language — photoreal, adult, not illustration.
 _PHOTO = (
-    "photorealistic photograph, shot on a 85mm lens, natural skin texture, "
+    f"{_IDENTITY}, photorealistic photograph, shot on a 85mm lens, natural skin texture, "
     "visible pores, realistic lighting, candid, no cartoon, no anime, "
     "no illustration, no CGI, no plastic skin"
 )
@@ -87,10 +94,10 @@ PRESETS = {
 }
 
 STRENGTHS = {
-    "keep": {"title": "Keep likeness", "value": 0.40},
-    "balanced": {"title": "Balanced", "value": 0.58},
-    "restyle": {"title": "Restyle", "value": 0.72},
+    "keep": {"title": "Keep likeness", "value": 0.28},
+    "balanced": {"title": "Balanced", "value": 0.40},
+    "restyle": {"title": "Restyle", "value": 0.52},
 }
 
-DEFAULT_STRENGTH = "balanced"
+DEFAULT_STRENGTH = "keep"
 MAX_PHOTOS = 10

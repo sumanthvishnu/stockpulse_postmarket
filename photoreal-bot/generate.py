@@ -115,6 +115,15 @@ def load_pipeline():
     return pipe
 
 
+IDENTITY_LOCK = (
+    "Keep the exact same person as the uploaded photograph: same face, "
+    "same facial structure, same eyes nose and mouth, same ethnicity, "
+    "same age, same skin tone, same gender. Do not replace the person. "
+    "Do not default to a different ethnicity or a Chinese/East Asian face "
+    "unless that is who is in the photo."
+)
+
+
 def generate_batch(
     image: Image.Image,
     prompt: str,
@@ -124,13 +133,14 @@ def generate_batch(
     seed: int | None = None,
 ) -> list[Image.Image]:
     assert_adult_prompt(f"{prompt} {extra}")
-    full = prompt.strip()
+    full = f"{IDENTITY_LOCK} {prompt.strip()}"
     if extra.strip():
         full = f"{full}. {extra.strip()}"
 
     init = fit_size(image)
     pipe = load_pipeline()
-    strength = min(0.95, max(0.25, float(strength)))
+    # High denoise lets Z-Image redraw the face as its Chinese prior.
+    strength = min(0.55, max(0.22, float(strength)))
     count = min(8, max(1, int(count)))
     kind = getattr(pipe, "_photoreal_kind", "zimage")
     if kind == "sdxl":
