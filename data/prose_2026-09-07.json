@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 Dips *Amidst Mixed Signals*",
+ "subline": "Nifty 50 closed 0.50% lower with heightened volatility.",
+ "hero_text": "Mixed market signals led to a 0.50% drop in Nifty 50.",
+ "why_head": "Today's Key Drivers",
+ "why": [
+  {
+   "emoji": "🔍",
+   "title": "No Clear Catalyst",
+   "desc": "Market moved without a clear catalyst.",
+   "badge": "Nifty 50: -0.50%"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT Sector Led Fall",
+   "desc": "IT sector declined by 2.28%.",
+   "badge": "Nifty IT: -2.28%"
+  },
+  {
+   "emoji": "💊",
+   "title": "Positive Pharma",
+   "desc": "Pharma sector gained 0.75%.",
+   "badge": "Nifty Pharma: +0.75%"
+  },
+  {
+   "emoji": "📈",
+   "title": "Volatility Surge",
+   "desc": "India VIX rose by 4.49%.",
+   "badge": "India VIX: +4.49%"
+  }
+ ],
+ "sector_reasons": {
+  "IT": "Significant drop in IT stocks.",
+  "Pharma": "Resilient performance bucking the trend.",
+  "FMCG": "General market weakness.",
+  "Media": "Sector faced a substantial drop.",
+  "Metal": "Falling with global cues.",
+  "PSU Bank": "Weakness due to institutional flows."
+ },
+ "bonus_title": "Notable Sector",
+ "bonus_text": "Pharma stood out positively today.",
+ "movers_note_gainers": "Apollo Hospitals led the gainers in Nifty 50.",
+ "movers_note_losers": "Infosys and SBILIFE were among top losers.",
+ "watch_text": "Watch tomorrow's weekly options expiry for Nifty 50.",
+ "lessons": [
+  "Market declines can occur without clear catalysts.",
+  "IT sector can significantly impact overall market sentiment.",
+  "Volatility spikes often accompany market downturns.",
+  "Pharma sector can perform well even in broader market declines."
+ ],
+ "alert_title": "Upcoming Events",
+ "alert_text": "Watch for weekly options expiry and GIFT Nifty cues tomorrow.",
+ "cta_headline": "Track Every *Market Move*",
+ "cta_sub": "Get insights on the latest market trends and shifts.",
+ "next_text": "Tomorrow, options expiry might drive volatility.",
+ "caption_a": "Nifty 50 fell 0.50% as volatility spiked 4.49%.\n\nIT sector led declines with a 2.28% drop.\n\nPharma sector resisted the trend, gaining 0.75%.\n\nWatch options expiry tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice. #Nifty #IndianStockMarket #NiftyIT #NiftyPharma #Volatility",
+ "caption_b": "Mixed market signals saw Nifty 50 dip 0.50%.\n\nIndia VIX climbed, indicating increased volatility.\n\nFII and DII were net buyers today.\n\nOptions expiry tomorrow could be key.\n\nDaily wrap every evening @getstockpulse\nNot investment advice. #Nifty #IndianStockMarket #MarketVolatility #FIIDII #OptionsExpiry"
+}
