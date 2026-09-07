@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 declines by 0.50% amid increased volatility and mixed institutional flows.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "🔍",
+   "title": "No Catalyst Found",
+   "detail": "No identifiable catalyst for today's market movements.",
+   "stat": "0.50% decline in Nifty 50"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT Sector Slump",
+   "detail": "Nifty IT fell by 2.28%, leading sectoral declines.",
+   "stat": "-2.28% in Nifty IT"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma Gains",
+   "detail": "Nifty Pharma rose by 0.75%, bucking the trend.",
+   "stat": "0.75% rise in Nifty Pharma"
+  },
+  {
+   "emoji": "📈",
+   "title": "Volatility Spike",
+   "detail": "India VIX increased by 4.49%, indicating higher volatility.",
+   "stat": "4.49% rise in India VIX"
+  }
+ ],
+ "flows_line": "FIIs net bought Rs 280.13 Cr; DIIs net bought Rs 566.76 Cr.",
+ "watch_next": "Tomorrow, watch for Nifty 50 weekly options expiry and GIFT Nifty cues.",
+ "week_pct": -1.25,
+ "lesson_seeds": [
+  "Market declines can occur without clear catalysts.",
+  "IT sector can significantly impact overall market sentiment.",
+  "Volatility spikes often accompany market downturns.",
+  "Pharma sector can perform well even in broader market declines."
+ ],
+ "source": "llm"
+}
