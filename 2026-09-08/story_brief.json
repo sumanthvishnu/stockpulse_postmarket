@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 declines amid mixed sectoral performance and negative market breadth.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "💻",
+   "title": "IT Sector Drop",
+   "detail": "IT sector declined by 0.37%.",
+   "stat": "-111.75 pts"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Financial Services",
+   "detail": "Financial services fell by 0.93%.",
+   "stat": "-240.05 pts"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma Gains",
+   "detail": "Pharma sector rose by 0.77%.",
+   "stat": "+205.3 pts"
+  },
+  {
+   "emoji": "📉",
+   "title": "Market Breadth",
+   "detail": "Market breadth was negative with 1,437 declines.",
+   "stat": "A/D ratio: 0.822"
+  }
+ ],
+ "flows_line": "FIIs sold Rs 123.19 Cr, while DIIs bought Rs 1,349.64 Cr.",
+ "watch_next": "Tomorrow, watch for GIFT Nifty trading at 23,713.5, a 78.4-point premium.",
+ "week_pct": -1.75,
+ "lesson_seeds": [
+  "Nifty 50 declined by 0.61% today.",
+  "Pharma sector showed resilience with a 0.77% gain.",
+  "Financial services and IT sectors dragged the market down.",
+  "Market breadth was negative with more declines than advances."
+ ],
+ "source": "llm"
+}
