@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 *slips amid sectoral shifts* and weak breadth",
+ "subline": "A mixed close with pharma gains and IT, financial falls.",
+ "hero_text": "Nifty 50 declined 0.61%, led down by financials and IT. Pharma offered some relief with gains.",
+ "why_head": "Why the Market Moved",
+ "why": [
+  {
+   "emoji": "💻",
+   "title": "IT Sector Decline",
+   "desc": "The IT sector fell by 0.37%.",
+   "badge": "-111.75 points"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Financials Weighed",
+   "desc": "Financial services dropped significantly.",
+   "badge": "-240.05 points"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma Strength",
+   "desc": "Pharma sector gained 0.77%.",
+   "badge": "+205.3 points"
+  },
+  {
+   "emoji": "📉",
+   "title": "Negative Breadth",
+   "desc": "Market breadth was unfavorable today.",
+   "badge": "A/D ratio: 0.822"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty IT": "Faced declines amidst selling pressure.",
+  "Nifty Financial Services": "Dragged by investor sentiment.",
+  "Nifty Pharma": "Resilient gains despite broader weak market.",
+  "Nifty Media": "Uncovered strength in specific stocks.",
+  "Nifty FMCG": "Stable despite broader market movements.",
+  "Nifty Energy": "Managed to stay in the green."
+ },
+ "bonus_title": "Pharma Resilience",
+ "bonus_text": "Pharma's 0.77% gain stood out in today's mixed market.",
+ "movers_note_gainers": "BEL and HINDUNILVR led gains with solid investor interest.",
+ "movers_note_losers": "SBILIFE and ICICIBANK suffered as sentiment turned negative.",
+ "watch_text": "Tomorrow's session to monitor GIFT Nifty's higher cues.",
+ "lessons": [
+  "Nifty 50 declined by 0.61% today.",
+  "Pharma sector showed resilience with a 0.77% gain.",
+  "Financial services and IT sectors dragged the market down.",
+  "Market breadth was negative with more declines than advances."
+ ],
+ "alert_title": "Tomorrow's Key Levels",
+ "alert_text": "Watch the 23,600 support level in Nifty 50 tomorrow.",
+ "cta_headline": "Stay *updated* with market moves",
+ "cta_sub": "Follow us for daily insights and sector performance.",
+ "next_text": "Anticipate GIFT Nifty's influence in Wednesday's session.",
+ "caption_a": "Nifty 50 declined by 0.61%, led by financials and IT.\n\nPharma emerged as a bright spot with a 0.77% gain.\nWatch tomorrow as GIFT Nifty suggests a positive start.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyPharma #NiftyIT #MarketUpdate",
+ "caption_b": "Financial services and IT sectors dragged Nifty 50 down.\n\nDespite this, pharma gained 0.77%, providing resilience.\nGIFT Nifty hints at optimism for tomorrow's open.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyPharma #NiftyFinancial #StockMarket"
+}
