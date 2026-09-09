@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 falls 0.86% amid IT sector weakness and global market declines.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "💻",
+   "title": "IT Sector Weakness",
+   "detail": "Infosys drops 4.34% after collaboration news.",
+   "stat": "-3.24%"
+  },
+  {
+   "emoji": "📉",
+   "title": "Global Market Declines",
+   "detail": "US and European markets fell significantly.",
+   "stat": "-1.83%"
+  },
+  {
+   "emoji": "🛢️",
+   "title": "Crude Oil Surge",
+   "detail": "Brent crude rises 3.54% to $101.39.",
+   "stat": "3.54%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "FII Outflows",
+   "detail": "FIIs net sellers in cash market, Rs 582.99 Cr outflow.",
+   "stat": "-582.99 Cr"
+  }
+ ],
+ "flows_line": "FIIs sold Rs 582.99 Cr; DIIs bought Rs 1,509.04 Cr.",
+ "watch_next": "Watch for President Trump's speech and ECB announcements tomorrow.",
+ "week_pct": -2.02,
+ "lesson_seeds": [
+  "IT sector news can heavily impact market sentiment.",
+  "Global market trends influence local indices.",
+  "Commodity price movements affect sectoral performance.",
+  "Institutional flows can signal market direction."
+ ],
+ "source": "llm"
+}
