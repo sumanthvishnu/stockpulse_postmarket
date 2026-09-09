@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 *slides 0.86%* amid global sell-off",
+ "subline": "IT sector weakness and global jitters weigh on market.",
+ "hero_text": "Nifty 50 closed down 0.86% with IT leading the decline.",
+ "why_head": "Today's Key Drivers",
+ "why": [
+  {
+   "emoji": "💻",
+   "title": "IT Sector Weakness",
+   "desc": "Infosys led a 4.34% decline.",
+   "badge": "-3.24% IT Index"
+  },
+  {
+   "emoji": "📉",
+   "title": "Global Market Declines",
+   "desc": "US and Europe markets fell.",
+   "badge": "-1.83% DAX"
+  },
+  {
+   "emoji": "🛢️",
+   "title": "Crude Oil Surge",
+   "desc": "Brent crude rose sharply.",
+   "badge": "$101.39 Brent"
+  },
+  {
+   "emoji": "🏦",
+   "title": "FII Outflows",
+   "desc": "FIIs sold Rs 582.99 Cr net.",
+   "badge": "-582.99 Cr FIIs"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty IT": "Dragged down by Infosys' drop.",
+  "Nifty Metal": "Supported by rising commodity prices.",
+  "Nifty Energy": "Benefited from crude oil surge.",
+  "Nifty Financial Services": "Affected by FII selling pressure.",
+  "Nifty Realty": "Vulnerable to global sentiment.",
+  "Nifty FMCG": "Resilient but edged lower."
+ },
+ "bonus_title": "Broad Market Breadth",
+ "bonus_text": "Decliners outpaced gainers, reflecting a bearish sentiment.",
+ "movers_note_gainers": "Adani Enterprises led gainers on positive news.",
+ "movers_note_losers": "IT stocks were the biggest losers, with Infosys dropping over 4%.",
+ "watch_text": "Keep an eye on President Trump's speech and ECB announcements.",
+ "lessons": [
+  "IT sector news can heavily impact market sentiment.",
+  "Global market trends influence local indices.",
+  "Commodity price movements affect sectoral performance.",
+  "Institutional flows can signal market direction."
+ ],
+ "alert_title": "Upcoming Events",
+ "alert_text": "Watch for President Trump's speech and ECB announcements tomorrow.",
+ "cta_headline": "Stay Ahead with *Daily Wraps*",
+ "cta_sub": "Get the latest market updates every evening.",
+ "next_text": "Thursday's session could be influenced by international developments.",
+ "caption_a": "Nifty 50 fell 0.86%, closing at 23,431.5. IT sector led the decline, down 3.24%. \\nWatch for Trump's speech and ECB updates. \\nDaily wrap every evening @getstockpulse \\nNot investment advice. \\n#Nifty #IndianStockMarket #NiftyIT #GlobalMarkets #CrudeOil",
+ "caption_b": "Market ended lower with global cues impacting sentiment. FIIs net sellers at Rs 582.99 Cr. \\nCrude oil surged over 3.5%. \\nDaily wrap every evening @getstockpulse \\nNot investment advice. \\n#Nifty #IndianStockMarket #FIIs #BrentCrude #GlobalSellOff"
+}
