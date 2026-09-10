@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 *rises 0.20%* amid mixed performance",
+ "subline": "Energy sector shines while others struggle.",
+ "hero_text": "Nifty 50 inched up by 0.20% as sector performance varied.",
+ "why_head": "What Fueled Today's Moves",
+ "why": [
+  {
+   "emoji": "🛢️",
+   "title": "Crude Oil Surge",
+   "desc": "Brent crude climbed, boosting energy.",
+   "badge": "Brent $105.75"
+  },
+  {
+   "emoji": "🏭",
+   "title": "Tata Steel's New Initiative",
+   "desc": "Coke project affected performance.",
+   "badge": "Tata Steel 186.78"
+  },
+  {
+   "emoji": "🌍",
+   "title": "ONGC ESG Buzz",
+   "desc": "ESG rating update uplifted ONGC.",
+   "badge": "ONGC 237.27"
+  },
+  {
+   "emoji": "🔍",
+   "title": "Sparse Catalysts",
+   "desc": "No major events identified.",
+   "badge": "Top 4: 24 gainers"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Energy": "Rising crude prices boosted energy stocks.",
+  "Nifty Metal": "New Coke project impacted Tata Steel.",
+  "Nifty Financial Services": "Solid performance amid market recovery.",
+  "Nifty IT": "Lackluster performance, no major drivers.",
+  "Nifty Auto": "Sector dipped on lack of catalysts.",
+  "Nifty Realty": "Sector sees no significant movement."
+ },
+ "bonus_title": "Weekly Outlook",
+ "bonus_text": "Despite a positive close today, the week's overall trend was negative.",
+ "movers_note_gainers": "ONGC and Bharti Airtel gained momentum.",
+ "movers_note_losers": "HCL Tech and Tata Steel faced declines.",
+ "watch_text": "Focus on UK's GDP announcement and US's CPI data tomorrow.",
+ "lessons": [
+  "Nifty 50 closed up 0.20% at 23,477.80.",
+  "Market breadth was negative with 934 advances.",
+  "Energy stocks rallied as crude surged.",
+  "FII sold while DII bought in the cash market."
+ ],
+ "alert_title": "Upcoming Key Events",
+ "alert_text": "Watch tomorrow's GDP data from the UK at 15:30 IST.",
+ "cta_headline": "Following *mixed cues*, Nifty moved up",
+ "cta_sub": "Get your market insights first.",
+ "next_text": "Next session: Focus on GDP and CPI data releases.",
+ "caption_a": "Nifty 50 rose 0.20%, closing at 23,477.80. Crude oil prices surged, lifting energy stocks like ONGC. Market breadth remained negative with more declines than advances.\n\nWatch UK's GDP and US CPI releases tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #EnergyStocks #OilPrices #NiftyIT",
+ "caption_b": "Today Nifty closed higher, lifted by energy stocks amid rising crude. ONGC gained after an ESG update. Tata Steel's new project influenced trading but it closed lower.\n\nKeep an eye on UK GDP and US CPI tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #ONCG #TataSteel #Nifty50"
+}
