@@ -1,0 +1,55 @@
+{
+ "headline": "Nifty 50 ends week in *broad-based slide*",
+ "subline": "Market sentiment turned risk-off with notable stock declines.",
+ "hero_text": "The week saw Nifty 50 drop 2.09% amidst a broad-based decline, ending lower on Friday.",
+ "why_head": "What Led the *Market Falls*",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "Broad Market Weakness",
+   "desc": "General decline without a single catalyst.",
+   "badge": "Nifty fell 0.34%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "HDFC's Contradictory Move",
+   "desc": "HDFC up despite broader decline.",
+   "badge": "HDFCBANK +2.08%"
+  },
+  {
+   "emoji": "📰",
+   "title": "Hindalco's Unseen Impact",
+   "desc": "News failed to boost stock.",
+   "badge": "HINDALCO -3.21%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Volatility Jumps",
+   "desc": "India VIX rose, signaling unrest.",
+   "badge": "India VIX +4.15%"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Metal": "Pressured by Hindalco's decline.",
+  "Nifty Pharma": "Relatively stable amidst volatility.",
+  "Nifty Realty": "Weak performance dragged sector down."
+ },
+ "bonus_title": "DII vs FII",
+ "bonus_text": "DIIs bought Rs 1,968.17 Cr, while FIIs sold Rs 930.9 Cr.",
+ "movers_note_gainers": "HDFC Bank and Dr. Reddy's led the gains in the Nifty 50.",
+ "movers_note_losers": "Hindalco and JSW Steel were top losers, dragging down sentiments.",
+ "watch_text": "GIFT Nifty points to a positive start on Tuesday, 15 September 2026.",
+ "lessons": [
+  "This week saw a market-wide decline in absence of a major catalyst.",
+  "HDFC Bank's legal victory did not prevent share decline.",
+  "Hindalco's announcement failed to uplift its stock price.",
+  "Volatility surged, as seen by the India VIX rise."
+ ],
+ "alert_title": "Next Trading Session",
+ "alert_text": "Keep an eye on Tuesday, 15 September 2026 for market cues.",
+ "cta_headline": "Stay Updated with *Market Movements*",
+ "cta_sub": "Follow us for daily insights and updates on market trends.",
+ "next_text": "Look out for Tuesday, 15 September 2026. GIFT Nifty indicates a positive start.",
+ "caption_a": "Nifty 50 slid 2.09% during the week, ending -0.34% lower on Friday.\n\nBroad-based weakness, led by steel and IT sectors.\nVolatility spiked with India VIX up 4.15%. FIIs sold Rs 930.9 Cr.\n\nDaily wrap every evening @getstockpulse\nNot investment advice. #Nifty #IndianStockMarket #NiftyIT #NiftySteel #MarketUpdate",
+ "caption_b": "Broad declines hit Nifty 50, falling 2.09% for the week. HDFC Bank rose 2.08% Friday, but Hindalco slid 3.21%.\n\nIndia VIX rose 4.15%. DIIs bought Rs 1,968.17 Cr.\n\nDaily wrap every evening @getstockpulse\nNot investment advice. #Nifty #IndianStockMarket #NiftyPharma #Volatility #MarketSentiment"
+}
