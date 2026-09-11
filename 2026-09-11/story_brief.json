@@ -1,0 +1,40 @@
+{
+ "one_liner": "Indian markets declined with Nifty 50 down 0.34% amid broad-based weakness.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Market Decline",
+   "detail": "Broad-based decline with no single catalyst.",
+   "stat": "Nifty 50 fell 79.7 points."
+  },
+  {
+   "emoji": "🏦",
+   "title": "HDFC Bank",
+   "detail": "Shares fell despite legal victory.",
+   "stat": "HDFCBANK rose 2.08%."
+  },
+  {
+   "emoji": "📰",
+   "title": "Hindalco News",
+   "detail": "Announcement did not prevent decline.",
+   "stat": "HINDALCO fell 3.21%."
+  },
+  {
+   "emoji": "📊",
+   "title": "Volatility Surge",
+   "detail": "India VIX rose indicating volatility.",
+   "stat": "India VIX up 4.15%."
+  }
+ ],
+ "flows_line": "FIIs sold Rs 930.9 Cr, DIIs bought Rs 1,968.17 Cr.",
+ "watch_next": "GIFT Nifty suggests a positive start for Tuesday, 15 September 2026.",
+ "week_pct": -2.09,
+ "lesson_seeds": [
+  "Market breadth was negative with more declines than advances.",
+  "HDFC Bank's legal win did not prevent share decline.",
+  "Hindalco's announcement was not enough to boost stock.",
+  "Volatility increased as indicated by the rise in India VIX."
+ ],
+ "source": "llm"
+}
