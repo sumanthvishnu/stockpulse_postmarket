@@ -1,0 +1,40 @@
+{
+ "one_liner": "Markets tumble as Nifty 50 drops 1.19% amid broad-based selling.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Broad Market Decline",
+   "detail": "No specific catalysts identified for the decline.",
+   "stat": "Nifty 50 fell 279.5 points."
+  },
+  {
+   "emoji": "💻",
+   "title": "IT Sector Gains",
+   "detail": "IT was the only sector with gains.",
+   "stat": "Nifty IT rose 2.19%."
+  },
+  {
+   "emoji": "📊",
+   "title": "Volatility Surge",
+   "detail": "India VIX increased significantly.",
+   "stat": "India VIX up 9.34%."
+  },
+  {
+   "emoji": "💸",
+   "title": "FII Selling",
+   "detail": "FIIs were net sellers in the cash market.",
+   "stat": "FII net outflow Rs 2,977.86 Cr."
+  }
+ ],
+ "flows_line": "FIIs sold Rs 2,977.86 Cr; DIIs bought Rs 2,686.05 Cr.",
+ "watch_next": "Watch for GBP CPI and USD Federal Funds Rate announcements tomorrow.",
+ "week_pct": -2.78,
+ "lesson_seeds": [
+  "Broad market declines can occur without specific catalysts.",
+  "IT sector can outperform even in a down market.",
+  "Volatility spikes often accompany market downturns.",
+  "Institutional flows can heavily influence market direction."
+ ],
+ "source": "llm"
+}
