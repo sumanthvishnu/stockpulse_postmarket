@@ -1,0 +1,58 @@
+{
+ "headline": "Markets *tumble* as Nifty 50 drops 1.19%",
+ "subline": "Broad-based selling led to a significant decline.",
+ "hero_text": "Nifty 50 slides 1.19% amid broad market downturn, IT only bright spot.",
+ "why_head": "Key Reasons Behind the Drop",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "Market Sell-Off",
+   "desc": "No specific catalysts caused the decline.",
+   "badge": "Nifty -279.5 pts"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT Sector Shines",
+   "desc": "IT was the only sector with gains.",
+   "badge": "Nifty IT +2.19%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Volatility Jumps",
+   "desc": "India VIX increased significantly.",
+   "badge": "VIX +9.34%"
+  },
+  {
+   "emoji": "💸",
+   "title": "FII Net Selling",
+   "desc": "FIIs were net sellers today.",
+   "badge": "Outflow Rs 2,977.86 Cr"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty IT": "Only sector in green amidst declines.",
+  "Nifty Realty": "Faced strong selling pressure.",
+  "Nifty Metal": "Declined with broad market weakness.",
+  "Nifty Auto": "Pulled back with overall market.",
+  "Nifty Pharma": "Declined despite earlier strength.",
+  "Nifty FMCG": "Resilient but couldn't resist declines."
+ },
+ "bonus_title": "IT Sector's Resilience",
+ "bonus_text": "Despite market turmoil, IT managed gains.",
+ "movers_note_gainers": "IT stocks like HCL Tech and INFY led the gains.",
+ "movers_note_losers": "BEL and Shriram Finance took significant hits.",
+ "watch_text": "Tomorrow, keep an eye on GBP CPI and USD Federal Funds Rate announcements.",
+ "lessons": [
+  "Market declines can occur without specific catalysts.",
+  "IT sector can gain even when others fall.",
+  "Volatility spikes often occur with market drops.",
+  "Institutional flows have a major impact on market direction."
+ ],
+ "alert_title": "Upcoming Economic Events",
+ "alert_text": "Tomorrow, watch for key announcements like GBP CPI and USD Federal Funds Rate.",
+ "cta_headline": "Stay Updated with *Daily Insights*",
+ "cta_sub": "Catch the market wrap every day with us.",
+ "next_text": "Tomorrow, the focus shifts to global events like GBP CPI and USD rates.",
+ "caption_a": "A tough day as Nifty 50 falls 1.19%, IT shines amid slump. FIIs sell Rs 2,977.86 Cr.\nVolatility spikes with VIX up 9.34%.\n\n#Nifty #IndianStockMarket #NiftyIT #FIISelling #Volatility\n\nDaily wrap every evening @getstockpulse\nNot investment advice.",
+ "caption_b": "Broad selling sees Nifty 50 down 279.5 points. IT stocks lead gains.\nWatch tomorrow for GBP CPI and USD rate talks.\n\n#Nifty #IndianStockMarket #NiftyIT #FIISelling #Volatility\n\nDaily wrap every evening @getstockpulse\nNot investment advice."
+}
