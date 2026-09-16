@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 gains 0.43% amid mixed market cues.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "📈",
+   "title": "Nifty 50 Rise",
+   "detail": "Nifty 50 closed up by 0.43%.",
+   "stat": "23,217.60"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Banking Sector Surge",
+   "detail": "Nifty Bank rose by 0.89%.",
+   "stat": "56,292.45"
+  },
+  {
+   "emoji": "📉",
+   "title": "IT Sector Decline",
+   "detail": "Nifty IT fell by 1.58%.",
+   "stat": "-467.65"
+  },
+  {
+   "emoji": "💸",
+   "title": "FII/DII Flows",
+   "detail": "DII net inflow Rs 3,908.23 Cr.",
+   "stat": "-2,032.61"
+  }
+ ],
+ "flows_line": "FII net outflow Rs -2,032.61 Cr; DII net inflow Rs 3,908.23 Cr.",
+ "watch_next": "Watch for global cues and economic data releases tomorrow.",
+ "week_pct": -1.77,
+ "lesson_seeds": [
+  "Nifty 50 showed resilience with a 0.43% gain.",
+  "Banking sector outperformed with significant gains.",
+  "IT sector faced pressure, declining by 1.58%.",
+  "DII inflows countered FII outflows, supporting the market."
+ ],
+ "source": "llm"
+}
