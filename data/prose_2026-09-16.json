@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 *rises 0.43%* amid mixed cues",
+ "subline": "Markets see varied performance across sectors.",
+ "hero_text": "Nifty 50 closed higher by 0.43% despite mixed signals.",
+ "why_head": "What Drove Today's Moves",
+ "why": [
+  {
+   "emoji": "📈",
+   "title": "Nifty 50 Strength",
+   "desc": "The index gained amidst mixed cues.",
+   "badge": "23,217.60"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Banking Boost",
+   "desc": "Nifty Bank surged, aiding market sentiment.",
+   "badge": "56,292.45"
+  },
+  {
+   "emoji": "📉",
+   "title": "IT Sector Pressure",
+   "desc": "Nifty IT fell, dragging tech stocks down.",
+   "badge": "-467.65"
+  },
+  {
+   "emoji": "💸",
+   "title": "FII/DII Flows",
+   "desc": "DII's inflow offset FII's outflow.",
+   "badge": "DII +3,908.23 Cr"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Financial Services": "Supported by robust banking gains.",
+  "Nifty IT": "Fell due to tech stock declines.",
+  "Nifty FMCG": "Held firm with sustained consumer demand.",
+  "Nifty Metal": "Stable despite market fluctuations.",
+  "Nifty Pharma": "Mixed performance amid sector volatility.",
+  "Nifty Realty": "Under pressure from economic data concerns."
+ },
+ "bonus_title": "Sector Snapshot",
+ "bonus_text": "Banking sector led the gains with strong momentum.",
+ "movers_note_gainers": "Insurance and FMCG stocks led the gains.",
+ "movers_note_losers": "IT stocks faced headwinds, impacting performance.",
+ "watch_text": "Tomorrow, keep an eye on global cues and data releases.",
+ "lessons": [
+  "Nifty 50 showed resilience with a 0.43% gain.",
+  "Banking sector outperformed with significant gains.",
+  "IT sector faced pressure, declining by 1.58%.",
+  "DII inflows countered FII outflows, supporting the market."
+ ],
+ "alert_title": "What's Next on Thursday?",
+ "alert_text": "Watch for economic data releases impacting market direction.",
+ "cta_headline": "Follow the *daily market pulse*",
+ "cta_sub": "Insights every evening to keep you informed.",
+ "next_text": "Anticipate global events affecting the market tomorrow.",
+ "caption_a": "Surprising resilience as Nifty 50 gains 0.43%. Banking sector leads with a 0.89% rise.\nIT sector declines by 1.58% amid mixed cues.\n\nWatch tomorrow's global cues.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #Banking #ITSector #DailyUpdate",
+ "caption_b": "Nifty 50 rises with banking sector strength.\nDII inflows balance FII outflows by Rs 3,908 Cr.\nFocus on global cues tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #SectorWatch #DII #MarketAnalysis"
+}
