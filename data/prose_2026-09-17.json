@@ -1,0 +1,58 @@
+{
+ "headline": "*Mixed close* as pharma shines",
+ "subline": "Nifty edged up 0.23% while Sensex dipped slightly.",
+ "hero_text": "Despite the lack of clear catalysts, the Nifty 50 closed higher driven by strong performance from the pharma sector.",
+ "why_head": "What Moved the Market",
+ "why": [
+  {
+   "emoji": "🔍",
+   "title": "Catalyst Absence",
+   "desc": "No clear reasons for today's moves.",
+   "badge": "Nifty up 0.23%"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma Push",
+   "desc": "Pharma stocks led the gains.",
+   "badge": "Nifty Pharma +1.66%"
+  },
+  {
+   "emoji": "📉",
+   "title": "FII Outflows",
+   "desc": "Foreign investors were net sellers.",
+   "badge": "Rs 3,208.76 crore out"
+  },
+  {
+   "emoji": "📈",
+   "title": "DII Buying",
+   "desc": "Domestic investors supported the market.",
+   "badge": "Rs 3,617.75 crore in"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Pharma": "Strong sectoral gains drove market sentiment.",
+  "Nifty Bank": "Negative sentiment as financials struggled.",
+  "Nifty IT": "Steady performance amidst mixed signals.",
+  "Nifty Energy": "Broad stability with no major moves.",
+  "Nifty Auto": "Sector saw moderate activity.",
+  "Nifty Realty": "Continued weakness dampened growth."
+ },
+ "bonus_title": "Pharma's Power",
+ "bonus_text": "Today, Nifty Pharma surged 1.66%, outshining other sectors.",
+ "movers_note_gainers": "Top gainer was HDFCLIFE with a 5.05% jump, leading the pack.",
+ "movers_note_losers": "ONGC led the losers with a 1.85% drop, followed by others.",
+ "watch_text": "Keep an eye on BOJ's policy rate decision and ECB President Lagarde's speech tomorrow.",
+ "lessons": [
+  "Nifty 50 edged up 0.23% despite no clear catalyst.",
+  "The pharma sector led the market with a 1.66% rise.",
+  "FII outflows maintained pressure on market sentiment.",
+  "DII inflows provided significant market support."
+ ],
+ "alert_title": "Upcoming Events",
+ "alert_text": "BOJ Policy Rate decision and ECB speech on Friday.",
+ "cta_headline": "Stay *updated* with StockPulse!",
+ "cta_sub": "Market insights and updates delivered daily.",
+ "next_text": "Watch for market reactions to BOJ and ECB events on Friday.",
+ "caption_a": "Pharma sector shines as Nifty rises 0.23% despite no catalysts.\n\nFII outflows at Rs 3,208.76 crore while DIIs bought Rs 3,617.75 crore.\n\nWatch for BOJ rate decision on Friday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n\n#Nifty #IndianStockMarket #NiftyPharma #DII #FIIs",
+ "caption_b": "A mixed day as Nifty climbs 0.23%, Sensex slightly down.\n\nPharma leads gains, rising 1.66% amidst no clear catalysts.\n\nLook ahead to BOJ policy, ECB speech on Friday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n\n#Nifty #IndianStockMarket #PharmaGains #MarketClose #FIIOutflows"
+}
