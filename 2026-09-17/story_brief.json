@@ -1,0 +1,40 @@
+{
+ "one_liner": "Indian markets closed mixed with Nifty up 0.23% and Sensex slightly down.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "🔍",
+   "title": "No Catalyst",
+   "detail": "No identifiable catalyst for market movements.",
+   "stat": "Nifty 50 up 0.23%"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma Surge",
+   "detail": "Nifty Pharma rose by 1.66%.",
+   "stat": "Nifty Pharma up 433.05 pts"
+  },
+  {
+   "emoji": "📉",
+   "title": "FII Outflows",
+   "detail": "FIIs were net sellers with Rs 3,208.76 crore outflows.",
+   "stat": "FII net sell Rs 3,208.76 crore"
+  },
+  {
+   "emoji": "📈",
+   "title": "DII Inflows",
+   "detail": "DIIs were net buyers with Rs 3,617.75 crore inflows.",
+   "stat": "DII net buy Rs 3,617.75 crore"
+  }
+ ],
+ "flows_line": "FIIs were net sellers with Rs 3,208.76 crore outflows; DIIs were net buyers with Rs 3,617.75 crore inflows.",
+ "watch_next": "Watch for BOJ Policy Rate decision and ECB President Lagarde's speech tomorrow.",
+ "week_pct": -0.69,
+ "lesson_seeds": [
+  "Nifty 50 rose 0.23% despite no clear catalyst.",
+  "Pharma sector led gains with a 1.66% rise.",
+  "FIIs continued to sell, impacting market sentiment.",
+  "DIIs provided support with significant buying."
+ ],
+ "source": "llm"
+}
