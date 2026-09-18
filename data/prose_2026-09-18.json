@@ -1,0 +1,51 @@
+{
+ "headline": "*Nifty* ended the week down 0.56%.",
+ "subline": "FII and DII both bought. Breadth stayed positive.",
+ "hero_text": "Nifty lost 0.56% over the week and closed Friday at 23,346.40.",
+ "why_head": "Why the market moved this week",
+ "why": [
+  {
+   "emoji": "🏭",
+   "title": "Metal led",
+   "desc": "Metal was among the strongest sectors.",
+   "badge": "Metal +1.51%"
+  },
+  {
+   "emoji": "📡",
+   "title": "Media led",
+   "desc": "Media was among the strongest sectors.",
+   "badge": "Media +1.34%"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT dragged",
+   "desc": "IT was the weakest pocket of the session.",
+   "badge": "IT -1.03%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Breadth stayed positive",
+   "desc": "1,775 advances versus 839 declines.",
+   "badge": "1,775 : 839"
+  }
+ ],
+ "sector_reasons": {},
+ "bonus_title": "Breadth check",
+ "bonus_text": "1,775 advances versus 839 declines.",
+ "movers_note_gainers": "Gainers closed firm into the close.",
+ "movers_note_losers": "Losers stayed under pressure all session.",
+ "watch_text": "Support at 23,300 and resistance at 24,000 bracket the next session.",
+ "lessons": [
+  "Nifty moved -0.56% across the week's sessions.",
+  "Breadth was positive: 1,775 advances versus 839 declines.",
+  "FII and DII both bought in the cash market.",
+  "Nifty has now closed up 3 sessions in a row."
+ ],
+ "alert_title": "Watch the next session",
+ "alert_text": "Fresh global cues arrive before the next open.",
+ "cta_headline": "Save this and *check back at the close*.",
+ "cta_sub": "Follow for the full picture every evening.",
+ "next_text": "Global cues and corporate actions land next session.",
+ "caption_a": "Nifty closed up 0.33% at 23,346.40.\\n\\nMetal led, IT lagged. Breadth: 1,775 advances vs 839 declines.\\n\\nDaily wrap every evening @getstockpulse\\n\\nNot investment advice.\\n\\n#Nifty #IndianStockMarket #StockMarket #MarketWrap #Investing",
+ "caption_b": "FII and DII both bought today.\\n\\nNifty up 0.33%, breadth positive.\\n\\nDaily wrap every evening @getstockpulse\\n\\nNot investment advice.\\n\\n#Nifty #IndianStockMarket #FIIDII #MarketWrap #Trading"
+}
