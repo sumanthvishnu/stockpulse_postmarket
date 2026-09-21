@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 *extends gains* amid sector resilience",
+ "subline": "Pharma and FMCG sectors shine despite mixed market mood.",
+ "hero_text": "Nifty 50 rises for the fourth session driven by Pharma and FMCG.",
+ "why_head": "Key Market Drivers",
+ "why": [
+  {
+   "emoji": "💊",
+   "title": "Pharma Surge",
+   "desc": "Nifty Pharma gained with no clear catalyst.",
+   "badge": "311.05 pts"
+  },
+  {
+   "emoji": "🛒",
+   "title": "FMCG Strength",
+   "desc": "Broad sector strength lifted Nifty FMCG.",
+   "badge": "434.1 pts"
+  },
+  {
+   "emoji": "🛢️",
+   "title": "Crude Oil Drop",
+   "desc": "Brent and WTI prices fell sharply.",
+   "badge": "-7.93% (WTI)"
+  },
+  {
+   "emoji": "📊",
+   "title": "Negative Breadth",
+   "desc": "More declines than advances across the market.",
+   "badge": "0.904 AD ratio"
+  }
+ ],
+ "sector_reasons": {
+  "FMCG": "Broad sector strength pushed gains.",
+  "Pharma": "Led the market despite no specific catalyst.",
+  "IT": "Mixed performance with slight losses.",
+  "Metal": "Declined amid market volatility.",
+  "Realty": "Strong gains on sector optimism.",
+  "Healthcare": "Benefited from sectoral buying."
+ },
+ "bonus_title": "Divergent Institutional Flows",
+ "bonus_text": "FIIs sold Rs 576.2 crore, while DIIs bought Rs 2,797.27 crore.",
+ "movers_note_gainers": "Eternal led the gainers with a strong rise.",
+ "movers_note_losers": "Bharti Airtel topped the losers, falling over 3%.",
+ "watch_text": "Tomorrow's session includes NIFTY options expiry and ECB President's speech.",
+ "lessons": [
+  "FMCG and Pharma sectors led gains without specific catalysts.",
+  "Crude oil prices significantly impact market sentiment.",
+  "Market breadth can be negative even with index gains.",
+  "Institutional flows show divergent FII and DII activities."
+ ],
+ "alert_title": "Upcoming Events",
+ "alert_text": "Watch for tomorrow's NIFTY options expiry and ECB President's speech.",
+ "cta_headline": "Stay *updated* with StockPulse",
+ "cta_sub": "Get the latest market wrap every evening.",
+ "next_text": "Look out for NIFTY options expiry in tomorrow's session.",
+ "caption_a": "Pharma and FMCG led today's gains, despite mixed market mood.\n\nNifty Pharma rose 1.16% while FMCG added 0.95%.\nCrude oil prices saw a sharp decline.\n\nMarket breadth was negative.\n\nDaily wrap every evening @getstockpulse.\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyPharma #NiftyFMCG #OilPrices",
+ "caption_b": "Nifty 50 extends its winning streak, driven by Pharma and FMCG.\n\nFIIs sold Rs 576.2 crore; DIIs bought Rs 2,797.27 crore.\n\nWatch for tomorrow's NIFTY options expiry.\n\nDaily wrap every evening @getstockpulse.\nNot investment advice.\n#Nifty #IndianStockMarket #FMCG #Pharma #InstitutionalFlows"
+}
