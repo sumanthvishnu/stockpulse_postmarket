@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 and Sensex decline amid lack of major market catalysts.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "🌍",
+   "title": "Global Cues",
+   "detail": "Market decline lacked significant identifiable catalysts.",
+   "stat": "Nifty 50 down 0.36%"
+  },
+  {
+   "emoji": "💸",
+   "title": "FII Outflows",
+   "detail": "FIIs net sellers with outflows of Rs 3,809.99 Cr.",
+   "stat": "FIIs net -3809.99 Cr"
+  },
+  {
+   "emoji": "📉",
+   "title": "Market Breadth",
+   "detail": "Market breadth negative with 1,501 declines.",
+   "stat": "Advance-decline ratio 0.746"
+  },
+  {
+   "emoji": "📊",
+   "title": "Volatility",
+   "detail": "India VIX decreased by 2.22%, indicating reduced volatility.",
+   "stat": "India VIX at 11.00"
+  }
+ ],
+ "flows_line": "FIIs were net sellers at Rs 3,809.99 Cr, DIIs net buyers at Rs 4,120.07 Cr.",
+ "watch_next": "Tomorrow, watch for PMI data from France, Germany, and UK.",
+ "week_pct": 0.91,
+ "lesson_seeds": [
+  "Global cues can drive markets in absence of local catalysts.",
+  "FII flows significantly impact market sentiment.",
+  "Negative market breadth often accompanies index declines.",
+  "Volatility indices can signal market sentiment changes."
+ ],
+ "source": "llm"
+}
