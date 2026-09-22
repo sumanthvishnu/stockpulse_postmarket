@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 *slides* as global cues weigh",
+ "subline": "Indices fell amid lack of major market catalysts.",
+ "hero_text": "A mixed session with Nifty 50 and Sensex both declining.",
+ "why_head": "Key Market Movers Today",
+ "why": [
+  {
+   "emoji": "🌍",
+   "title": "Global Influence",
+   "desc": "Market decline lacked major catalysts.",
+   "badge": "Nifty 50 down 0.36%"
+  },
+  {
+   "emoji": "💸",
+   "title": "FII Sell-off",
+   "desc": "FIIs were net sellers.",
+   "badge": "Outflow: -3809.99 Cr"
+  },
+  {
+   "emoji": "📉",
+   "title": "Market Weakness",
+   "desc": "Negative breadth dominated.",
+   "badge": "Declines: 1,501"
+  },
+  {
+   "emoji": "📊",
+   "title": "Volatility Dips",
+   "desc": "India VIX fell, lowering volatility.",
+   "badge": "VIX: 11.00"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Metal": "Small gains amid broader declines.",
+  "Nifty Media": "Minor uptick despite overall mixed mood.",
+  "Nifty Realty": "Sector managed a slight rise.",
+  "Nifty IT": "Faced pressure amid lack of catalysts.",
+  "Nifty FMCG": "Struggled, contributing to declines.",
+  "Nifty Pharma": "Weakness seen with mixed sentiments."
+ },
+ "bonus_title": "Notable Sector",
+ "bonus_text": "Nifty Realty showed resilience with positive traction.",
+ "movers_note_gainers": "Coal India led the gainers with a solid performance.",
+ "movers_note_losers": "Bajaj Finserv and Nestle India among top losers.",
+ "watch_text": "Tomorrow, watch for PMI data from Europe.",
+ "lessons": [
+  "Global cues can influence market in absence of local drivers.",
+  "FII flows play a crucial role in market direction.",
+  "Negative market breadth often leads to index declines.",
+  "Volatility indices can indicate shifts in sentiment."
+ ],
+ "alert_title": "Upcoming Data",
+ "alert_text": "Watch for PMI data from France, Germany, and UK tomorrow.",
+ "cta_headline": "Keep *track* with StockPulse",
+ "cta_sub": "Follow us for daily market insights.",
+ "next_text": "Stay tuned for PMI readings from Europe tomorrow.",
+ "caption_a": "A mixed day as Nifty 50 closed down 0.36%.\nFIIs were net sellers at Rs 3,809.99 Cr.\nWatch for PMI data tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #NiftyIT #FIIs #MarketBreadth #IndianStockMarket",
+ "caption_b": "Indices slipped amid no major catalysts today.\nIndia VIX decreased by 2.22% to 11.00.\nEurope PMI data in focus tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndiaVIX #GlobalCues #FIIs #IndianStockMarket"
+}
