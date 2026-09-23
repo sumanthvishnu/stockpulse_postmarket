@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty gains 0.5% as metals and FMCG drive market rally.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "🔧",
+   "title": "Metal Surge",
+   "detail": "Nifty Metal index surged by 2.4%.",
+   "stat": "2.4%"
+  },
+  {
+   "emoji": "🍫",
+   "title": "FMCG Gains",
+   "detail": "Nifty FMCG index rose by 1.32%.",
+   "stat": "1.32%"
+  },
+  {
+   "emoji": "📉",
+   "title": "VIX Decline",
+   "detail": "India VIX fell to 10.35, a 21-session low.",
+   "stat": "-5.93%"
+  },
+  {
+   "emoji": "🔍",
+   "title": "Data Gaps",
+   "detail": "Driver attribution was unavailable.",
+   "stat": "Unavailable"
+  }
+ ],
+ "flows_line": "FIIs bought Rs 1,617.45 crore; DIIs bought Rs 2,341.46 crore.",
+ "watch_next": "Watch USD Unemployment Claims at 22:00 IST tomorrow.",
+ "week_pct": 0.99,
+ "lesson_seeds": [
+  "Metal and FMCG sectors can drive market gains.",
+  "Low VIX indicates reduced market volatility.",
+  "Institutional flows support market rallies.",
+  "Data gaps can obscure market drivers."
+ ],
+ "source": "llm"
+}
