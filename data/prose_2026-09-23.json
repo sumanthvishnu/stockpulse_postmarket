@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty *rallies 0.5%* as metals shine",
+ "subline": "Metal and FMCG sectors lift the market higher.",
+ "hero_text": "The Nifty surged by 0.5%, driven by strong performances in the Metal and FMCG sectors.",
+ "why_head": "Why the Market Rose",
+ "why": [
+  {
+   "emoji": "🔧",
+   "title": "Metal Surge",
+   "desc": "Nifty Metal index surged by 2.4%.",
+   "badge": "2.4% rise"
+  },
+  {
+   "emoji": "🍫",
+   "title": "FMCG Gains",
+   "desc": "Nifty FMCG index rose by 1.32%.",
+   "badge": "1.32% rise"
+  },
+  {
+   "emoji": "📉",
+   "title": "VIX Decline",
+   "desc": "India VIX fell to a 21-session low.",
+   "badge": "-5.93%"
+  },
+  {
+   "emoji": "🔍",
+   "title": "Data Gaps",
+   "desc": "Driver attribution was unavailable.",
+   "badge": "Unavailable"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Metal": "Robust demand led to a 2.4% surge.",
+  "Nifty FMCG": "Consumer demand lifted the sector.",
+  "Nifty IT": "Tech stocks saw minor profit-taking.",
+  "Nifty Energy": "Stable performance amid mixed cues.",
+  "Nifty INR": "Currency stability aided positive sentiments.",
+  "Nifty Health": "Held steady with broad market support."
+ },
+ "bonus_title": "Index Highlights",
+ "bonus_text": "Nifty 500 also advanced, reflecting broader market strength.",
+ "movers_note_gainers": "BAJFINANCE and HINDALCO led the gains among Nifty 50 constituents.",
+ "movers_note_losers": "HCLTECH and TITAN saw slight declines, bucking the trend.",
+ "watch_text": "Watch for USD Unemployment Claims data tomorrow at 22:00 IST.",
+ "lessons": [
+  "Metals boosted market confidence with a strong rise.",
+  "FMCG contributed positively to market gains.",
+  "A decline in VIX indicated reduced volatility fears.",
+  "Institutional buying played a supportive role."
+ ],
+ "alert_title": "Upcoming Economic Data",
+ "alert_text": "USD Unemployment Claims data due tomorrow at 22:00 IST.",
+ "cta_headline": "Stay *informed* with StockPulse",
+ "cta_sub": "Keep up with daily market wraps and insights.",
+ "next_text": "Prepare for Thursday's session with key economic data releases.",
+ "caption_a": "Nifty rallied 0.5%, led by metals and FMCG gains.\n\nWatch USD data tomorrow for market cues.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyMetal #FMCG #VIX",
+ "caption_b": "Metals shine as Nifty gains 0.5%.\n\nVIX indicates lower volatility.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyFMCG #Metals #InstitutionalFlows"
+}
