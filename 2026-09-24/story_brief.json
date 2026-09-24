@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 tumbles 1.64% amid broad market sell-off and FII outflows.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "💸",
+   "title": "FII Outflows",
+   "detail": "FIIs sold Rs 5,027.36 Cr in cash market.",
+   "stat": "Rs 5,027.36 Cr"
+  },
+  {
+   "emoji": "📉",
+   "title": "Market Volatility",
+   "detail": "India VIX surged 22.64% to 12.69.",
+   "stat": "22.64%"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Auto Sector Pressure",
+   "detail": "Nifty Auto index fell by 1.57%.",
+   "stat": "-1.57%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Financial Sector Weakness",
+   "detail": "Nifty Financial Services dropped 2.39%.",
+   "stat": "-2.39%"
+  }
+ ],
+ "flows_line": "FIIs were net sellers at Rs 5,027.36 Cr; DIIs bought Rs 4,301.18 Cr.",
+ "watch_next": "Watch for BOE Gov Bailey's speech and UoM data releases tomorrow.",
+ "week_pct": -0.89,
+ "lesson_seeds": [
+  "FII outflows can significantly impact market sentiment.",
+  "Rising VIX indicates increased market volatility.",
+  "Sectoral declines can drive broader market downturns.",
+  "Monitoring institutional flows is crucial for market insights."
+ ],
+ "source": "llm"
+}
