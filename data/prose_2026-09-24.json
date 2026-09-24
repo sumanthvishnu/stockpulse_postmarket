@@ -1,0 +1,55 @@
+{
+ "headline": "Nifty 50 *tumbles* 1.64% as FII outflows hit hard",
+ "subline": "Broad market sell-off with significant FII outflows.",
+ "hero_text": "The market fell sharply today, with Nifty dropping 1.64% as FIIs exited heavily.",
+ "why_head": "Today's Key Market Drivers",
+ "why": [
+  {
+   "emoji": "💸",
+   "title": "FII Selling Pressure",
+   "desc": "Significant FII withdrawals impacted sentiment.",
+   "badge": "Rs 5,027.36 Cr"
+  },
+  {
+   "emoji": "📉",
+   "title": "Surge in Volatility",
+   "desc": "India VIX spiked sharply indicating nervousness.",
+   "badge": "22.64%"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Auto Weakness",
+   "desc": "Auto sector faced selling pressure.",
+   "badge": "-1.57%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Financial Strain",
+   "desc": "Financial stocks dragged down the market.",
+   "badge": "-2.39%"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Auto": "Pressured by sectoral challenges.",
+  "Nifty Financial Services": "Weighed down by sector-specific issues."
+ },
+ "bonus_title": "Market Breadth",
+ "bonus_text": "Only 503 stocks advanced while 2,140 declined.",
+ "movers_note_gainers": "Cipla led the gainers with a slight uptick.",
+ "movers_note_losers": "HDFC Life and Bajaj Finance were among the top losers.",
+ "watch_text": "Keep an eye on BOE Gov Bailey's speech and UoM data tomorrow.",
+ "lessons": [
+  "FII outflows can significantly impact market sentiment.",
+  "Rising VIX indicates increased market volatility.",
+  "Sectoral declines can drive broader market downturns.",
+  "Monitoring institutional flows is crucial for market insights."
+ ],
+ "alert_title": "Upcoming Events",
+ "alert_text": "Watch for BOE Gov Bailey's speech and UoM data releases tomorrow.",
+ "cta_headline": "Stay *informed* with our daily insights",
+ "cta_sub": "Catch every market nuance with @getstockpulse.",
+ "next_text": "Friday brings BOE speech and UoM data releases.",
+ "caption_a": "A turbulent day as Nifty fell 1.64%\n\nWith FII outflows at Rs 5,027.36 Cr and VIX up 22.64%, the market saw broad-based selling.\n\nWatch for BOE Gov Bailey's speech and UoM data releases tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.",
+ "caption_b": "Nifty nosedives amid FII pullout\n\nFII selling pressure marked today with Rs 5,027.36 Cr outflows, pushing VIX up 22.64%.\n\nBOE speech and UoM data tomorrow could steer sentiment.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.",
+ "hashtags": "#Nifty #IndianStockMarket #FII #Volatility #AutoSector"
+}
