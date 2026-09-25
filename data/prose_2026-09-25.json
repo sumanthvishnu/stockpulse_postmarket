@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 dances to *mixed global cues*",
+ "subline": "Nifty 50 closed the week 0.88% lower.",
+ "hero_text": "Nifty 50 gains 0.34% on Friday, but ends week down 0.88%.",
+ "why_head": "What Moved the Market",
+ "why": [
+  {
+   "emoji": "📈",
+   "title": "Nifty Power",
+   "desc": "Nifty 50 rose by 0.34% today.",
+   "badge": "23140.5 Close"
+  },
+  {
+   "emoji": "💰",
+   "title": "Cash Flows Shift",
+   "desc": "FII outflow impacts sentiment.",
+   "badge": "FII -3,693.93 Cr"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Banks Boost",
+   "desc": "Nifty Bank up by 0.26%.",
+   "badge": "55580.4"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Cues Mix",
+   "desc": "Dow gains 0.42%, mixed cues.",
+   "badge": "Dow +215.06"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Realty": "Realty gains lead the week.",
+  "Nifty Consumer Durables": "Sector benefits from FMCG strength.",
+  "Nifty Pharma": "Pharma sees steady growth.",
+  "Nifty IT": "Sector faces global headwinds.",
+  "Nifty Financial Services": "Pressure from international markets.",
+  "Nifty Midcap 150": "Midcaps hit by broader market trends."
+ },
+ "bonus_title": "Weekly Performance",
+ "bonus_text": "Nifty Realty shines with a 2.98% weekly gain.",
+ "movers_note_gainers": "Axis Bank led the gainers, supported by healthy delivery.",
+ "movers_note_losers": "Max Healthcare tops the losers list on selling pressure.",
+ "watch_text": "Keep an eye on market trends next session: Monday, 28 September.",
+ "lessons": [
+  "Nifty 50 showed resilience with a 0.34% gain.",
+  "FII outflows continue to impact market sentiment.",
+  "Banking sector remains a key driver with positive movement.",
+  "Global market trends influence local market dynamics."
+ ],
+ "alert_title": "Next Session",
+ "alert_text": "Monitor trends as markets reopen on Monday.",
+ "cta_headline": "Track the *next session* closely",
+ "cta_sub": "Stay updated with daily insights.",
+ "next_text": "Prepare for Monday, 28 September 2026.",
+ "caption_a": "Nifty 50 closes up 0.34% today but ends the week 0.88% down.\n\nFII outflows weigh on sentiment, yet banking stocks see gains.\n\nPrepare for Monday, 28 Sep session.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.",
+ "caption_b": "Mixed cues dominate as Nifty rises today, yet dips 0.88% this week.\n\nFII outflows continue amid global market influence.\n\nWatch for Monday, 28 Sep trends.\n\nDaily wrap every evening @getstockpulse\nNot investment advice."
+}
