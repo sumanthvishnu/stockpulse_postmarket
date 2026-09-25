@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 gains 0.34% amid mixed global cues and sectoral performances.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "📈",
+   "title": "Nifty 50 Rise",
+   "detail": "Nifty 50 closed up by 0.34%.",
+   "stat": "23140.5"
+  },
+  {
+   "emoji": "💰",
+   "title": "FII/DII Flows",
+   "detail": "FII net outflow of Rs -3,693.93 Cr.",
+   "stat": "DII net Rs 2,838.17 Cr"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Banking Sector",
+   "detail": "Nifty Bank increased by 0.26%.",
+   "stat": "55580.4"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Markets",
+   "detail": "Mixed global cues with Dow up 0.42%.",
+   "stat": "215.06"
+  }
+ ],
+ "flows_line": "FII net outflow of Rs -3,693.93 Cr; DII net inflow of Rs 2,838.17 Cr.",
+ "watch_next": "Watch for market trends on Monday, 28 September 2026.",
+ "week_pct": -0.88,
+ "lesson_seeds": [
+  "Nifty 50 showed resilience with a 0.34% gain.",
+  "FII outflows continue to impact market sentiment.",
+  "Banking sector remains a key driver with positive movement.",
+  "Global market trends influence local market dynamics."
+ ],
+ "source": "llm"
+}
