@@ -145,6 +145,10 @@ def collect_report(target, output):
         pack["derived"]["website_bulk"]=[r for r in fetcher.clean_rows(bulk_text) if parse_date(r.get("Date"))==target.isoformat()]
     from website_context import context
     context(pack,receipts,archives,target)
+    from website_enrichment import run as enrich_website
+    enrich_website(pack,receipts,archives,fetcher.Client())
+    # Replace the legacy disabled-bond warning with the actual dated feed receipt.
+    pack["failures"]=[f for f in pack["failures"] if f.get("source")!="india_10y"]
     report=build_report(pack,receipts)
     # Keep receipt and original datapack with the workflow evidence artifact.
     (Path(output)/"datapack.json").write_text(canonical(pack),encoding="utf-8")

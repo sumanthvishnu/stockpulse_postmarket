@@ -200,8 +200,42 @@ def build_report(pack, receipts, now=None):
     global_rows=[row(x["name"],[x["session"],fmt(x["close"]),fmt(x["pctChange"],signed=True)+"%"],["derived.website_context.global."+str(i)]) for i,x in enumerate(globals) if finite(x.get("close")) and finite(x.get("pctChange"))]
     section("global","Global context",["Index","Completed venue session","Close","Change (%)"],global_rows,None,"Vendor quotes for the latest completed local session available by the reporting cutoff. No live US quote is labelled a close.","Independent second-source verification is unavailable.")
     sections[-1]["sourceIds"]=[x["sourceId"] for x in globals if x.get("sourceId") in source_ids]
-    section("catalysts","Stocks in focus and catalysts",["Security","Dated evidence"],[],None,unavailable="No independently reviewed company-event or causal evidence was supplied for this edition. Price movements are not assigned invented explanations.")
-    section("calendar","Economic and results calendar",["Event","Date and time (IST)"],[],None,unavailable="Date-specific official economic releases, results and GIFT futures evidence are not yet available in this edition.")
+    enr=d.get("website_enrichment",{})
+    coverage=enr.get("coverage",{})
+    cats=enr.get("catalysts",[])
+    rows=[row(x["symbol"],[x["publishedAt"],x["event"],x["detail"]],[f"derived.website_enrichment.catalysts.{i}"]) for i,x in enumerate(cats)]
+    if not rows and coverage.get("catalysts")=="available":
+        rows=[row("Reviewed NSE announcements",["By the report cutoff","No matching material event","No verified catalyst identified in the reviewed announcements."],["derived.website_enrichment.announcementCount"])]
+    section("catalysts","Documented company events",["Security","Published (IST)","Event","Issuer disclosure"],rows,"catalysts","Selected dated issuer announcements, prioritising covered movers. These establish events, not why a share price moved.")
+    sections[-1]["sourceIds"]+=list(dict.fromkeys(x["sourceId"] for x in cats if x.get("sourceId") in source_ids))[:3]
+    results=enr.get("results",[])
+    rows=[row(x["symbol"],[x["date"],x["purpose"]],[f"derived.website_enrichment.results.{i}"]) for i,x in enumerate(results[:30])]
+    if not rows and coverage.get("results")=="available":
+        rows=[row("NSE board-meeting calendar",["Through T+2","No results meetings found in the validated window"],["derived.website_enrichment.results"])]
+    section("results","Upcoming results meetings",["Security","Meeting date","Published purpose"],rows,"results","Results-related NSE equity board meetings announced by cutoff. This is a meeting calendar, not a guarantee of a result release time. BSE-only issuers are outside this scope.")
+    events=enr.get("calendar",[])
+    rows=[row(x["event"],[x["country"],x["dateTime"],x["basis"]],[f"derived.website_enrichment.calendar.{i}"]) for i,x in enumerate(events[:30])]
+    checked=[k for k in ("mospi","bls","bea","rbi","fed") if coverage.get(k)=="available"]
+    if not rows and len(checked)==5:
+        rows=[row("Configured official publishers",["India / US","Through T+2","No scheduled releases found in the checked window"],["derived.website_enrichment.calendar"])]
+    section("calendar","Economic release watch",["Release","Economy","Date/time (IST)","Basis"],rows,None,"MoSPI macro releases plus US BLS and BEA. Dates are publisher schedules, not predictions. Other economies and central-bank meetings are outside this calendar's current scope.",None if len(checked)==5 else "Some configured official calendars could not be validated.")
+    sections[-1]["sourceIds"]=[k for k in checked if k in source_ids]
+    gift=enr.get("gift");rows=[]
+    if gift:
+        rows=[row(gift["instrument"],[gift["expiry"],gift["observedAt"],fmt(gift["level"]),fmt(gift["spotDifference"],signed=True)],["derived.website_enrichment.gift"])]
+    section("gift","GIFT Nifty evening futures",["Instrument","Expiry","Trade time (IST)","Level (points)","Difference vs Nifty close"],rows,"gift","Official NSE IX futures; the difference compares different observation times and is not a forecast of the next opening gap.")
+    assets=d.get("website_assets",{})
+    rows=[row(x["name"],[fmt(x["value"],3),x["unit"],x["observedAt"],x["basis"]],[f"derived.website_assets.rows.{i}"]) for i,x in enumerate(assets.get("rows",[]))]
+    section("assets","Bonds, commodities and FX",["Instrument","Value","Unit","Observed","Basis"],rows,None,"Official US Treasury par yield and explicitly labelled vendor observations. Futures expiry is required; no continuous series is silently called a specific contract.")
+    sections[-1]["sourceIds"]=[x["sourceId"] for x in assets.get("rows",[]) if x.get("sourceId") in source_ids][:10]
+    for item in enr.get("gaps",[])+assets.get("gaps",[]):gap(item["section"],item["reason"])
+    block_rows=[]
+    for i,b in enumerate(enr.get("blocks",[])[:30]):
+        try:q=float(str(b["Quantity Traded"]).replace(",",""));p=float(str(b["Trade Price / Wght. Avg. Price"]).replace(",",""))
+        except (TypeError,ValueError,KeyError):continue
+        if not finite(q) or not finite(p) or q<0 or p<0:continue
+        block_rows.append(row(b.get("Symbol",""),[b.get("Client Name",""),b.get("Buy/Sell",""),fmt(q,0),fmt(p),fmt(q*p/10_000_000)],["derived.website_enrichment.blocks."+str(i)]))
+    section("blocks","Disclosed block deals",["Security","Disclosed client","Side","Quantity","Price (Rs)","Value (Rs Cr)"],block_rows,"blocks","Dated NSE block transaction legs, maximum thirty rows. A transaction does not establish investor intent.")
     bulk_rows=[]
     if usable("bulk"):
         for i,b in enumerate(d.get("website_bulk",[])):
@@ -213,7 +247,7 @@ def build_report(pack, receipts, now=None):
             if value<20:continue
             bulk_rows.append((value,row(b.get("Symbol",""),[b.get("Client Name",""),b["Buy/Sell"],fmt(quantity,0),fmt(price),fmt(value,2)],["derived.website_bulk."+str(i)])))
         bulk_rows.sort(key=lambda x:-x[0])
-    section("deals","Disclosed bulk deals",["Security","Disclosed client","Side","Quantity","Price (Rs)","Value (Rs Cr)"],[r for _,r in bulk_rows[:20]],"bulk","Largest disclosed transaction legs of at least Rs 20 Cr, capped at twenty rows. Both buy and sell legs may appear. No market-making, round-trip or investment-intent inference is made.","Separate block-deal coverage is not established.")
+    section("deals","Disclosed bulk deals",["Security","Disclosed client","Side","Quantity","Price (Rs)","Value (Rs Cr)"],[r for _,r in bulk_rows[:20]],"bulk","Largest disclosed transaction legs of at least Rs 20 Cr, capped at twenty rows. Both buy and sell legs may appear. No market-making, round-trip or investment-intent inference is made.",None if coverage.get("blocks")=="available" else "Separate block-deal coverage could not be validated.")
     for reason in context.get("gaps",[]):gap("Context",reason)
     for failure in pack.get("failures",[]):
         gap(str(failure.get("source","Source")),str(failure.get("reason","Unavailable")))
