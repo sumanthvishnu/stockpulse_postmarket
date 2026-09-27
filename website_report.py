@@ -100,8 +100,8 @@ def build_report(pack, receipts, now=None):
     section("sectors","Sector performance",["Index","Close","Change (%)"],[row(n,[fmt(indices[n].get("close")),fmt(indices[n].get("pct_chg"),signed=True)+"%"],["derived.indices."+n+".close","derived.indices."+n+".pct_chg"]) for n in SECTORS if n in indices],"indices","Configured NSE sector indices. No causal explanation is inferred from price changes.")
     history=d.get("website_history",{})
     changes=history.get("fiveSessionChange",{})
-    hrows=[row(n,[fmt(changes[n],signed=True)+"%"],["derived.website_history.fiveSessionChange."+n]) for n in dict.fromkeys(MAIN+SECTORS) if finite(changes.get(n))]
-    section("history","Five-session market context",["Index","Five-session change (%)"],hrows,None,"Five completed exchange sessions; only consecutive, dated archive coverage is used.")
+    hrows=[row(n,[fmt(changes[n],signed=True)+"%",fmt(history.get("twentySessionChange",{}).get(n),signed=True)+"%" if finite(history.get("twentySessionChange",{}).get(n)) else "Unavailable"],["derived.website_history.fiveSessionChange."+n,"derived.website_history.twentySessionChange."+n]) for n in dict.fromkeys(MAIN+SECTORS) if finite(changes.get(n))]
+    section("history","Five-session market context",["Index","Five-session change (%)","20-session change (%)"],hrows,None,"Changes over five and twenty completed exchange sessions; only consecutive, dated archive coverage is used.")
     sections[-1]["sourceIds"]=[key for key in history.get("sourceIds",[])[:6] if key in source_ids]
     v=history.get("vix");vrows=[]
     if v:
@@ -294,6 +294,27 @@ def build_report(pack, receipts, now=None):
         summary.append({"title":"Upcoming economic releases","text":"; ".join(x["event"]+" on "+x["dateTime"] for x in events[:2])+". Check the detailed calendar for coverage and scheduling caveats.","refs":["derived.website_enrichment.calendar"]})
     summary.append({"title":"Read with the gaps","text":"This edition describes the validated market data. Any missing context, events and causal evidence are listed below; no investment recommendation or opening prediction is implied.","refs":[]})
     report={"schemaVersion":VERSION,"session":session,"generatedAt":now.isoformat(),"status":"available_with_gaps","edition":"reconstructed" if session!=now.astimezone(IST).date().isoformat() else "evening","title":"India post-market analysis","headline":"Nifty 50 "+direction+"; participation and sector performance in focus","summary":summary,"sections":sections,"sources":sources,"gaps":gaps,"nextSession":next_session if calendar_ok else None,"methodology":"StockPulse post-market v4: deterministic summary from named, dated datasets. Original archive identity and numeric consistency checks are recorded. Data completeness is separate from publication success. No model-generated facts or paid AI calls.","datapackSha256":hashlib.sha256(canonical(pack).encode()).hexdigest(),"modelCalls":0}
+    from website_briefing import summary as editorial_summary, market_movers
+    report["summary"]=editorial_summary(pack,sections)
+    report["headline"]=report["summary"][0]["title"]
+    moves=market_movers(pack)
+    d["website_movers"]=moves
+    mover_rows=[]
+    for i,m in enumerate(moves):
+        item=row(m["symbol"],[fmt(m["close"]),fmt(m["change"],signed=True)+"%",fmt(m["delivery"])+"%" if finite(m["delivery"]) else "Unavailable",fmt(m["turnover"],1),m["event"]],["derived.website_movers."+str(i)])
+        if m["url"]:item["href"]=m["url"]
+        mover_rows.append(item)
+    section("liquid-movers","Liquid market movers and reviewed filings",["Security","Close (Rs)","Change (%)","Delivery (%)","Turnover (Rs Cr)","Reviewed event"],mover_rows,"bhavcopy","Five gainers and five losers in the NSE EQ universe with turnover of at least Rs 100 Cr. Includes Nifty constituents; no historical membership assumption. Events do not establish price causation.")
+    sections[-1]["sourceIds"]=[x for x in ("bhavcopy","catalysts") if x in source_ids]
+    for s in sections:
+        if s["id"]=="catalysts":
+            for item,event in zip(s["rows"],cats):
+                if event.get("url"):item["href"]=event["url"]
+    report["datapackSha256"]=hashlib.sha256(canonical(pack).encode()).hexdigest()
+    for field,title in (("nifty","Nifty 50 recent closing trend"),("vix","India VIX recent closing trend")):
+        series=d.get("website_history",{}).get("series",[])
+        series_rows=[row(x["date"],[fmt(x.get(field))],["derived.website_history.series."+str(i)+"."+field]) for i,x in enumerate(series) if finite(x.get(field))]
+        section(field+"-trend",title,["Session","Close"],series_rows,"indices","Consecutive verified exchange sessions. Chart axes are labelled; the series is not a forecast.")
     body=canonical(report).encode()
     report["id"]=session+"-"+hashlib.sha256(body).hexdigest()[:16]
     return report

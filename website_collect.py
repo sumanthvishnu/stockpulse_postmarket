@@ -172,7 +172,7 @@ def main():
     parser.add_argument("--date")
     parser.add_argument("--output",default="website-output")
     args=parser.parse_args()
-    target=date.fromisoformat(args.date) if args.date else datetime.now(IST).date()
+    target=date.fromisoformat(args.date or os.environ["SCHEDULED_DATE"]) if args.date or os.environ.get("SCHEDULED_DATE") else datetime.now(IST).date()
     output=Path(args.output);output.mkdir(parents=True,exist_ok=True)
     # Weekend default runs record market closure without downloading dozens of archives.
     if not args.date and target.weekday()>=5:

@@ -3,7 +3,7 @@ on:
   schedule:
     - cron: '0 15 * * *'
   push:
-    branches: [codex/postmarket-website, codex/postmarket-v4-coverage]
+    branches: [codex/postmarket-website, codex/postmarket-v4-coverage, codex/postmarket-briefing]
   workflow_dispatch:
     inputs:
       date:
@@ -27,7 +27,8 @@ jobs:
         with:
           node-version: '22'
       - run: pip install icalendar pypdf
-      - run: python -m unittest test_website_report test_website_enrichment -v
+      - run: python -m unittest test_website_report test_website_enrichment test_website_briefing -v
+      - run: node --test test_website_schedule.mjs
       - name: Read-only current provider diagnostics
         if: github.event_name == 'push' && contains(github.event.head_commit.message, '[v4-probe]')
         run: |
@@ -48,6 +49,7 @@ jobs:
         id: collect
         continue-on-error: true
         env:
+          SCHEDULED_DATE: ${{ steps.due.outputs.session }}
           TRENDLYNE_MCP_TOKEN: ${{ secrets.TRENDLYNE_MCP_TOKEN }}
           MANUAL_DATE: ${{ inputs.date }}
           INITIAL_REPLAY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[pm-collect]') && '2026-09-25' || '' }}
