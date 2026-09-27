@@ -155,6 +155,13 @@ def build_report(pack, receipts, now=None):
             raise ValueError("Participant net positions do not balance")
     section("positioning","Derivatives positioning",["Participant","Net index futures (contracts)","Net stock futures (contracts)"],rows,"participant","Outstanding positions, not daily flows. Client is not exclusively retail. No hedging or directional motive is inferred.")
     rows=[]
+    positions=d.get("website_positions",{})
+    prows=[]
+    if usable("participant") and len(positions)==4:
+        for label in ("Client","DII","FII","Pro"):
+            v=positions[label]
+            prows.append(row(label,[fmt(v[k],0) for k in ("indexLong","indexShort","stockLong","stockShort")],["derived.website_positions."+label]))
+    section("position-detail","Participant futures long and short positions",["Participant","Index long (contracts)","Index short (contracts)","Stock long (contracts)","Stock short (contracts)"],prows,"participant","Outstanding contract counts in distinct segments, not delta-adjusted exposure or daily changes. These do not identify hedging, short covering or investment intent.")
     stats=d.get("fii_fno_stats",{})
     if usable("fii_fno") and stats.get("date")==session:
         for label, v in stats.get("segments",{}).items():
@@ -284,7 +291,7 @@ def build_report(pack, receipts, now=None):
     if cats:
         summary.append({"title":"Documented issuer events","text":"Selected disclosed events: "+ "; ".join(x["symbol"]+": "+x["event"] for x in cats[:3])+". The full table lists publication times; these events do not establish price causation.","refs":["derived.website_enrichment.catalysts"]})
     if events:
-        summary.append({"title":"Upcoming economic releases","text":"; ".join(x["event"]+" — "+x["dateTime"] for x in events[:2])+". Check the detailed calendar for coverage and scheduling caveats.","refs":["derived.website_enrichment.calendar"]})
+        summary.append({"title":"Upcoming economic releases","text":"; ".join(x["event"]+" on "+x["dateTime"] for x in events[:2])+". Check the detailed calendar for coverage and scheduling caveats.","refs":["derived.website_enrichment.calendar"]})
     summary.append({"title":"Read with the gaps","text":"This edition describes the validated market data. Any missing context, events and causal evidence are listed below; no investment recommendation or opening prediction is implied.","refs":[]})
     report={"schemaVersion":VERSION,"session":session,"generatedAt":now.isoformat(),"status":"available_with_gaps","edition":"reconstructed" if session!=now.astimezone(IST).date().isoformat() else "evening","title":"India post-market analysis","headline":"Nifty 50 "+direction+"; participation and sector performance in focus","summary":summary,"sections":sections,"sources":sources,"gaps":gaps,"nextSession":next_session if calendar_ok else None,"methodology":"StockPulse post-market v4: deterministic summary from named, dated datasets. Original archive identity and numeric consistency checks are recorded. Data completeness is separate from publication success. No model-generated facts or paid AI calls.","datapackSha256":hashlib.sha256(canonical(pack).encode()).hexdigest(),"modelCalls":0}
     body=canonical(report).encode()

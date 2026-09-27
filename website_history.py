@@ -29,3 +29,24 @@ def validated_history(pack,receipts,archives,target,holidays,fetcher):
             out["vix"]={"current":vals[0],"low":low,"high":high,"sessions":21,"rangePosition":round((vals[0]-low)/(high-low)*100,1) if high>low else None}
     pack["derived"]["website_history"]=out
     return out
+
+def participant_positions(payload):
+    import csv,io
+    reader=csv.reader(io.StringIO(payload.decode("utf-8")));header=None;out={}
+    fields=["Future Index Long","Future Index Short","Future Stock Long","Future Stock Short"]
+    for cells in reader:
+        cells=[c.strip() for c in cells]
+        if cells and cells[0]=="Client Type":header=cells;continue
+        if not header or not cells or cells[0] not in ("Client","DII","FII","Pro"):continue
+        values=[]
+        for name in fields:
+            raw=cells[header.index(name)].replace(",","")
+            number=float(raw)
+            if number<0 or not number.is_integer():raise ValueError("Invalid participant contract count")
+            values.append(int(number))
+        if cells[0] in out:raise ValueError("Duplicate participant")
+        out[cells[0]]=dict(zip(["indexLong","indexShort","stockLong","stockShort"],values))
+    if len(out)!=4:raise ValueError("Incomplete participant table")
+    for long,short in [("indexLong","indexShort"),("stockLong","stockShort")]:
+        if sum(v[long] for v in out.values())!=sum(v[short] for v in out.values()):raise ValueError("Participant contracts do not balance")
+    return out

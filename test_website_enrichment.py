@@ -86,5 +86,20 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(rows[0]["dateTime"],"2026-10-07 (time not confirmed)")
         with self.assertRaises(ValueError):central_bank_events(raw,self.cutoff,"2027-04-01","RBI")
         with self.assertRaises(ValueError):central_bank_events(raw.replace(b"June 3, 4 and 5, 2026",b""),self.cutoff,"2026-10-08","RBI")
+
+    def test_participant_long_short_requires_balance(self):
+        from website_history import participant_positions
+        raw=b"Client Type,Future Index Long,Future Index Short,Future Stock Long,Future Stock Short\nClient,10,0,10,0\nDII,0,5,0,5\nFII,0,5,0,5\nPro,0,0,0,0\n"
+        self.assertEqual(participant_positions(raw)["Client"]["indexLong"],10)
+        with self.assertRaises(ValueError):participant_positions(raw.replace(b"Client,10",b"Client,11"))
+
+    def test_commodity_requires_explicit_contract(self):
+        from website_assets import contract_identity
+        info={"expireDate":1792454400,"shortName":"Crude Oil Nov 26","underlyingSymbol":"CLX26.NYM"}
+        self.assertEqual(contract_identity(info,self.day)[1],"CLX26.NYM")
+        with self.assertRaises(ValueError):contract_identity({**info,"underlyingSymbol":"CL=F"},self.day)
+        with self.assertRaises(ValueError):contract_identity({**info,"expireDate":1600000000},self.day)
 if __name__=="__main__":unittest.main()
+
+
 

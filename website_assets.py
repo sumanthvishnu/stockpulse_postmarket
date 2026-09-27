@@ -46,6 +46,15 @@ def india_yield(raw,target,cutoff):
     if version!=target.strftime("%Y%m%d") or not modified or modified>cutoff:raise ValueError("India yield does not match report cutoff")
     return {"name":"India 10-year government yield","value":item["value"],"unit":"percent per annum","observedAt":target.isoformat()+" (vendor daily observation)","basis":"Trading Economics indicative OTC yield; not independently cross-verified"}
 
+def contract_identity(info,target):
+    expiry=info.get("expireDate");name=info.get("shortName") or info.get("longName")
+    if not isinstance(expiry,int) or not name:raise ValueError("Vendor did not identify contract expiry")
+    expiry=datetime.fromtimestamp(expiry,IST).date().isoformat()
+    if expiry<target.isoformat():raise ValueError("Expired vendor contract")
+    ticker=info.get("underlyingSymbol","")
+    if not re.fullmatch(r"[A-Z]{1,5}[FGHJKMNQUVXZ][0-9]{2}\.(NYM|CMX)",ticker):raise ValueError("Explicit futures contract symbol unavailable")
+    return name+" ["+ticker+"]",ticker,expiry
+
 def run(pack,receipts,sources,target,cutoff):
     d=pack["derived"];out={"rows":[],"gaps":[]}
     for key,label,url,parser in [
@@ -56,20 +65,16 @@ def run(pack,receipts,sources,target,cutoff):
         except Exception as e:receipts.pop(key,None);out["gaps"].append({"section":label,"reason":str(e)[:180]})
     import yfinance as yf
     from website_context import store_source
-    # Contracts must carry a stated expiry. No silent assignment of today's front
-    # contract to a historical day across a possible roll.
+    # Fetch the explicit contract symbol, never the rolling continuous-series bars.
+    # A reconstructed selection is labelled as such, not called the historical front month.
     for label,ticker,unit,contract in [("USD/INR","INR=X","Rs per USD",False),("Brent","BZ=F","USD per barrel",True),("WTI","CL=F","USD per barrel",True),("Gold","GC=F","USD per troy ounce",True)]:
         key="asset:"+ticker
         try:
-            t=yf.Ticker(ticker);expiry=None;name=label
+            t=yf.Ticker(ticker);expiry=None;name=label;quote_ticker=ticker
             if contract:
-                if target!=datetime.now(IST).date():raise ValueError("Historical contract identity requires an archived contract snapshot")
                 info=t.get_info()
-                expiry=info.get("expireDate");contract_name=info.get("shortName") or info.get("longName")
-                if not isinstance(expiry,int) or not contract_name:raise ValueError("Vendor did not identify contract expiry")
-                expiry=datetime.fromtimestamp(expiry,IST).date().isoformat()
-                if expiry<target.isoformat():raise ValueError("Expired vendor contract")
-                name=contract_name
+                name,quote_ticker,expiry=contract_identity(info,target)
+                t=yf.Ticker(quote_ticker)
             bars=t.history(start=target.isoformat(),end=(target+timedelta(days=1)).isoformat(),interval="5m",auto_adjust=False,timeout=12)
             candidates=[]
             for index,row in bars.iterrows():
@@ -78,8 +83,8 @@ def run(pack,receipts,sources,target,cutoff):
                 if observed.date()==target and observed<=cutoff and 0<=(cutoff-observed).total_seconds()<=5400 and finite(value) and value>0:candidates.append((observed,value))
             if not candidates:raise ValueError("No completed 5-minute vendor bar within 90 minutes of cutoff")
             observed,value=max(candidates)
-            quote={"name":name+(" / expiry "+expiry if expiry else ""),"value":value,"unit":unit,"observedAt":observed.isoformat(),"basis":"Vendor indicative 5-minute bar; not an official settlement","sourceId":key}
-            store_source(receipts,sources.folder,key,"Yahoo Finance vendor: "+name,"https://finance.yahoo.com/quote/"+ticker.replace("=","%3D")+"/",quote,target.isoformat())
+            quote={"name":name+(" / expiry "+expiry if expiry else ""),"value":value,"unit":unit,"observedAt":observed.isoformat(),"basis":"Vendor indicative 5-minute bar; not an official settlement"+("; explicit contract chosen during reconstruction, not historical front month" if contract and target!=datetime.now(IST).date() else ""),"sourceId":key}
+            store_source(receipts,sources.folder,key,"Yahoo Finance vendor: "+name,"https://finance.yahoo.com/quote/"+quote_ticker.replace("=","%3D")+"/",quote,target.isoformat())
             out["rows"].append(quote)
         except Exception as e:out["gaps"].append({"section":label,"reason":str(e)[:180]})
     d["website_assets"]=out

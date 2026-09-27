@@ -149,8 +149,11 @@ def collect_report(target, output):
     if receipts.get("bulk",{}).get("status")=="validated":
         bulk_text=(archives/(receipts["bulk"]["sha256"]+".source")).read_text(encoding="utf-8")
         pack["derived"]["website_bulk"]=[r for r in fetcher.clean_rows(bulk_text) if parse_date(r.get("Date"))==target.isoformat()]
-    from website_history import validated_history
+    from website_history import validated_history, participant_positions
     validated_history(pack,receipts,archives,target,holidays,fetcher)
+    if receipts.get("participant",{}).get("status")=="validated":
+        payload=(archives/(receipts["participant"]["sha256"]+".source")).read_bytes()
+        pack["derived"]["website_positions"]=participant_positions(payload)
     from website_context import context
     context(pack,receipts,archives,target)
     from website_enrichment import run as enrich_website
