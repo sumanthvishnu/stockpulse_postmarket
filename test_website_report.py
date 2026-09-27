@@ -33,6 +33,16 @@ class ReportTests(unittest.TestCase):
         report=self.build(p,r);section=next(s for s in report["sections"] if s["id"]=="watchlist")
         self.assertEqual(section["status"],"unavailable")
         self.assertNotIn("No EQ-series",canonical(section))
+    def test_ban_receipt_requires_next_trading_date(self):
+        p,r=fixture()
+        p["derived"]["next_trading_session"]={"date":"2026-09-28","calendar_verified":True}
+        p["derived"]["fo_ban"]={"trade_date":"28-Sep-2026","symbols":["ABC"],"stale_warning":False}
+        r["calendar"]=copy.deepcopy(r["indices"])
+        r["ban"]=copy.deepcopy(r["indices"])
+        get=lambda:next(s for s in self.build(p,r)["sections"] if s["id"]=="ban")
+        self.assertEqual(get()["rows"],[])
+        r["ban"]["effectiveDate"]="2026-09-28"
+        self.assertEqual(get()["rows"][0]["label"],"2026-09-28")
     def test_undated_and_stale_cash_withheld(self):
         p,r=fixture();p["derived"]["fii_dii_cash_summary"]={"fii_net_cr":123456,"dii_net_cr":-123456,"date_labels":["24-Sep-2026"]}
         r["cash"]=copy.deepcopy(r["indices"])

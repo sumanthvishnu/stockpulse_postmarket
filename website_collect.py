@@ -110,6 +110,8 @@ def collect_report(target, output):
                 try:
                     validate_source(key,payload,target,fetcher)
                     receipt["status"]="validated"
+                    if key=="ban":
+                        receipt["effectiveDate"]=parse_date(fetcher.parse_ban_list(payload.decode("utf-8"))["trade_date"])
                 except (ValueError,TypeError,KeyError,IndexError) as e:
                     receipt["reason"]=str(e)
                 receipts[key]=receipt

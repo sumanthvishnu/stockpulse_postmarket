@@ -192,7 +192,7 @@ def build_report(pack, receipts, now=None):
     ban=d.get("fo_ban",{})
     ban_date=parse_date(ban.get("trade_date"))
     rows=[]
-    if usable("ban") and calendar_ok and ban_date==next_session and not ban.get("stale_warning") and isinstance(ban.get("symbols"),list):
+    if receipts.get("ban",{}).get("status")=="validated" and receipts["ban"].get("effectiveDate")==ban_date and calendar_ok and ban_date==next_session and not ban.get("stale_warning") and isinstance(ban.get("symbols"),list):
         rows=[row(ban_date,[", ".join(ban["symbols"]) or "No securities in the validated list"],["derived.fo_ban.symbols"])]
     section("ban","F&O ban list",["Trading date","Securities"],rows,"ban","Applies to the stated next trading session. Entry/exit changes are omitted unless prior comparable evidence is available.")
     context=d.get("website_context",{})
@@ -238,7 +238,7 @@ def build_report(pack, receipts, now=None):
         summary.append({"title":"Provisional institutional flows","text":f"FII / FPI net cash flow was Rs {fmt(cash['fii_net_cr'],signed=True)} Cr; DII net cash flow was Rs {fmt(cash['dii_net_cr'],signed=True)} Cr. These describe cash activity, not the motive behind derivatives positions.","refs":["derived.fii_dii_cash_summary.fii_net_cr","derived.fii_dii_cash_summary.dii_net_cr"]})
     if any(s["id"]=="internals" and len(s["rows"])==2 for s in sections):
         summary.append({"title":"Highs and lows","text":f"The adjusted reference join identified {fmt(internals['new_highs'],0)} new highs and {fmt(internals['new_lows'],0)} new lows among eligible securities. This breadth measure is descriptive, not a recommendation.","refs":["derived.internals_52wk.new_highs","derived.internals_52wk.new_lows"]})
-    summary.append({"title":"Read with the gaps","text":"This edition describes the validated market data. Missing global context, events and causal evidence are listed below; no investment recommendation or opening prediction is implied.","refs":[]})
+    summary.append({"title":"Read with the gaps","text":"This edition describes the validated market data. Any missing context, events and causal evidence are listed below; no investment recommendation or opening prediction is implied.","refs":[]})
     report={"schemaVersion":VERSION,"session":session,"generatedAt":now.isoformat(),"status":"available_with_gaps","edition":"reconstructed" if session!=now.astimezone(IST).date().isoformat() else "evening","title":"India post-market analysis","headline":"Nifty 50 "+direction+"; participation and sector performance in focus","summary":summary,"sections":sections,"sources":sources,"gaps":gaps,"nextSession":next_session if calendar_ok else None,"methodology":"StockPulse post-market v4: deterministic summary from named, dated datasets. Original archive identity and numeric consistency checks are recorded. Data completeness is separate from publication success. No model-generated facts or paid AI calls.","datapackSha256":hashlib.sha256(canonical(pack).encode()).hexdigest(),"modelCalls":0}
     body=canonical(report).encode()
     report["id"]=session+"-"+hashlib.sha256(body).hexdigest()[:16]

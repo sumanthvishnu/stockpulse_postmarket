@@ -11,7 +11,7 @@ A prior accepted edition for the same session prevents duplicate automatic colle
 ## Current coverage
 Implemented: closing snapshot, sectors, EQ breadth, Nifty/broader movers when same-session membership is verified, adjusted 52-week counts, provisional cash flows, participant futures positions, FII derivatives activity, options concentrations, corporate actions and ban lists. The summary explains observed participation and sector divergence without inventing causes.
 
-Global quote normalization, independently reviewed catalysts, official economic/results calendar, GIFT and deal-identity validation remain explicit gaps. The product is a data-led daily edition, not a claim that every v4 source integration is complete. Historical replays with no dated membership withhold Nifty-specific mover classifications.
+Completed-session global indices are included as Yahoo Finance vendor observations with venue calendars; independent second-source verification is absent. Dated bulk transaction legs of at least Rs 20 Cr are included without inferring market-making or investment intent. Independently reviewed catalysts, official economic/results calendar, GIFT, contract-specific commodities/FX/bond yields and separate block-deal coverage remain explicit gaps. The product is a data-led daily edition, not a claim that every v4 source integration is complete. Historical replays with no dated membership withhold Nifty-specific mover classifications.
 
 ## States and audit
 Reports are `available_with_gaps`; fields never silently become zero. Missing core source dates, invalid index arithmetic, invalid breadth, unresolved sanity flags or an unknown holiday calendar block publication. The manifest is a read pointer; reports remain immutable and the website verifies SHA-256 before rendering. The detailed PDF is rendered from the exact selected saved report, without AI.
@@ -33,3 +33,8 @@ For a later narrative layer, my current first candidate is the direct Claude API
 
 Source checked 27 September 2026: https://www.anthropic.com/news/claude-sonnet-5
 The existing SwarmIQ model remains unchanged. The current website edition needs no additional AI API key.
+
+## Acceptance evidence, 27 September 2026
+A September 25 archive replay passed and published the website feed. Fourteen offline validation tests cover dated source bodies, arithmetic, empty-versus-failed action responses, ban-list applicability and immutable report hashes. The web application passed its regression/build checks and authenticated desktop/mobile browser acceptance, including saved-edition reopening and a real 15-page PDF download. Browser verification blocks research/AI mutations. The global/deal edition was exercised in website workflow run 36319045702 and browser acceptance run 36319049923. The latest source-caption correction keeps the ban-list evidence date aligned with the next trading session.
+
+Activation requires this workflow on the default branch. Until that merge is authorized and performed, the cron is configured but inactive. StockPulse web remains on the existing testing branch and preview; no production promotion is included.
