@@ -28,4 +28,15 @@ class BriefingTests(unittest.TestCase):
         self.assertEqual(event_priority({"event":"Updates","detail":"SEBI Substantial Acquisition of Shares and Takeovers Regulations"}),0)
         self.assertEqual(event_priority({"event":"Reply to Clarification- Financial results"}),0)
         self.assertEqual(event_priority({"event":"Acquisition","detail":"Purchase of a business"}),3)
+    def test_live_gift_uses_capture_time_but_backfill_keeps_cutoff(self):
+        from website_enrichment import gift_observation_cutoff,gift_quote
+        from datetime import date
+        target=date(2026,9,25);core=datetime(2026,9,25,20,30,tzinfo=IST)
+        captured="2026-09-25T20:34:00+05:30"
+        live=gift_observation_cutoff(target,core,captured,target)
+        payload={"MBP_data_Market_Watch":[{"token_data":[{"SYMBOL":"NIFTY","INSTRUMENTTYPE":"FUTIDX","EXPIRYDATE":"29-Sep-2026","LASTPRICE":"23200","LTT":"25-Sep-2026 20:33:00"}]}]}
+        self.assertEqual(gift_quote(payload,target,live,23140.5)["level"],23200)
+        historical=gift_observation_cutoff(target,core,captured,date(2026,9,27))
+        self.assertEqual(historical,core)
+        with self.assertRaises(ValueError):gift_quote(payload,target,historical,23140.5)
 if __name__=="__main__":unittest.main()
