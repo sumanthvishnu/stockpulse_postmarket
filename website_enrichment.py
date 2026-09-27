@@ -72,6 +72,14 @@ def results_calendar(records,start,end,cutoff):
         rows.append({"symbol":symbol,"date":day,"purpose":excerpt(r.get("bm_desc") or r.get("bm_purpose")),"announcedAt":announced.isoformat(),"url":r.get("attachment") if official_url(r.get("attachment")) else NSE+"/companies-listing/corporate-filings-board-meetings"})
     return sorted(rows,key=lambda x:(x["date"],x["symbol"]))
 
+def gift_observation_cutoff(target,core_cutoff,retrieved_at,collection_day):
+    # A same-day live cue is timestamped separately from the core closing snapshot.
+    # Backfills must retain the historical cutoff; later quotes are never backdated.
+    observed=stamp(retrieved_at)
+    if target==collection_day and observed and observed.date()==target:
+        return observed
+    return core_cutoff
+
 def gift_quote(payload,target,cutoff,spot):
     rows=payload.get("MBP_data_Market_Watch") if isinstance(payload,dict) else None
     if not isinstance(rows,list):raise ValueError("Official GIFT market-watch schema changed")
@@ -247,7 +255,9 @@ def run(pack,receipts,archives,nse_client=None,now=None):
     stage("results",results_stage)
     def gift_stage():
         raw=json.loads(sources.get("gift","NSE IX official futures market watch",GIFT,target.isoformat()))
-        output["gift"]=gift_quote(raw,target,cutoff,d["indices"]["Nifty 50"]["close"])
+        quote_cutoff=gift_observation_cutoff(target,cutoff,receipts["gift"]["retrievedAt"],now.date())
+        output["gift"]=gift_quote(raw,target,quote_cutoff,d["indices"]["Nifty 50"]["close"])
+        output["gift"]["captureCutoff"]=quote_cutoff.isoformat()
     stage("gift",gift_stage)
     def calendar_stage(key,label,url,parser):
         if target!=now.date() and key in ("bls","bea","fed"):

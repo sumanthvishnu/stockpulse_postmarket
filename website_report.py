@@ -239,7 +239,7 @@ def build_report(pack, receipts, now=None):
     gift=enr.get("gift");rows=[]
     if gift:
         rows=[row(gift["instrument"],[gift["expiry"],gift["observedAt"],fmt(gift["level"]),fmt(gift["spotDifference"],signed=True)],["derived.website_enrichment.gift"])]
-    section("gift","GIFT Nifty evening futures",["Instrument","Expiry","Trade time (IST)","Level (points)","Difference vs Nifty close"],rows,"gift","Official NSE IX futures; the difference compares different observation times and is not a forecast of the next opening gap.")
+    section("gift","GIFT Nifty evening futures",["Instrument","Expiry","Trade time (IST)","Level (points)","Difference vs Nifty close"],rows,"gift","Official NSE IX futures at the displayed trade time, which can follow 20:30 when same-day collection runs later. Historical editions retain their cutoff. The difference compares different observation times and is not an opening-gap forecast.")
     assets=d.get("website_assets",{})
     rows=[row(x["name"],[fmt(x["value"],3),x["unit"],x["observedAt"],x["basis"]],[f"derived.website_assets.rows.{i}"]) for i,x in enumerate(assets.get("rows",[]))]
     section("assets","Bonds, commodities and FX",["Instrument","Value","Unit","Observed","Basis"],rows,None,"Official US Treasury par yield and explicitly labelled vendor observations. Futures expiry is required; no continuous series is silently called a specific contract.","Some configured asset feeds are unavailable." if assets.get("gaps") else None)
