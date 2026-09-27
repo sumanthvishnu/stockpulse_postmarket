@@ -220,7 +220,8 @@ def run(pack,receipts,archives,nse_client=None,now=None):
         symbols=[r.get("symbol") for k in ("nifty50_movers","broader_movers") for side in ("gainers","losers") for r in d.get(k,{}).get(side,[])[:3]]
         from website_briefing import event_priority, market_movers
         symbols+= [r["symbol"] for r in market_movers(pack)]
-        ranked=sorted(rows,key=lambda r:(r["symbol"] not in symbols,-event_priority(r),-datetime.fromisoformat(r["publishedAt"]).timestamp()))
+        liquidity={r["symbol"]:r["turnover"] for r in market_movers(pack,all_rows=True)}
+        ranked=sorted([r for r in rows if event_priority(r)>0],key=lambda r:(r["symbol"] not in symbols,-event_priority(r),-liquidity.get(r["symbol"],0),-datetime.fromisoformat(r["publishedAt"]).timestamp()))
         output["catalysts"]=ranked[:12];output["announcementCount"]=count;output["catalystMatches"]=len(rows)
     stage("catalysts",catalyst_stage)
     # At most three fallback paid data calls. No automatic retry and no broad search.

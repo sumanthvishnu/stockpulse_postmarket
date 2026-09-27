@@ -3,7 +3,7 @@ import csv,io,math
 from datetime import date
 from website_report import finite,fmt
 from website_enrichment import official_url,stamp
-def market_movers(pack):
+def market_movers(pack,all_rows=False):
     text=pack.get("data",{}).get("bhavdata_full","")
     rows=[];seen=set();session=pack["meta"]["trading_date"]
     for raw in csv.DictReader(io.StringIO(text.strip())):
@@ -24,6 +24,7 @@ def market_movers(pack):
         from website_report import parse_date
         if parse_date(r.get("DATE1"))!=session:continue
         seen.add(symbol);rows.append({"symbol":symbol,"close":close,"change":round((close/previous-1)*100,2),"turnover":turnover,"delivery":delivery if finite(delivery) and 0<=delivery<=100 else None})
+    if all_rows:return rows
     gain=sorted([r for r in rows if r["change"]>0],key=lambda r:(-r["change"],r["symbol"]))[:5]
     loss=sorted([r for r in rows if r["change"]<0],key=lambda r:(r["change"],r["symbol"]))[:5]
     events=pack.get("derived",{}).get("website_enrichment",{}).get("catalysts",[])
@@ -40,9 +41,12 @@ def market_movers(pack):
     return out
 
 def event_priority(e):
-    text=(e.get("event","")+" "+e.get("detail","")).lower()
-    if any(w in text for w in ("financial result","acquisition","merger","demerger","default","insolvency","fraud","penalt")):return 3
-    if any(w in text for w in ("order","contract","approval","buyback","rights","fund rais","capacity")):return 2
+    import re
+    kind=e.get("event","").lower()
+    text=(kind+" "+e.get("detail","")).lower()
+    if "reply to clarification" in kind or "substantial acquisition of shares and takeovers" in text:return 0
+    if any(w in kind for w in ("financial result","acquisition","merger","demerger","default","insolvency","fraud","penalt")):return 3
+    if any(w in text for w in ("order","contract","approval","buyback","rights issue","fund rais","capacity","acquisition of")):return 2
     return 1
 
 def summary(pack,sections):

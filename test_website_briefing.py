@@ -23,4 +23,9 @@ class BriefingTests(unittest.TestCase):
         movers=next(s for s in report["sections"] if s["id"]=="liquid-movers")
         self.assertEqual(movers["rows"][0]["href"],"https://nsearchives.nseindia.com/corporate/abc.pdf")
         self.assertEqual(len(report["summary"]),3)
+    def test_statutory_acquisition_words_do_not_rank_as_deals(self):
+        from website_briefing import event_priority
+        self.assertEqual(event_priority({"event":"Updates","detail":"SEBI Substantial Acquisition of Shares and Takeovers Regulations"}),0)
+        self.assertEqual(event_priority({"event":"Reply to Clarification- Financial results"}),0)
+        self.assertEqual(event_priority({"event":"Acquisition","detail":"Purchase of a business"}),3)
 if __name__=="__main__":unittest.main()
