@@ -64,4 +64,17 @@ class ReportTests(unittest.TestCase):
         validate_source("actions:2026-09-28",b"[]",datetime(2026,9,25).date(),None)
         with self.assertRaises(ValueError):validate_source("actions:2026-09-28",b"{}",datetime(2026,9,25).date(),None)
 
+    def test_exchange_participant_title_and_adjusted_reference(self):
+        import csv, io
+        from types import SimpleNamespace
+        title=b'""Participant wise Open Interest as on Sep 25, 2026"",,,,'
+        validate_source("participant",title,datetime(2026,9,25).date(),None)
+        with self.assertRaises(ValueError):validate_source("participant",title,datetime(2026,9,24).date(),None)
+        f=SimpleNamespace(clean_rows=lambda text:list(csv.DictReader(io.StringIO(text))))
+        header='"Disclaimer: adjusted for corporate actions (bonus, splits & rights)"\n"Effective for 25-Sep-2026"\nSYMBOL,SERIES,Adjusted_52_Week_High,Adjusted_52_Week_Low\n'
+        body=(header+"TEST,EQ,150,100\n"*100).encode()
+        validate_source("highlow",body,datetime(2026,9,25).date(),f)
+        with self.assertRaises(ValueError):validate_source("highlow",body,datetime(2026,9,24).date(),f)
+
+
 if __name__=="__main__":unittest.main()

@@ -28,7 +28,7 @@ def exact_date(value):
         return None
 
 def parse_date(value):
-    for pattern in ("%Y-%m-%d", "%d-%b-%Y", "%d-%B-%Y", "%d/%m/%Y", "%d-%m-%Y", "%B %d, %Y", "%d %b %Y"):
+    for pattern in ("%Y-%m-%d", "%d-%b-%Y", "%d-%B-%Y", "%d/%m/%Y", "%d-%m-%Y", "%B %d, %Y", "%b %d, %Y", "%d %b %Y"):
         try:
             return datetime.strptime(str(value).strip(), pattern).date().isoformat()
         except ValueError:

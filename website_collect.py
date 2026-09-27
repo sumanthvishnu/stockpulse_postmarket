@@ -39,7 +39,7 @@ def validate_source(key, payload, target, fetcher):
         if dates!={session}: raise ValueError("Options date mismatch")
     elif key=="participant":
         # The exchange CSV has a dated title above its column headings.
-        matches=re.findall(r"\d{1,2}[-/]\d{1,2}[-/]\d{4}|\d{1,2}-[A-Za-z]{3}-\d{4}", text.splitlines()[0])
+        matches=re.findall(r"\d{1,2}[-/]\d{1,2}[-/]\d{4}|\d{1,2}-[A-Za-z]{3}-\d{4}|[A-Za-z]{3} \d{1,2}, \d{4}", text.splitlines()[0])
         if session not in [parse_date(x) for x in matches]: raise ValueError("Participant title date missing")
     elif key=="calendar":
         obj=json.loads(text)
@@ -62,8 +62,13 @@ def validate_source(key, payload, target, fetcher):
         # An undated current membership file cannot establish historical membership.
         if target!=datetime.now(IST).date(): raise ValueError("Historical membership not established by current file")
     elif key=="highlow":
-        # File name alone does not prove an adjusted reference basis/date.
-        raise ValueError("Adjusted reference metadata needs independent validation")
+        lines=text.splitlines()
+        match=re.search(r"Effective for (\d{1,2}-[A-Za-z]{3}-\d{4})", "\n".join(lines[:3]))
+        if not match or parse_date(match.group(1))!=session or "adjusted for corporate actions" not in lines[0].lower():
+            raise ValueError("Adjusted reference metadata missing or wrong date")
+        rows=fetcher.clean_rows("\n".join(lines[2:]))
+        if len(rows)<100 or not {"SYMBOL","SERIES","Adjusted_52_Week_High","Adjusted_52_Week_Low"}.issubset(rows[0]):
+            raise ValueError("Adjusted reference columns missing")
     elif key=="fii_fno":
         import xlrd
         sheet=xlrd.open_workbook(file_contents=payload).sheet_by_index(0)
