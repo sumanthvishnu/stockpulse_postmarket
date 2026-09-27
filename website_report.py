@@ -188,6 +188,7 @@ def build_report(pack, receipts, now=None):
                 for i,a in enumerate(bucket):
                     rows.append(row(day,[str(a.get("symbol","")),str(a.get("subject",""))],["derived.corp_actions."+key+"."+str(i)]))
     section("watchlist","Next-session watchlist",["Ex-date","Security / coverage","Corporate action"],rows,"calendar","Next trading session: "+(next_session if calendar_ok else "unverified")+". Upcoming actions are context, not evidence of dividend-capture activity.", "; ".join(action_gaps) or None)
+    sections[-1]["sourceIds"]=[key for key in ("calendar","actions:"+str(actions.get("t1_date")),"actions:"+str(actions.get("t2_date"))) if key in source_ids]
     ban=d.get("fo_ban",{})
     ban_date=parse_date(ban.get("trade_date"))
     rows=[]
@@ -217,6 +218,10 @@ def build_report(pack, receipts, now=None):
     if sector_values:
         top=max(sector_values,key=lambda x:x[1]); bottom=min(sector_values,key=lambda x:x[1])
         summary.append({"title":"Sector spread","text":f"Among the covered sector indices, {top[0]} had the strongest change ({fmt(top[1],signed=True)}%) and {bottom[0]} the weakest ({fmt(bottom[1],signed=True)}%).","refs":["derived.indices."+top[0]+".pct_chg","derived.indices."+bottom[0]+".pct_chg"]})
+    if any(s["id"]=="cash" and len(s["rows"])==2 for s in sections):
+        summary.append({"title":"Provisional institutional flows","text":f"FII / FPI net cash flow was Rs {fmt(cash['fii_net_cr'],signed=True)} Cr; DII net cash flow was Rs {fmt(cash['dii_net_cr'],signed=True)} Cr. These describe cash activity, not the motive behind derivatives positions.","refs":["derived.fii_dii_cash_summary.fii_net_cr","derived.fii_dii_cash_summary.dii_net_cr"]})
+    if any(s["id"]=="internals" and len(s["rows"])==2 for s in sections):
+        summary.append({"title":"Highs and lows","text":f"The adjusted reference join identified {fmt(internals['new_highs'],0)} new highs and {fmt(internals['new_lows'],0)} new lows among eligible securities. This breadth measure is descriptive, not a recommendation.","refs":["derived.internals_52wk.new_highs","derived.internals_52wk.new_lows"]})
     summary.append({"title":"Read with the gaps","text":"This edition describes the validated market data. Missing global context, events and causal evidence are listed below; no investment recommendation or opening prediction is implied.","refs":[]})
     report={"schemaVersion":VERSION,"session":session,"generatedAt":now.isoformat(),"status":"available_with_gaps","edition":"reconstructed" if session!=now.astimezone(IST).date().isoformat() else "evening","title":"India post-market analysis","headline":"Nifty 50 "+direction+"; participation and sector performance in focus","summary":summary,"sections":sections,"sources":sources,"gaps":gaps,"nextSession":next_session if calendar_ok else None,"methodology":"StockPulse post-market v4: deterministic summary from named, dated datasets. Original archive identity and numeric consistency checks are recorded. Data completeness is separate from publication success. No model-generated facts or paid AI calls.","datapackSha256":hashlib.sha256(canonical(pack).encode()).hexdigest(),"modelCalls":0}
     body=canonical(report).encode()

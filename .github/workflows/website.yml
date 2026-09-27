@@ -27,9 +27,18 @@ jobs:
         with:
           node-version: '22'
       - run: python -m unittest test_website_report -v
+      - name: Check publication identity before collection
+        id: due
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MANUAL_DATE: ${{ inputs.date }}
+          INITIAL_REPLAY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[pm-collect]') && '2026-09-25' || '' }}
+        run: node website_due.mjs
       - name: Install collector dependencies
+        if: steps.due.outputs.run == 'true'
         run: pip install requests curl_cffi pandas yfinance xlrd
       - name: Collect and validate
+        if: steps.due.outputs.run == 'true'
         id: collect
         continue-on-error: true
         env:
@@ -44,6 +53,7 @@ jobs:
             python website_collect.py
           fi
       - name: Publish report or blocked status without replacing accepted history
+        if: steps.due.outputs.run == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node website_publish.mjs
@@ -52,7 +62,7 @@ jobs:
         with:
           name: postmarket-validation
           path: website-output/
-          retention-days: 7
+          retention-days: 90
       - name: Fail visibly when collection was blocked
         if: steps.collect.outcome == 'failure'
         run: exit 1
