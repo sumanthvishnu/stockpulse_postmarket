@@ -218,7 +218,9 @@ def run(pack,receipts,archives,nse_client=None,now=None):
         url=NSE+"/api/corporate-announcements?"+urlencode({"index":"equities","from_date":target.strftime("%d-%m-%Y"),"to_date":target.strftime("%d-%m-%Y")})
         rows,count=announcements(json.loads(sources.get("catalysts","NSE issuer announcements",url,target.isoformat())),target,cutoff)
         symbols=[r.get("symbol") for k in ("nifty50_movers","broader_movers") for side in ("gainers","losers") for r in d.get(k,{}).get(side,[])[:3]]
-        ranked=sorted(rows,key=lambda r:(r["symbol"] not in symbols,-datetime.fromisoformat(r["publishedAt"]).timestamp()))
+        from website_briefing import event_priority, market_movers
+        symbols+= [r["symbol"] for r in market_movers(pack)]
+        ranked=sorted(rows,key=lambda r:(r["symbol"] not in symbols,-event_priority(r),-datetime.fromisoformat(r["publishedAt"]).timestamp()))
         output["catalysts"]=ranked[:12];output["announcementCount"]=count;output["catalystMatches"]=len(rows)
     stage("catalysts",catalyst_stage)
     # At most three fallback paid data calls. No automatic retry and no broad search.

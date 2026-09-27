@@ -27,6 +27,13 @@ def validated_history(pack,receipts,archives,target,holidays,fetcher):
         if all(isinstance(v,(float,int)) and v>0 for v in vals):
             low,high=min(vals),max(vals)
             out["vix"]={"current":vals[0],"low":low,"high":high,"sessions":21,"rangePosition":round((vals[0]-low)/(high-low)*100,1) if high>low else None}
+    out["series"]=[{"date":day.isoformat(),"nifty":rows[day].get("Nifty 50",{}).get("close"),"vix":rows[day].get("India VIX",{}).get("close")} for day in sorted(rows)]
+    out["twentySessionChange"]={}
+    if len(rows)==21:
+        for name,r in rows[target].items():
+            previous=rows[expected[20]].get(name,{}).get("close");current=r.get("close")
+            if isinstance(previous,(int,float)) and previous>0 and isinstance(current,(int,float)):
+                out["twentySessionChange"][name]=round((current/previous-1)*100,2)
     pack["derived"]["website_history"]=out
     return out
 
