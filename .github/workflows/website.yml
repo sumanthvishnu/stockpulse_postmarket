@@ -36,7 +36,7 @@ jobs:
         run: node website_due.mjs
       - name: Install collector dependencies
         if: steps.due.outputs.run == 'true'
-        run: pip install requests curl_cffi pandas yfinance xlrd
+        run: pip install requests curl_cffi pandas yfinance xlrd pandas_market_calendars
       - name: Collect and validate
         if: steps.due.outputs.run == 'true'
         id: collect

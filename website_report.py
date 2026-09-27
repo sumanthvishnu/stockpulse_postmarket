@@ -195,10 +195,26 @@ def build_report(pack, receipts, now=None):
     if usable("ban") and calendar_ok and ban_date==next_session and not ban.get("stale_warning") and isinstance(ban.get("symbols"),list):
         rows=[row(ban_date,[", ".join(ban["symbols"]) or "No securities in the validated list"],["derived.fo_ban.symbols"])]
     section("ban","F&O ban list",["Trading date","Securities"],rows,"ban","Applies to the stated next trading session. Entry/exit changes are omitted unless prior comparable evidence is available.")
-    section("global","Global context",["Market","Observation"],[],None,unavailable="Global quotes require venue-specific completed-session and instrument validation. Unverified vendor snapshots are withheld.")
+    context=d.get("website_context",{})
+    globals=context.get("global",[])
+    global_rows=[row(x["name"],[x["session"],fmt(x["close"]),fmt(x["pctChange"],signed=True)+"%"],["derived.website_context.global."+str(i)]) for i,x in enumerate(globals) if finite(x.get("close")) and finite(x.get("pctChange"))]
+    section("global","Global context",["Index","Completed venue session","Close","Change (%)"],global_rows,None,"Vendor quotes for the latest completed local session available by the reporting cutoff. No live US quote is labelled a close.","Independent second-source verification is unavailable.")
+    sections[-1]["sourceIds"]=[x["sourceId"] for x in globals if x.get("sourceId") in source_ids]
     section("catalysts","Stocks in focus and catalysts",["Security","Dated evidence"],[],None,unavailable="No independently reviewed company-event or causal evidence was supplied for this edition. Price movements are not assigned invented explanations.")
     section("calendar","Economic and results calendar",["Event","Date and time (IST)"],[],None,unavailable="Date-specific official economic releases, results and GIFT futures evidence are not yet available in this edition.")
-    section("deals","Disclosed bulk and block deals",["Security","Disclosure"],[],None,unavailable="Deal identity, netting and complete coverage have not passed the website publication checks; existing heuristic signals are withheld.")
+    bulk_rows=[]
+    if usable("bulk"):
+        for i,b in enumerate(d.get("website_bulk",[])):
+            try:
+                quantity=float(str(b.get("Quantity Traded","")).replace(",",""));price=float(str(b.get("Trade Price / Wght. Avg. Price","")).replace(",",""))
+            except ValueError:continue
+            if not finite(quantity) or not finite(price) or quantity<=0 or price<=0 or b.get("Buy/Sell") not in ("BUY","SELL"):continue
+            value=quantity*price/10_000_000
+            if value<20:continue
+            bulk_rows.append((value,row(b.get("Symbol",""),[b.get("Client Name",""),b["Buy/Sell"],fmt(quantity,0),fmt(price),fmt(value,2)],["derived.website_bulk."+str(i)])))
+        bulk_rows.sort(key=lambda x:-x[0])
+    section("deals","Disclosed bulk deals",["Security","Disclosed client","Side","Quantity","Price (Rs)","Value (Rs Cr)"],[r for _,r in bulk_rows[:20]],"bulk","Largest disclosed transaction legs of at least Rs 20 Cr, capped at twenty rows. Both buy and sell legs may appear. No market-making, round-trip or investment-intent inference is made.","Separate block-deal coverage is not established.")
+    for reason in context.get("gaps",[]):gap("Context",reason)
     for failure in pack.get("failures",[]):
         gap(str(failure.get("source","Source")),str(failure.get("reason","Unavailable")))
     # No broad numeric whitelist: all copy is composed only from named validated fields.

@@ -9,7 +9,7 @@ from website_report import IST, build_report, canonical, parse_date, write_repor
 def source_key(url, target):
     path=urlparse(url).path
     dd=target.strftime("%d%m%Y")
-    mapping={f"ind_close_all_{dd}.csv":"indices",f"sec_bhavdata_full_{dd}.csv":"bhavcopy",f"fao_participant_oi_{dd}.csv":"participant",f"CM_52_wk_High_low_{dd}.csv":"highlow",f"BhavCopy_NSE_FO_0_0_0_{target:%Y%m%d}_F_0000.csv.zip":"options","ind_nifty50list.csv":"constituents","fo_secban.csv":"ban","fiidiiTradeReact":"cash","holiday-master":"calendar",f"fii_stats_{target:%d-%b-%Y}.xls":"fii_fno"}
+    mapping={f"ind_close_all_{dd}.csv":"indices",f"sec_bhavdata_full_{dd}.csv":"bhavcopy",f"fao_participant_oi_{dd}.csv":"participant",f"CM_52_wk_High_low_{dd}.csv":"highlow",f"BhavCopy_NSE_FO_0_0_0_{target:%Y%m%d}_F_0000.csv.zip":"options","ind_nifty50list.csv":"constituents","fo_secban.csv":"ban","bulk.csv":"bulk","fiidiiTradeReact":"cash","holiday-master":"calendar",f"fii_stats_{target:%d-%b-%Y}.xls":"fii_fno"}
     for suffix,key in mapping.items():
         if path.endswith(suffix):
             return key
@@ -78,6 +78,10 @@ def validate_source(key, payload, target, fetcher):
                 value=str(sheet.cell_value(row,col))
                 dates.extend(re.findall(r"\d{1,2}-[A-Za-z]{3}-\d{4}|\d{1,2}/\d{1,2}/\d{4}",value))
         if session not in [parse_date(x) for x in dates]: raise ValueError("FII derivatives body date missing")
+    elif key=="bulk":
+        rows=fetcher.clean_rows(text)
+        if not rows or not any(parse_date(r.get("Date"))==session for r in rows):
+            raise ValueError("No dated bulk-deal coverage for the session")
     elif key=="ban":
         result=fetcher.parse_ban_list(text)
         if not parse_date(result.get("trade_date")): raise ValueError("Ban date missing")
@@ -134,6 +138,11 @@ def collect_report(target, output):
     for key,r in receipts.items():
         if r["status"]!="validated":
             pack["failures"].append({"source":key,"reason":r.get("reason","Unverified source")})
+    if receipts.get("bulk",{}).get("status")=="validated":
+        bulk_text=(archives/(receipts["bulk"]["sha256"]+".source")).read_text(encoding="utf-8")
+        pack["derived"]["website_bulk"]=[r for r in fetcher.clean_rows(bulk_text) if parse_date(r.get("Date"))==target.isoformat()]
+    from website_context import context
+    context(pack,receipts,archives,target)
     report=build_report(pack,receipts)
     # Keep receipt and original datapack with the workflow evidence artifact.
     (Path(output)/"datapack.json").write_text(canonical(pack),encoding="utf-8")
