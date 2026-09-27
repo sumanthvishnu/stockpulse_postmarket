@@ -28,6 +28,11 @@ jobs:
           node-version: '22'
       - run: pip install icalendar pypdf
       - run: python -m unittest test_website_report test_website_enrichment -v
+      - name: Read-only current provider diagnostics
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[v4-probe]')
+        run: |
+          pip install requests yfinance
+          python website_probe.py
       - name: Check publication identity before collection
         id: due
         env:

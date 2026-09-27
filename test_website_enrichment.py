@@ -45,4 +45,46 @@ class EnrichmentTests(unittest.TestCase):
         raw=('TEChartsMeta = [{"symbol":"WRONG","value":999},{"symbol":"GIND10YR:IND","value":7.112}];<script type="application/ld+json">'+json.dumps(data)+'</script>').encode()
         self.assertEqual(india_yield(raw,self.day,self.cutoff)["value"],7.112)
         with self.assertRaises(ValueError):india_yield(raw.replace(b"20260925",b"20260926"),self.day,self.cutoff)
+
+    def test_history_stops_at_missing_session(self):
+        import tempfile,hashlib
+        from pathlib import Path
+        from types import SimpleNamespace
+        from datetime import timedelta
+        from website_history import validated_history
+        from website_collect import source_key,validate_source
+        f=SimpleNamespace(parse_ind_close_all=json.loads)
+        self.assertEqual(source_key("https://nsearchives.nseindia.com/ind_close_all_24092026.csv",self.day),"history:2026-09-24")
+        with tempfile.TemporaryDirectory() as folder:
+            receipts={};days=[];day=self.day
+            while len(days)<21:
+                if day.weekday()<5:days.append(day)
+                day-=timedelta(days=1)
+            for i,day in enumerate(days):
+                body=json.dumps({"Nifty 50":{"close":100-i},"India VIX":{"close":10+i}}).encode()
+                sha=hashlib.sha256(body).hexdigest();Path(folder,sha+".source").write_bytes(body)
+                key="indices" if day==self.day else "history:"+day.isoformat()
+                receipts[key]={"status":"validated","effectiveDate":day.isoformat(),"sha256":sha}
+            pack={"derived":{}}
+            result=validated_history(pack,receipts,folder,self.day,[],f)
+            self.assertEqual(result["fiveSessionChange"]["Nifty 50"],5.26)
+            self.assertEqual(result["vix"]["sessions"],21)
+            del receipts["history:"+days[2].isoformat()]
+            result=validated_history(pack,receipts,folder,self.day,[],f)
+            self.assertEqual(result["fiveSessionChange"],{})
+            self.assertIsNone(result["vix"])
+    def test_asset_gap_keeps_partial_status(self):
+        from test_website_report import fixture
+        from website_report import build_report
+        p,r=fixture()
+        p["derived"]["website_assets"]={"rows":[{"name":"US10Y","value":5,"unit":"percent","observedAt":"2026-09-24","basis":"official","sourceId":"indices"}],"gaps":[{"section":"Gold","reason":"No contract identity"}]}
+        report=build_report(p,r,self.cutoff)
+        self.assertEqual(next(s for s in report["sections"] if s["id"]=="assets")["status"],"partial")
+    def test_rbi_calendar_requires_full_fiscal_coverage(self):
+        raw=b"Meeting Schedule of the Monetary Policy Committee for 2026-2027 April 6, 7 and 8, 2026 June 3, 4 and 5, 2026 August 3, 4 and 5, 2026 October 5, 6 and 7, 2026 December 2, 3 and 4, 2026 February 3, 4 and 5, 2027"
+        rows=central_bank_events(raw,self.cutoff,"2026-10-08","RBI")
+        self.assertEqual(rows[0]["dateTime"],"2026-10-07 (time not confirmed)")
+        with self.assertRaises(ValueError):central_bank_events(raw,self.cutoff,"2027-04-01","RBI")
+        with self.assertRaises(ValueError):central_bank_events(raw.replace(b"June 3, 4 and 5, 2026",b""),self.cutoff,"2026-10-08","RBI")
 if __name__=="__main__":unittest.main()
+

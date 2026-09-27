@@ -222,15 +222,18 @@ def run(pack,receipts,archives,nse_client=None,now=None):
         output["catalysts"]=ranked[:12];output["announcementCount"]=count;output["catalystMatches"]=len(rows)
     stage("catalysts",catalyst_stage)
     # At most three fallback paid data calls. No automatic retry and no broad search.
-    if os.environ.get("TRENDLYNE_MCP_TOKEN"):
+    if os.environ.get("TRENDLYNE_MCP_TOKEN") and target==now.date():
         symbols=list(dict.fromkeys(r.get("symbol") for side in ("gainers","losers") for r in d.get("nifty50_movers",{}).get(side,[])[:3] if r.get("symbol")))
         present={r["symbol"] for r in output["catalysts"]}
         import trendlyne_mcp as tly
         for sym in [s for s in symbols if s not in present][:3]:
             output["trendlyneCalls"]+=1
             value=tly.call("get_overview_news_corp_events",{"stock_code":sym,"type":"news"},timeout=35)
-            if not value:continue
+            if not value:
+                sources.attempts.append({"key":"trendlyne:"+sym,"state":"unavailable","reason":"No response from bounded data call","checkedAt":datetime.now(IST).isoformat()})
+                continue
             rows=trend_news(value,sym,target,cutoff)
+            sources.attempts.append({"key":"trendlyne:"+sym,"state":"matched" if rows else "no_eligible_filing","checkedAt":datetime.now(IST).isoformat()})
             if rows:
                 key="trendlyne:"+sym;sources.save(key,"Trendlyne indexed issuer filings: "+sym,"https://trendlyne.com/",value.encode(),target.isoformat())
                 for row in rows:row["sourceId"]=key
