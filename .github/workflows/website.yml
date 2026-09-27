@@ -1,0 +1,58 @@
+name: StockPulse website post-market
+on:
+  schedule:
+    - cron: '0 15 * * *'
+  push:
+    branches: [codex/postmarket-website]
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Optional historical session, YYYY-MM-DD'
+        required: false
+permissions:
+  contents: write
+concurrency:
+  group: stockpulse-website-postmarket
+  cancel-in-progress: false
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: python -m unittest test_website_report -v
+      - name: Install collector dependencies
+        run: pip install requests curl_cffi pandas yfinance xlrd
+      - name: Collect and validate
+        id: collect
+        continue-on-error: true
+        env:
+          MANUAL_DATE: ${{ inputs.date }}
+          INITIAL_REPLAY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[pm-collect]') && '2026-09-25' || '' }}
+        run: |
+          if [ -n "$MANUAL_DATE" ]; then
+            python website_collect.py --date "$MANUAL_DATE"
+          elif [ -n "$INITIAL_REPLAY" ]; then
+            python website_collect.py --date "$INITIAL_REPLAY"
+          else
+            python website_collect.py
+          fi
+      - name: Publish report or blocked status without replacing accepted history
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node website_publish.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: postmarket-validation
+          path: website-output/
+          retention-days: 7
+      - name: Fail visibly when collection was blocked
+        if: steps.collect.outcome == 'failure'
+        run: exit 1
