@@ -3,7 +3,7 @@ on:
   schedule:
     - cron: '0 15 * * *'
   push:
-    branches: [codex/postmarket-website]
+    branches: [codex/postmarket-website, codex/postmarket-v4-coverage]
   workflow_dispatch:
     inputs:
       date:
@@ -26,7 +26,13 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
-      - run: python -m unittest test_website_report -v
+      - run: pip install icalendar pypdf
+      - run: python -m unittest test_website_report test_website_enrichment -v
+      - name: Read-only current provider diagnostics
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[v4-probe]')
+        run: |
+          pip install requests yfinance
+          python website_probe.py
       - name: Check publication identity before collection
         id: due
         env:
@@ -36,12 +42,13 @@ jobs:
         run: node website_due.mjs
       - name: Install collector dependencies
         if: steps.due.outputs.run == 'true'
-        run: pip install requests curl_cffi pandas yfinance xlrd pandas_market_calendars
+        run: pip install requests curl_cffi pandas yfinance xlrd pandas_market_calendars icalendar pypdf
       - name: Collect and validate
         if: steps.due.outputs.run == 'true'
         id: collect
         continue-on-error: true
         env:
+          TRENDLYNE_MCP_TOKEN: ${{ secrets.TRENDLYNE_MCP_TOKEN }}
           MANUAL_DATE: ${{ inputs.date }}
           INITIAL_REPLAY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[pm-collect]') && '2026-09-25' || '' }}
         run: |

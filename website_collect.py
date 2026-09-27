@@ -13,6 +13,9 @@ def source_key(url, target):
     for suffix,key in mapping.items():
         if path.endswith(suffix):
             return key
+    historical=re.search(r"ind_close_all_(\d{8})\.csv$",path)
+    if historical:
+        return "history:"+datetime.strptime(historical.group(1),"%d%m%Y").date().isoformat()
     if path.endswith("corporates-corporateActions"):
         val=parse_qs(urlparse(url).query).get("from_date",[""])[0]
         return "actions:"+str(parse_date(val))
@@ -21,6 +24,9 @@ def source_key(url, target):
 def validate_source(key, payload, target, fetcher):
     text=payload.decode("utf-8",errors="replace")
     session=target.isoformat()
+    if key.startswith("history:"):
+        session=key.split(":",1)[1]
+        key="indices"
     if key in ("indices","bhavcopy"):
         rows=fetcher.clean_rows(text)
         field="Index Date" if key=="indices" else "DATE1"
@@ -106,7 +112,7 @@ def collect_report(target, output):
             if key:
                 digest=hashlib.sha256(payload).hexdigest()
                 (archives/(digest+".source")).write_bytes(payload)
-                receipt={"label":key,"url":url,"sha256":digest,"retrievedAt":datetime.now(IST).isoformat(),"effectiveDate":key.split(":",1)[1] if key.startswith("actions:") else target.isoformat(),"status":"unavailable"}
+                receipt={"label":key,"url":url,"sha256":digest,"retrievedAt":datetime.now(IST).isoformat(),"effectiveDate":key.split(":",1)[1] if key.startswith(("actions:","history:")) else target.isoformat(),"status":"unavailable"}
                 try:
                     validate_source(key,payload,target,fetcher)
                     receipt["status"]="validated"
@@ -143,8 +149,17 @@ def collect_report(target, output):
     if receipts.get("bulk",{}).get("status")=="validated":
         bulk_text=(archives/(receipts["bulk"]["sha256"]+".source")).read_text(encoding="utf-8")
         pack["derived"]["website_bulk"]=[r for r in fetcher.clean_rows(bulk_text) if parse_date(r.get("Date"))==target.isoformat()]
+    from website_history import validated_history, participant_positions
+    validated_history(pack,receipts,archives,target,holidays,fetcher)
+    if receipts.get("participant",{}).get("status")=="validated":
+        payload=(archives/(receipts["participant"]["sha256"]+".source")).read_bytes()
+        pack["derived"]["website_positions"]=participant_positions(payload)
     from website_context import context
     context(pack,receipts,archives,target)
+    from website_enrichment import run as enrich_website
+    enrich_website(pack,receipts,archives,fetcher.Client())
+    # Replace the legacy disabled-bond warning with the actual dated feed receipt.
+    pack["failures"]=[f for f in pack["failures"] if f.get("source")!="india_10y"]
     report=build_report(pack,receipts)
     # Keep receipt and original datapack with the workflow evidence artifact.
     (Path(output)/"datapack.json").write_text(canonical(pack),encoding="utf-8")

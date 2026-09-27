@@ -34,5 +34,5 @@ def context(pack,receipts,archives,target):
             output["global"].append(observation)
         except Exception:
             output["gaps"].append(label+": a matching completed-session vendor bar was unavailable.")
-    output["gaps"].append("Vendor context is not independently cross-verified. Contract-specific commodities, FX, bond yields and official GIFT futures are not verified in this feed.")
+    output["gaps"].append("Global vendor indices are not independently cross-verified.")
     pack["derived"]["website_context"]=output
