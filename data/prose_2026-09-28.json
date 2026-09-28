@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 *plunges 1.56%* amid global cues",
+ "subline": "A risk-off sentiment gripped markets today.",
+ "hero_text": "Nifty 50 fell by 1.56% to 22,780.25, driven by FII outflows and rising volatility.",
+ "why_head": "Today's Market Drivers",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "Market Downturn",
+   "desc": "Nifty 50 slipped to 22,780.25.",
+   "badge": "-1.56%"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Pressure",
+   "desc": "US markets saw declines; Dow fell.",
+   "badge": "-0.75%"
+  },
+  {
+   "emoji": "💹",
+   "title": "FII Outflows",
+   "desc": "Substantial FII net outflows.",
+   "badge": "Rs -5,353.22 Cr"
+  },
+  {
+   "emoji": "📈",
+   "title": "Volatility Rise",
+   "desc": "India VIX jumped significantly.",
+   "badge": "12.15%"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Bank": "Impact from global cues and FII outflows.",
+  "Nifty Financial Services": "Pressure from volatile markets.",
+  "Nifty IT": "Minor impact from US market decline.",
+  "Nifty Metal": "Resilience amid broader market drop.",
+  "Nifty FMCG": "Stability amid risk-off sentiment.",
+  "Nifty Realty": "Affected by overall market sentiment."
+ },
+ "bonus_title": "Volatility Spike",
+ "bonus_text": "India VIX surged by 12.15%, indicating increased market uncertainty.",
+ "movers_note_gainers": "INR's firmness and specific stock movements helped Dr. Reddy's and Infosys.",
+ "movers_note_losers": "TMPV and Adani stocks hit hard by market downturn.",
+ "watch_text": "Watch for ECB President Lagarde's speech and US economic data tomorrow evening.",
+ "lessons": [
+  "Nifty 50 experienced a sharp drop of 1.56%.",
+  "FII outflows exerted downward pressure on indices.",
+  "Global markets heavily influenced local sentiment.",
+  "Volatility saw a notable increase with VIX rising 12.15%."
+ ],
+ "alert_title": "Upcoming Events",
+ "alert_text": "ECB President Lagarde's speech and US data releases are key.",
+ "cta_headline": "Stay informed with *daily updates*",
+ "cta_sub": "Follow us for concise market wraps.",
+ "next_text": "Focus on ECB President's speech and US data releases tomorrow.",
+ "caption_a": "Nifty 50 plunged by 1.56% to 22,780.25 amid global concerns. \\nThe Dow fell by 0.75%, influencing local sentiment. \\nVolatility spiked; India VIX rose 12.15%. \\nWatch ECB President Lagarde's speech tomorrow. \\nDaily wrap every evening @getstockpulse \\nNot investment advice. #Nifty #IndianStockMarket #GlobalCues #Volatility #FIINetOutflow",
+ "caption_b": "Markets tumbled with Nifty 50 down 1.56%. \\nFII registered net outflow of Rs -5,353.22 Cr. \\nIndia VIX saw a sharp rise by 12.15%. \\nWatch ECB President's speech and US data tomorrow. \\nDaily wrap every evening @getstockpulse \\nNot investment advice. #Nifty #IndianStockMarket #IndiaVIX #FIINetOutflow #GlobalCues"
+}
