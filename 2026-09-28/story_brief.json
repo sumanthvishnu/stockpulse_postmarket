@@ -1,0 +1,40 @@
+{
+ "one_liner": "Markets declined as Nifty 50 fell by 1.56% amid global cues.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Market Decline",
+   "detail": "Nifty 50 dropped by 1.56% to 22,780.25.",
+   "stat": "-1.56%"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Cues",
+   "detail": "US indices fell; Dow down by 0.75%.",
+   "stat": "-0.75%"
+  },
+  {
+   "emoji": "💹",
+   "title": "FII Outflow",
+   "detail": "FII net outflow was Rs -5,353.22 Cr.",
+   "stat": "Rs -5,353.22 Cr"
+  },
+  {
+   "emoji": "📈",
+   "title": "Volatility Spike",
+   "detail": "India VIX rose by 12.15% to 13.64.",
+   "stat": "12.15%"
+  }
+ ],
+ "flows_line": "FII saw net outflow of Rs -5,353.22 Cr; DII net inflow of Rs 5,189.02 Cr.",
+ "watch_next": "Watch ECB President Lagarde's speech at 20:30 IST and US data at 23:30 IST.",
+ "week_pct": -2.71,
+ "lesson_seeds": [
+  "Nifty 50 dropped by 1.56% today.",
+  "FII outflows can pressure markets.",
+  "Global market trends influence local indices.",
+  "Volatility increased significantly with India VIX up 12.15%."
+ ],
+ "source": "llm"
+}
