@@ -1,1 +1,1 @@
-{"report_issues": [], "carousel_issues": []}
+{"report_issues": [], "carousel_issues": ["why[1].title 'global pressure' is a category label - use a causal clause that names the driver", "sector_reasons['Metal'] is a rank stub or filler ('Gained slightly amid broader market downturn') - state a cause, and key it 'Metal' not 'Nifty \u2026'", "sector_reasons['Consumer Durables'] is a rank stub or filler ('Weighed down by market sentiment') - state a cause, and key it 'Consumer Durables' not 'Nifty \u2026'", "why[1].title repeats a previous day: 'global pressure'"]}

@@ -1,40 +1,40 @@
 {
- "one_liner": "Markets decline with Nifty 50 down 0.28% amid lack of clear catalysts.",
+ "one_liner": "Indian markets declined amid global cues and FII outflows.",
  "mood": "risk-off",
  "drivers": [
   {
-   "emoji": "📉",
-   "title": "Market Decline",
-   "detail": "Nifty 50 closed down 0.28% at 22,716.20.",
-   "stat": "-64.05 points"
+   "emoji": "🌍",
+   "title": "Global Cues",
+   "detail": "Negative sentiment across global markets impacted indices.",
+   "stat": "Dow down 253.91 points"
   },
   {
    "emoji": "💸",
    "title": "FII Outflows",
-   "detail": "FIIs were net sellers with Rs 9,980.22 Cr outflow.",
-   "stat": "-9980.22 Cr"
+   "detail": "FIIs were net sellers, offloading Rs 9,980.22 Cr.",
+   "stat": "FII net outflow Rs 9,980.22 Cr"
+  },
+  {
+   "emoji": "📉",
+   "title": "Broad Decline",
+   "detail": "Nifty 50 fell 64.05 points to 22,716.20.",
+   "stat": "Nifty 50 down 0.28%"
   },
   {
    "emoji": "📊",
-   "title": "Negative Breadth",
-   "detail": "Market breadth was negative with 1,605 declines.",
-   "stat": "1,605 declines"
-  },
-  {
-   "emoji": "❓",
-   "title": "No Clear Catalyst",
-   "detail": "No identifiable catalyst for market movement.",
-   "stat": "Data Gaps Register"
+   "title": "Sectoral Losses",
+   "detail": "IT and Auto sectors saw significant declines.",
+   "stat": "Nifty IT down 1.48%"
   }
  ],
- "flows_line": "FIIs were net sellers at Rs 9,980.22 Cr, DIIs net buyers at Rs 6,952.71 Cr.",
- "watch_next": "Watch for German CPI and US GDP data releases tomorrow.",
+ "flows_line": "FIIs sold Rs 9,980.22 Cr; DIIs bought Rs 6,952.71 Cr.",
+ "watch_next": "Watch for German CPI and US GDP data tomorrow.",
  "week_pct": -2.63,
  "lesson_seeds": [
-  "Nifty 50 declined by 0.28% today.",
-  "FIIs continued to sell, impacting market sentiment.",
-  "Market breadth was negative with more declines than advances.",
-  "No clear catalyst identified for today's market movement."
+  "Global market sentiment can heavily influence local indices.",
+  "FII flows are critical for market direction.",
+  "Sectoral performances vary, impacting overall index movement.",
+  "Expiry days can add volatility to market sessions."
  ],
  "source": "llm"
 }
