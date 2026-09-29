@@ -53,16 +53,18 @@
 
   .frame{
     position:absolute;inset:7px 0 0 0;z-index:2;
-    padding:56px 64px 60px;display:flex;flex-direction:column;
+    padding:44px 60px 36px;display:flex;flex-direction:column;
   }
   .slide-header{
     display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:40px;flex-shrink:0;
+    margin-bottom:22px;flex-shrink:0;
   }
   .brand{display:flex;align-items:center;gap:14px;}
   .brand-name{font-size:22px;font-weight:800;letter-spacing:-.01em;}
   .counter{font-size:18px;opacity:.35;font-weight:700;}
   .body{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .body.fill{gap:22px;justify-content:flex-start;}
+  #slide6 .watch-row{display:flex;gap:22px;}
 
   .ghost{
     position:absolute;bottom:-40px;right:20px;font-size:300px;
@@ -72,7 +74,7 @@
 
   /* ---- banner (slide 1) ---- */
   .banner{
-    border-radius:24px;padding:44px 40px;text-align:center;
+    border-radius:24px;padding:36px 40px;text-align:center;
     background:var(--white);flex-shrink:0;
   }
   .banner-title{
@@ -80,16 +82,18 @@
     line-height:1;
   }
   .banner-pill{
-    display:inline-block;margin-top:22px;padding:12px 30px;border-radius:100px;
+    display:inline-block;margin-top:16px;padding:12px 30px;border-radius:100px;
     font-size:27px;font-weight:800;background:var(--orange);color:#fff;
     letter-spacing:.01em;
   }
-  .cover-mid{flex:1;display:flex;flex-direction:column;justify-content:center;}
+  .cover-mid{flex:0 0 auto;display:flex;flex-direction:column;justify-content:flex-start;}
+  #slide1 .body{justify-content:center;gap:44px;}
+  #slide8 .body{gap:26px;}
   .headline{font-size:66px;font-weight:800;line-height:1.08;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
   .headline .hl{color:var(--orange);}
-  .subline{font-size:27px;font-weight:500;color:#94A3B8;margin-top:26px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .subline{font-size:27px;font-weight:500;color:#94A3B8;margin-top:16px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .stat-pill{
-    display:inline-flex;align-items:center;gap:14px;margin-top:38px;
+    display:inline-flex;align-items:center;gap:14px;margin-top:24px;
     padding:22px 34px;border-radius:18px;font-size:30px;font-weight:800;
     align-self:flex-start;color:#fff;
   }
@@ -106,7 +110,7 @@
   .index-row{display:flex;gap:22px;}
   .index-card{
     flex:1;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:20px;
-    padding:30px 26px;border-top:6px solid var(--muted);
+    padding:22px 22px;border-top:6px solid var(--muted);
   }
   .index-card.up{border-top-color:var(--green);}
   .index-card.down{border-top-color:var(--red);}
@@ -118,7 +122,7 @@
 
   .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
   .stat-tile{
-    background:#F8FAFC;border:1px solid #E2E8F0;border-radius:20px;padding:26px 28px;
+    background:#F8FAFC;border:1px solid #E2E8F0;border-radius:20px;padding:18px 22px;
   }
   .st-label{font-size:20px;font-weight:700;color:var(--muted);}
   .st-val{font-size:40px;font-weight:800;margin-top:8px;color:var(--navy);}
@@ -127,7 +131,7 @@
   .st-note{font-size:18px;font-weight:600;color:var(--muted);margin-top:4px;}
 
   .hero-box{
-    background:var(--navy);border-radius:20px;padding:34px 38px;color:#fff;
+    background:var(--navy);border-radius:20px;padding:24px 32px;color:#fff;
     display:flex;flex-direction:column;justify-content:center;
   }
   .hero-box.flip{background:var(--white);color:var(--navy);border:1px solid #E2E8F0;}
@@ -135,10 +139,11 @@
   .hb-text{font-size:34px;font-weight:800;margin-top:10px;line-height:1.15;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 
   /* ---- why rows ---- */
+  .why-list{display:flex;flex-direction:column;gap:16px;}
   .why-row{
-    display:flex;gap:26px;align-items:flex-start;
+    display:flex;gap:26px;align-items:center;
     background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
-    border-radius:20px;padding:28px 30px;
+    border-radius:20px;padding:42px 28px;
   }
   .why-emoji{font-size:52px;line-height:1;flex-shrink:0;}
   .why-txt{flex:1;}
@@ -151,10 +156,11 @@
   }
 
   /* ---- sector rows ---- */
+  .sec-list{display:flex;flex-direction:column;gap:14px;}
   .sec-row{
     display:flex;align-items:center;gap:22px;
     background:#F8FAFC;border:1px solid #E2E8F0;border-radius:16px;
-    padding:22px 26px;border-left:8px solid var(--muted);
+    padding:26px 22px;border-left:8px solid var(--muted);
   }
   .sec-row.up{border-left-color:var(--green);}
   .sec-row.down{border-left-color:var(--red);}
@@ -164,37 +170,40 @@
   .sec-pct.up{color:var(--green);}
   .sec-pct.down{color:var(--red);}
   .bonus-card{
+    flex-shrink:0;
     background:#FFF7ED;border:1px solid #FED7AA;border-left:8px solid var(--orange);
-    border-radius:16px;padding:22px 26px;
+    border-radius:16px;padding:16px 22px;
   }
   .bonus-card b{color:var(--navy);font-size:24px;font-weight:800;}
   .bonus-card span{font-size:20px;font-weight:500;color:#9A5B2B;display:block;margin-top:6px;line-height:1.3;}
 
   /* ---- movers ---- */
-  .mv-cols{display:flex;gap:26px;flex:1;}
-  .mv-col{flex:1;display:flex;flex-direction:column;gap:16px;justify-content:space-between;}
-  .mv-head{font-size:28px;font-weight:800;padding-bottom:6px;}
+  .mv-cols{display:flex;gap:22px;align-items:flex-start;}
+  .mv-col{flex:1;display:flex;flex-direction:column;gap:14px;justify-content:flex-start;}
+  .mv-items{display:flex;flex-direction:column;gap:14px;}
+  .mv-head{font-size:28px;font-weight:800;flex-shrink:0;}
   .mv-head.up{color:var(--green);}
   .mv-head.down{color:var(--red);}
   .mv-item{
     display:flex;justify-content:space-between;align-items:center;
     background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
-    border-radius:14px;padding:20px 24px;
+    border-radius:14px;padding:44px 24px;
   }
   .mv-sym{font-size:26px;font-weight:800;}
   .mv-pct{font-size:26px;font-weight:800;}
   .mv-pct.up{color:#86EFAC;}
   .mv-pct.down{color:#FCA5A5;}
   .mv-note{
+    flex-shrink:0;
     font-size:20px;font-weight:600;color:#CBD5E1;line-height:1.35;
     background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-    border-radius:14px;padding:18px 22px;
+    border-radius:14px;padding:14px 18px;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   }
 
   /* ---- levels ---- */
   .price-hero{
-    background:var(--navy);border-radius:20px;padding:34px 38px;color:#fff;
+    background:var(--navy);border-radius:20px;padding:64px 34px;color:#fff;
     display:flex;justify-content:space-between;align-items:center;
   }
   .ph-left .ph-label{font-size:22px;font-weight:700;color:#94A3B8;}
@@ -205,7 +214,7 @@
   .ph-badge .b-val{font-size:30px;font-weight:800;margin-top:4px;color:var(--orange);}
 
   .lvl-cards{display:flex;gap:22px;}
-  .lvl-card{flex:1;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:20px;padding:28px 30px;}
+  .lvl-card{flex:1;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:20px;padding:48px 28px;}
   .lc-name{font-size:28px;font-weight:800;color:var(--navy);}
   .lc-line{display:flex;justify-content:space-between;font-size:22px;font-weight:700;margin-top:16px;}
   .lc-line .lab{color:var(--muted);}
@@ -214,16 +223,17 @@
 
   .quote-box{
     background:#FFF7ED;border-left:6px solid var(--orange);border-radius:14px;
-    padding:24px 28px;flex:1;
+    padding:48px 28px;flex:1;
   }
   .qb-text{font-size:24px;font-weight:700;color:var(--navy);line-height:1.35;}
   .qb-who{font-size:19px;font-weight:600;color:#9A5B2B;margin-top:12px;}
 
   /* ---- lessons ---- */
+  .lesson-list{display:flex;flex-direction:column;gap:16px;}
   .lesson{
-    display:flex;gap:26px;align-items:flex-start;
+    display:flex;gap:26px;align-items:center;
     background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
-    border-radius:18px;padding:26px 30px;
+    border-radius:18px;padding:34px 26px;
   }
   .lesson-num{
     font-size:34px;font-weight:800;color:var(--orange);flex-shrink:0;
@@ -232,32 +242,36 @@
   }
   .lesson-txt{font-size:26px;font-weight:700;line-height:1.3;align-self:center;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
   .alert-box{
+    flex-shrink:0;
     background:rgba(249,115,22,.14);border:1.5px solid var(--orange);border-radius:18px;
-    padding:26px 30px;display:flex;gap:20px;align-items:center;
+    padding:18px 24px;display:flex;gap:20px;align-items:center;
   }
   .alert-box .ae{font-size:44px;}
   .alert-box .at{font-size:23px;font-weight:700;line-height:1.3;}
   .alert-box .at b{color:var(--orange);}
 
   /* ---- CTA ---- */
-  .cta-emoji{font-size:80px;}
-  .cta-head{font-size:56px;font-weight:800;line-height:1.08;margin-top:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .cta-lead{display:flex;flex-direction:column;}
+  .cta-emoji{font-size:64px;}
+  .cta-head{font-size:56px;font-weight:800;line-height:1.08;margin-top:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
   .cta-head .hl{color:var(--orange);}
-  .cta-sub{font-size:26px;font-weight:500;color:var(--muted);margin-top:16px;line-height:1.4;}
+  .cta-sub{font-size:26px;font-weight:500;color:var(--muted);margin-top:10px;line-height:1.4;}
   .cta-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-  .cta-stat{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:16px;padding:22px 18px;text-align:center;}
+  .cta-stat{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:16px;padding:26px 12px;text-align:center;}
   .cs-lab{font-size:17px;font-weight:700;color:var(--muted);}
   .cs-val{font-size:27px;font-weight:800;margin-top:6px;color:var(--navy);white-space:nowrap;}
   .cs-val.up{color:var(--green);}
   .cs-val.down{color:var(--red);}
-  .next-box{background:var(--navy);border-radius:16px;padding:24px 28px;color:#fff;display:flex;gap:18px;align-items:center;}
+  .next-box{background:var(--navy);border-radius:16px;padding:26px 24px;color:#fff;display:flex;gap:18px;align-items:center;}
   .next-box .ne{font-size:40px;}
   .next-box .nt{font-size:22px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .next-box .nt b{color:var(--orange);}
   .cta-pill{
+    flex:0 0 auto;
     background:var(--orange);color:#fff;text-align:center;border-radius:100px;
-    padding:24px;font-size:30px;font-weight:800;
+    padding:18px;font-size:30px;font-weight:800;
   }
+  .cta-foot{flex-shrink:0;display:flex;flex-direction:column;gap:6px;}
   .swarm-row{display:flex;align-items:center;justify-content:center;gap:14px;font-size:22px;font-weight:700;color:var(--muted);}
   .swarm-row b{color:var(--navy);}
   .handle{text-align:center;font-size:30px;font-weight:800;color:var(--navy);}
@@ -356,9 +370,9 @@
             </div>
             <div class="counter" style="color:#0F2744">02 / 08</div>
           </div>
-          <div class="body" style="justify-content:space-between;">
+          <div class="body fill">
             <div><div class="section-h">{{S2_TITLE}}</div></div>
-            <div class="index-row" style="flex:0;">
+            <div class="index-row">
               <div class="index-card {{IDX1_CLASS}}">
                 <div class="ic-name">{{IDX1_NAME}}</div>
                 <div class="ic-val">{{IDX1_VAL}}</div>
@@ -375,7 +389,7 @@
                 <div class="ic-chg {{IDX3_CLASS}}">{{IDX3_CHG}}</div>
               </div>
             </div>
-            <div class="stat-grid" style="flex:0;">
+            <div class="stat-grid">
               <div class="stat-tile">
                 <div class="st-label">{{T1_LABEL}}</div>
                 <div class="st-val {{T1_CLASS}}">{{T1_VAL}}</div>
@@ -397,7 +411,7 @@
                 <div class="st-note">{{T4_NOTE}}</div>
               </div>
             </div>
-            <div class="hero-box" style="flex:0;">
+            <div class="hero-box">
               <div class="hb-label">{{HERO_LABEL}}</div>
               <div class="hb-text">{{HERO_TEXT}}</div>
             </div>
@@ -424,9 +438,9 @@
             </div>
             <div class="counter">03 / 08</div>
           </div>
-          <div class="body" style="justify-content:space-between;">
+          <div class="body fill">
             <div class="section-h">{{WHY_HEAD}}</div>
-            <div style="display:flex;flex-direction:column;gap:22px;flex:1;justify-content:center;">
+            <div class="why-list">
               <div class="why-row">
                 <div class="why-emoji">{{WHY1_EMOJI}}</div>
                 <div class="why-txt"><div class="why-title">{{WHY1_TITLE}}</div><div class="why-desc">{{WHY1_DESC}}</div></div>
@@ -470,9 +484,9 @@
             </div>
             <div class="counter" style="color:#0F2744">04 / 08</div>
           </div>
-          <div class="body" style="justify-content:space-between;">
+          <div class="body fill">
             <div class="section-h">{{S4_TITLE}}</div>
-            <div style="display:flex;flex-direction:column;gap:16px;flex:1;justify-content:center;">
+            <div class="sec-list">
               <div class="sec-row {{SEC1_CLASS}}"><div class="sec-name">{{SEC1_NAME}}</div><div class="sec-reason">{{SEC1_REASON}}</div><div class="sec-pct {{SEC1_CLASS}}">{{SEC1_PCT}}</div></div>
               <div class="sec-row {{SEC2_CLASS}}"><div class="sec-name">{{SEC2_NAME}}</div><div class="sec-reason">{{SEC2_REASON}}</div><div class="sec-pct {{SEC2_CLASS}}">{{SEC2_PCT}}</div></div>
               <div class="sec-row {{SEC3_CLASS}}"><div class="sec-name">{{SEC3_NAME}}</div><div class="sec-reason">{{SEC3_REASON}}</div><div class="sec-pct {{SEC3_CLASS}}">{{SEC3_PCT}}</div></div>
@@ -507,23 +521,27 @@
             </div>
             <div class="counter">05 / 08</div>
           </div>
-          <div class="body" style="justify-content:space-between;">
+          <div class="body fill">
             <div class="section-h">{{S5_TITLE}}</div>
             <div class="mv-cols">
               <div class="mv-col">
                 <div class="mv-head up">Top gainers</div>
-                <div class="mv-item"><span class="mv-sym">{{G1_NAME}}</span><span class="mv-pct up">{{G1_PCT}}</span></div>
-                <div class="mv-item"><span class="mv-sym">{{G2_NAME}}</span><span class="mv-pct up">{{G2_PCT}}</span></div>
-                <div class="mv-item"><span class="mv-sym">{{G3_NAME}}</span><span class="mv-pct up">{{G3_PCT}}</span></div>
-                <div class="mv-item"><span class="mv-sym">{{G4_NAME}}</span><span class="mv-pct up">{{G4_PCT}}</span></div>
+                <div class="mv-items">
+                  <div class="mv-item"><span class="mv-sym">{{G1_NAME}}</span><span class="mv-pct up">{{G1_PCT}}</span></div>
+                  <div class="mv-item"><span class="mv-sym">{{G2_NAME}}</span><span class="mv-pct up">{{G2_PCT}}</span></div>
+                  <div class="mv-item"><span class="mv-sym">{{G3_NAME}}</span><span class="mv-pct up">{{G3_PCT}}</span></div>
+                  <div class="mv-item"><span class="mv-sym">{{G4_NAME}}</span><span class="mv-pct up">{{G4_PCT}}</span></div>
+                </div>
                 <div class="mv-note">{{MOVERS_NOTE_GAINERS}}</div>
               </div>
               <div class="mv-col">
                 <div class="mv-head down">Top losers</div>
-                <div class="mv-item"><span class="mv-sym">{{L1_NAME}}</span><span class="mv-pct down">{{L1_PCT}}</span></div>
-                <div class="mv-item"><span class="mv-sym">{{L2_NAME}}</span><span class="mv-pct down">{{L2_PCT}}</span></div>
-                <div class="mv-item"><span class="mv-sym">{{L3_NAME}}</span><span class="mv-pct down">{{L3_PCT}}</span></div>
-                <div class="mv-item"><span class="mv-sym">{{L4_NAME}}</span><span class="mv-pct down">{{L4_PCT}}</span></div>
+                <div class="mv-items">
+                  <div class="mv-item"><span class="mv-sym">{{L1_NAME}}</span><span class="mv-pct down">{{L1_PCT}}</span></div>
+                  <div class="mv-item"><span class="mv-sym">{{L2_NAME}}</span><span class="mv-pct down">{{L2_PCT}}</span></div>
+                  <div class="mv-item"><span class="mv-sym">{{L3_NAME}}</span><span class="mv-pct down">{{L3_PCT}}</span></div>
+                  <div class="mv-item"><span class="mv-sym">{{L4_NAME}}</span><span class="mv-pct down">{{L4_PCT}}</span></div>
+                </div>
                 <div class="mv-note">{{MOVERS_NOTE_LOSERS}}</div>
               </div>
             </div>
@@ -549,9 +567,9 @@
             </div>
             <div class="counter" style="color:#0F2744">06 / 08</div>
           </div>
-          <div class="body" style="justify-content:space-between;">
+          <div class="body fill">
             <div class="section-h">{{S6_TITLE}}</div>
-            <div class="price-hero" style="flex:0;">
+            <div class="price-hero">
               <div class="ph-left">
                 <div class="ph-label">Nifty 50 close</div>
                 <div class="ph-val">{{LVL_NIFTY_CLOSE}}</div>
@@ -562,7 +580,7 @@
                 <div class="ph-badge"><div class="b-lab">Resistance</div><div class="b-val">{{LVL_RESISTANCE}}</div></div>
               </div>
             </div>
-            <div class="lvl-cards" style="flex:0;">
+            <div class="lvl-cards">
               <div class="lvl-card">
                 <div class="lc-name">Nifty 50</div>
                 <div class="lc-line"><span class="lab">Support</span><span class="sup">{{NIFTY_SUPPORT}}</span></div>
@@ -574,8 +592,8 @@
                 <div class="lc-line"><span class="lab">Pivot</span><span style="color:#0F2744">{{BANK_PIVOT}}</span></div>
               </div>
             </div>
-            <div style="display:flex;gap:22px;flex:0;">
-              <div class="quote-box" style="flex:1;">
+            <div class="watch-row">
+              <div class="quote-box">
                 <div class="qb-text"><b>What to watch</b> · {{WATCH_TEXT}}</div>
                 <div class="qb-who">Option chain derived · NSE F&amp;O bhavcopy</div>
               </div>
@@ -603,9 +621,9 @@
             </div>
             <div class="counter">07 / 08</div>
           </div>
-          <div class="body" style="justify-content:space-between;">
+          <div class="body fill">
             <div class="section-h">{{S7_TITLE}}</div>
-            <div style="display:flex;flex-direction:column;gap:18px;flex:1;justify-content:center;">
+            <div class="lesson-list">
               <div class="lesson"><div class="lesson-num">1</div><div class="lesson-txt">{{LESSON1}}</div></div>
               <div class="lesson"><div class="lesson-num">2</div><div class="lesson-txt">{{LESSON2}}</div></div>
               <div class="lesson"><div class="lesson-num">3</div><div class="lesson-txt">{{LESSON3}}</div></div>
@@ -637,8 +655,8 @@
             </div>
             <div class="counter" style="color:#0F2744">08 / 08</div>
           </div>
-          <div class="body" style="justify-content:space-between;">
-            <div>
+          <div class="body fill">
+            <div class="cta-lead">
               <div class="cta-emoji">🔖</div>
               <div class="cta-head">{{CTA_HEADLINE}}</div>
               <div class="cta-sub">{{CTA_SUB}}</div>
@@ -654,9 +672,11 @@
               <div class="nt"><b>Next up.</b> {{NEXT_TEXT}}</div>
             </div>
             <div class="cta-pill">Join early access · link in bio</div>
-            <div class="swarm-row">Powered by <b>SwarmIQ</b> · multi source market intelligence</div>
-            <div class="handle">@get<span>stockpulse</span></div>
-            <div class="disclaimer">Not SEBI registered. For informational purposes only. Not investment advice.</div>
+            <div class="cta-foot">
+              <div class="swarm-row">Powered by <b>SwarmIQ</b> · multi source market intelligence</div>
+              <div class="handle">@get<span>stockpulse</span></div>
+              <div class="disclaimer">Not SEBI registered. For informational purposes only. Not investment advice.</div>
+            </div>
           </div>
         </div>
       </div>
