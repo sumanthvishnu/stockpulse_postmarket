@@ -6,7 +6,8 @@ LLM carousel (linted) -> render PDF -> write site/ -> Telegram notify.
 
 Env knobs:
     TRADE_DATE        DD-MM-YYYY (default: today IST)
-    MOCK_LLM=1        skip the LLM, use canned HTML (for dry runs)
+    MOCK_LLM=1        skip the LLM; carousel prose is computed from the datapack
+    LLM_MODEL_CAROUSEL  carousel-only model override (blank falls through)
     DRY_RUN=1         don't send Telegram, just print what would be sent
     GH_PAGES_BASE     https://<owner>.github.io/<repo>  (builds links)
     OPENAI_API_KEY / LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
@@ -327,16 +328,16 @@ def deterministic_brief(pack):
     still tells THAT day's story even with no model available."""
     f = carousel.day_facts(pack)
     drivers = []
-    for name, pct in f["top_sectors"][:2]:
+    for i, (name, pct) in enumerate(f["top_sectors"][:2]):
         drivers.append({"emoji": carousel.SECTOR_EMOJI.get(name, "📈"),
-                        "title": f"{name} led",
-                        "detail": f"{name} was among the strongest sectors.",
+                        "title": f"{name} led" if (pct or 0) >= 0 else f"{name} held up",
+                        "detail": carousel.computed_sector_reason(name, pct, i),
                         "stat": f"{name} {pct:+.2f}%"})
     if f["bottom_sectors"]:
         name, pct = f["bottom_sectors"][0]
         drivers.append({"emoji": carousel.SECTOR_EMOJI.get(name, "📉"),
-                        "title": f"{name} dragged",
-                        "detail": f"{name} was the weakest pocket.",
+                        "title": f"{name} lagged",
+                        "detail": carousel.computed_sector_reason(name, pct, 3),
                         "stat": f"{name} {pct:+.2f}%"})
     br_word = "positive" if f["breadth_pos"] else "weak"
     drivers.append({"emoji": "📊", "title": f"Breadth stayed {br_word}",
@@ -426,37 +427,63 @@ def recent_prose_memory(tdate, n=5):
             except Exception:  # noqa: BLE001 - a corrupt memory file is skippable
                 continue
     past = past[-n:]
-    headlines, emojis, titles, lessons = set(), set(), set(), set()
+    memory = {
+        "headlines": set(), "emojis": set(), "why_titles": set(),
+        "lesson_skeletons": set(), "movers": set(), "ctas": set(),
+        "bonus_titles": set(),
+    }
+    lessons_exact = []
     for _, p in past:
-        h = re.sub(r"\s+", " ", re.sub(r"[*_]", "",
-                                       str(p.get("headline", "")))).strip().lower()
+        h = carousel.norm_phrase(p.get("headline"))
         if h:
-            headlines.add(h)
+            memory["headlines"].add(h)
         for row in (p.get("why") or []):
-            if row.get("emoji"):
-                emojis.add(row["emoji"])
-            if row.get("title"):
-                titles.add(row["title"].strip().lower())
-        for l in (p.get("lessons") or []):
-            if l:
-                lessons.add(l.strip().lower())
+            if isinstance(row, dict) and row.get("emoji"):
+                memory["emojis"].add(row["emoji"])
+            title = carousel.norm_phrase((row or {}).get("title")
+                                         if isinstance(row, dict) else "")
+            if title:
+                memory["why_titles"].add(title)
+        for lesson in (p.get("lessons") or []):
+            sk = carousel.lesson_skeleton(lesson)
+            if sk:
+                memory["lesson_skeletons"].add(sk)
+                lessons_exact.append(carousel.norm_phrase(lesson))
+        for field, bucket in (
+            ("movers_note_gainers", "movers"),
+            ("movers_note_losers", "movers"),
+            ("cta_headline", "ctas"),
+            ("cta_sub", "ctas"),
+            ("bonus_title", "bonus_titles"),
+        ):
+            val = carousel.norm_phrase(p.get(field))
+            if val:
+                memory[bucket].add(val)
     if not past:
-        return "", headlines, emojis
+        return "", memory
     lines = ["ANTI-REPETITION (hard rule): these come from your previous "
              f"{len(past)} carousel(s). Do NOT reuse or lightly paraphrase "
-             "any of them - same meaning in different words counts as a "
-             "repeat. Today's drivers decide today's wording."]
-    if headlines:
-        lines.append("Headlines already used: " + " | ".join(sorted(headlines)))
-    if titles:
+             "any of them. Same meaning in different words counts, and so "
+             "does the same lesson pattern with the numbers swapped. "
+             "Today's contrast decides today's wording."]
+    if memory["headlines"]:
+        lines.append("Headlines already used: "
+                     + " | ".join(sorted(memory["headlines"])))
+    if memory["why_titles"]:
         lines.append("'Why' row titles already used: "
-                     + " | ".join(sorted(titles)))
-    if lessons:
-        lines.append("Lessons already used: " + " | ".join(sorted(lessons)))
-    if emojis:
+                     + " | ".join(sorted(memory["why_titles"])))
+    if lessons_exact:
+        lines.append("Lessons already used: " + " | ".join(sorted(set(lessons_exact))))
+    if memory["movers"]:
+        lines.append("Mover notes already used: "
+                     + " | ".join(sorted(memory["movers"])))
+    if memory["ctas"]:
+        lines.append("CTA lines already used: "
+                     + " | ".join(sorted(memory["ctas"])))
+    if memory["emojis"]:
         lines.append("Emojis already used (avoid unless the driver genuinely "
-                     "repeats): " + " ".join(sorted(emojis)))
-    return "\n\n" + "\n".join(lines), headlines, emojis
+                     "repeats): " + " ".join(sorted(memory["emojis"])))
+    return "\n\n" + "\n".join(lines), memory
 
 
 def generate_carousel(pack, brief, weekly=False):
@@ -470,16 +497,28 @@ def generate_carousel(pack, brief, weekly=False):
     system = open(os.path.join(REPO, "skills", "carousel.md"),
                   encoding="utf-8").read()
     tdate = date.fromisoformat(pack["meta"]["trading_date"])
-    memory_block, seen_headlines, seen_emojis = recent_prose_memory(tdate)
+    memory_block, memory = recent_prose_memory(tdate)
+    carousel_model = llm.resolved_carousel_model()
+    log(f"  [carousel] model={carousel_model}")
+    board = carousel.sector_board(pack, weekly=weekly)
+    shorts = [short for _name, short, _pct in board]
+    emphasis = carousel.snapshot_emphasis(pack, weekly=weekly)
 
     base_user = ("Here is today's datapack (JSON), followed by THE DAY'S "
                  "STORY - the brief distilled from today's post-market "
-                 "report. Your prose must be a compression of that story, "
-                 "not a fresh interpretation of the raw numbers.\n\n"
+                 "report. Compress that story. Lead with the contrast the "
+                 "facts already contain. Do not invent a second story, a "
+                 "number, or a catalyst.\n\n"
                  "DATAPACK:\n" + pack_json(pack) +
                  "\n\nTHE DAY'S STORY (from the report, authoritative "
                  "narrative):\n" + json.dumps(brief, ensure_ascii=False,
-                                              indent=1))
+                                              indent=1) +
+                 "\n\nSECTOR_SHORTS_TODAY (exact sector_reasons keys; never "
+                 "prefix with 'Nifty '): " + json.dumps(shorts) +
+                 "\nCOMPOSITION (locked label, datapack-derived): snapshot "
+                 f"label is '{emphasis['hero_label']}'. Write hero_text for "
+                 "that emphasis. Preferred bonus_title: "
+                 f"'{emphasis['bonus_title']}'. {emphasis['hint']}")
     if weekly:
         base_user += ("\n\nEDITION: today is Friday, so this is the WEEKLY "
                       "MARKET WRAP edition. Frame the headline, hero text, "
@@ -503,28 +542,29 @@ def generate_carousel(pack, brief, weekly=False):
             else:
                 prose = parse_json_lenient(llm.chat(
                     system, user, max_tokens=8000, temperature=0.85,
-                    model=(os.environ.get("LLM_MODEL_CAROUSEL") or None)))
-            html, leftover = carousel.build(pack, prose, weekly=weekly)
+                    model=carousel_model))
+            # Lint the model's own words. finalize_prose (inside build) then
+            # fills gaps so a missing key cannot leak canned mock copy.
+            checked = dict(prose or {})
+            checked["sector_reasons"] = carousel.normalize_sector_reasons(
+                checked.get("sector_reasons"))
+            shipping = carousel.finalize_prose(pack, checked, weekly=weekly)
+            html, leftover = carousel.build(pack, shipping, weekly=weekly)
             issues = carousel.validate(html, pack)
-            issues += carousel.budget_issues(prose)
-            prose_flat = _prose_text(prose)
+            issues += carousel.budget_issues(shipping)
+            prose_flat = _prose_text(shipping)
             issues += compliance.number_lock(prose_flat, pack)
             issues += compliance.calendar_lock(prose_flat, pack)
             if leftover:
                 issues += [f"unfilled template tokens: {leftover}"]
-            # code-level repeat check (the prompt ban alone is not reliable)
-            h = re.sub(r"\s+", " ", re.sub(
-                r"[*_]", "", str(prose.get("headline", "")))).strip().lower()
-            if h and h in seen_headlines:
-                issues += [f"headline repeats a previous day: '{h}' - write a "
-                           "fresh one from today's drivers"]
-            day_emojis = {r.get("emoji") for r in (prose.get("why") or [])
-                          if r.get("emoji")}
-            if day_emojis and day_emojis == seen_emojis:
-                issues += ["the exact emoji set was already used - pick emojis "
-                           "that depict today's specific drivers"]
+            # Voice lint on the model text, not the computed fill. A dry run
+            # uses the datapack fallback on purpose, so it is not retried
+            # for sounding plain.
+            if not MOCK:
+                issues += carousel.prose_quality_issues(
+                    checked, pack, weekly=weekly, memory=memory)
             if not issues:
-                return html, prose, [], False
+                return html, shipping, [], False
         except Exception as e:  # noqa: BLE001 - LLM/parse failure must not kill the run
             issues = [f"carousel generation error: {e}"]
         log(f"  [carousel] attempt {attempt}: {issues}")
@@ -800,6 +840,7 @@ def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues,
         "",
         f"🎠 <a href=\"{tg_escape(carousel_url)}\">Carousel (open in browser, download slides)</a>",
         f"📄 <a href=\"{tg_escape(pdf_url)}\">Report (PDF)</a>",
+        f"Carousel model: {tg_escape(llm.resolved_carousel_model())}",
     ]
     if carousel_fallback:
         # Loud, not buried: fallback prose means yesterday's-style generic
@@ -938,7 +979,8 @@ def main():
         payload = {"pdf_name": pdf_name(tdate), "carousel_url": carousel_url,
                    "pdf_url": pdf_url, "issues": all_issues,
                    "carousel_fallback": carousel_fallback,
-                   "brief_fallback": brief_fallback}
+                   "brief_fallback": brief_fallback,
+                   "carousel_model": llm.resolved_carousel_model()}
         with open(os.path.join(day_dir, "notify_payload.json"), "w",
                   encoding="utf-8") as f:
             json.dump(payload, f, ensure_ascii=False)

@@ -34,6 +34,18 @@ def _retry_after_seconds(r):
     return 45.0
 
 
+def resolved_carousel_model():
+    """Model id the carousel prose pass will call.
+
+    LLM_MODEL_CAROUSEL is a carousel-only override. An empty or whitespace
+    value (GitHub injects an unset secret as "") falls through to LLM_MODEL,
+    then gpt-4o. The report pass does not read this variable."""
+    pinned = (os.environ.get("LLM_MODEL_CAROUSEL") or "").strip()
+    if pinned:
+        return pinned
+    return (os.environ.get("LLM_MODEL") or "gpt-4o").strip() or "gpt-4o"
+
+
 def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3,
          model=None):
     # Empty-string env vars (an unset GitHub secret is injected as "") must
@@ -44,7 +56,7 @@ def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3,
     # the report/carousel copy is brand-facing, so quality beats the ~20x cost
     # delta of mini at this volume (one report + one carousel per day). Set
     # LLM_MODEL=gpt-4o-mini in the workflow to downgrade later.
-    model = (model or os.environ.get("LLM_MODEL") or "gpt-4o")
+    model = (model or os.environ.get("LLM_MODEL") or "gpt-4o").strip() or "gpt-4o"
     key = ((os.environ.get("OPENAI_API_KEY") or "").strip()
            or (os.environ.get("LLM_API_KEY") or "").strip())
     if not key:
