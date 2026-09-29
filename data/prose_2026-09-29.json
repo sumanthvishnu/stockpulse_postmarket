@@ -1,58 +1,58 @@
 {
- "headline": "Nifty 50 *slides 0.28%* amidst uncertainty",
- "subline": "Lack of clear market catalysts, FIIs sell heavily.",
- "hero_text": "Nifty 50 fell 0.28% today, lacking clear drivers.",
- "why_head": "Why the Market Fell Today",
+ "headline": "Nifty closed down on a *split in the flows*",
+ "subline": "FII sold while DII bought. Breadth stayed weak.",
+ "hero_text": "Nifty closed down 0.28% at 22,716.20. FII sold while DII bought.",
+ "why_head": "Why the market fell",
  "why": [
   {
-   "emoji": "📉",
-   "title": "Market Decline",
-   "desc": "Nifty 50 dropped to 22,716.20.",
-   "badge": "-64.05 points"
+   "emoji": "🏭",
+   "title": "Metal led",
+   "desc": "Led the session, closed +0.78%.",
+   "badge": "Metal +0.78%"
   },
   {
-   "emoji": "💸",
-   "title": "FII Outflows",
-   "desc": "FIIs pulled out Rs 9,980.22 Cr.",
-   "badge": "-9980.22 Cr"
+   "emoji": "💊",
+   "title": "Pharma led",
+   "desc": "Firm beside the leader, +0.64%.",
+   "badge": "Pharma +0.64%"
+  },
+  {
+   "emoji": "🛋️",
+   "title": "Consumer Durables lagged",
+   "desc": "Deepest loss, closed -2.71%.",
+   "badge": "Consumer Durables -2.71%"
   },
   {
    "emoji": "📊",
-   "title": "Negative Breadth",
-   "desc": "1,605 stocks declined today.",
-   "badge": "1,605 declines"
-  },
-  {
-   "emoji": "❓",
-   "title": "Unclear Catalyst",
-   "desc": "No specific reason for drop.",
-   "badge": "Data Gaps Register"
+   "title": "Breadth stayed weak",
+   "desc": "More names fell than rose.",
+   "badge": "1,040 : 1,605"
   }
  ],
  "sector_reasons": {
-  "Nifty Auto": "Weak due to lack of demand.",
-  "Nifty Pharma": "Gains on defensive buying.",
-  "Nifty IT": "Under pressure from global cues.",
-  "Nifty Realty": "Faced headwinds with economic concerns.",
-  "Nifty Media": "Minor gains, lacked momentum.",
-  "Nifty Metal": "Stable amidst global uncertainties."
+  "Metal": "Led the session, closed +0.78%.",
+  "Pharma": "Firm beside the leader, +0.64%.",
+  "Healthcare": "Nearly flat, closed +0.15%.",
+  "Consumer Durables": "Deepest loss, closed -2.71%.",
+  "Realty": "Lagged the tape, closed -2.00%.",
+  "IT": "Lagged the tape, closed -1.48%."
  },
- "bonus_title": "Pharma Surges",
- "bonus_text": "Pharma sector saw defensive buying, closing higher.",
- "movers_note_gainers": "Adani Group stocks led gains with strong momentum.",
- "movers_note_losers": "IT stocks like Wipro and HCL Tech faced declines.",
- "watch_text": "Tomorrow, watch German CPI and US GDP data releases.",
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,040 stocks rose and 1,605 fell.",
+ "movers_note_gainers": "Adani Enterprises and Adani Ports led the gainers.",
+ "movers_note_losers": "Titan and Wipro led the losers.",
+ "watch_text": "Support at 22,700 and resistance at 22,700 frame Wednesday's open.",
  "lessons": [
-  "Nifty 50 declined by 0.28% amid stagnation.",
-  "Ongoing FII selling affected market sentiment.",
-  "Negative breadth prevailed with more declines.",
-  "Absence of clear catalysts led to uncertainty."
+  "Breadth was the tell. About 2 stocks fell for every 1 that rose.",
+  "The frontline and the broader market finished on the same side.",
+  "FII sold while DII bought. The cash tape was split.",
+  "One pocket lagged the rest. Consumer Durables trailed while Metal led."
  ],
- "alert_title": "Upcoming Data Watch",
- "alert_text": "Keep an eye on German CPI and US GDP data tomorrow.",
- "cta_headline": "Track the *market's pulse* daily",
- "cta_sub": "Stay updated with daily market movements and insights.",
- "next_text": "Focus on global data releases tomorrow.",
- "caption_a": "Nifty 50 slid 0.28% today with FII outflows at Rs 9,980.22 Cr. Pharma sector shined with defensive buying.\n\nWatch for German CPI and US GDP data tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n\n#Nifty #IndianStockMarket #FIISelling #Pharma #StockMarket",
- "caption_b": "Nifty 50 dropped to 22,716.20 amid unclear market movements. FIIs were major sellers, impacting sentiment.\n\nWatch for key economic data releases tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n\n#Nifty #IndianStockMarket #MarketDecline #FIISelling #StockMarket"
+ "alert_title": "Next up",
+ "alert_text": "Wednesday 30 September opens next. Nifty expiry lands Tuesday.",
+ "cta_headline": "A down day. *Save it for the open*.",
+ "cta_sub": "Full wrap every evening. Next bell is Wednesday.",
+ "next_text": "Next bell is Wednesday. Nifty expiry lands Tuesday.",
+ "caption_a": "Nifty closed down 0.28% at 22,716.20, while Metal led and Consumer Durables lagged.\n\nBreadth: 1,040 advances vs 1,605 declines.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #NiftyMetal #MarketWrap #Sensex",
+ "caption_b": "FII sold while DII bought.\n\nWatch Wednesday's open. Metal led the sectors.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #BankNifty #MarketWrap #FII"
 }
