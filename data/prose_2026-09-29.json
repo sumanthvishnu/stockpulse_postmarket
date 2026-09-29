@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 *slides 0.28%* amidst uncertainty",
+ "subline": "Lack of clear market catalysts, FIIs sell heavily.",
+ "hero_text": "Nifty 50 fell 0.28% today, lacking clear drivers.",
+ "why_head": "Why the Market Fell Today",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "Market Decline",
+   "desc": "Nifty 50 dropped to 22,716.20.",
+   "badge": "-64.05 points"
+  },
+  {
+   "emoji": "💸",
+   "title": "FII Outflows",
+   "desc": "FIIs pulled out Rs 9,980.22 Cr.",
+   "badge": "-9980.22 Cr"
+  },
+  {
+   "emoji": "📊",
+   "title": "Negative Breadth",
+   "desc": "1,605 stocks declined today.",
+   "badge": "1,605 declines"
+  },
+  {
+   "emoji": "❓",
+   "title": "Unclear Catalyst",
+   "desc": "No specific reason for drop.",
+   "badge": "Data Gaps Register"
+  }
+ ],
+ "sector_reasons": {
+  "Nifty Auto": "Weak due to lack of demand.",
+  "Nifty Pharma": "Gains on defensive buying.",
+  "Nifty IT": "Under pressure from global cues.",
+  "Nifty Realty": "Faced headwinds with economic concerns.",
+  "Nifty Media": "Minor gains, lacked momentum.",
+  "Nifty Metal": "Stable amidst global uncertainties."
+ },
+ "bonus_title": "Pharma Surges",
+ "bonus_text": "Pharma sector saw defensive buying, closing higher.",
+ "movers_note_gainers": "Adani Group stocks led gains with strong momentum.",
+ "movers_note_losers": "IT stocks like Wipro and HCL Tech faced declines.",
+ "watch_text": "Tomorrow, watch German CPI and US GDP data releases.",
+ "lessons": [
+  "Nifty 50 declined by 0.28% amid stagnation.",
+  "Ongoing FII selling affected market sentiment.",
+  "Negative breadth prevailed with more declines.",
+  "Absence of clear catalysts led to uncertainty."
+ ],
+ "alert_title": "Upcoming Data Watch",
+ "alert_text": "Keep an eye on German CPI and US GDP data tomorrow.",
+ "cta_headline": "Track the *market's pulse* daily",
+ "cta_sub": "Stay updated with daily market movements and insights.",
+ "next_text": "Focus on global data releases tomorrow.",
+ "caption_a": "Nifty 50 slid 0.28% today with FII outflows at Rs 9,980.22 Cr. Pharma sector shined with defensive buying.\n\nWatch for German CPI and US GDP data tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n\n#Nifty #IndianStockMarket #FIISelling #Pharma #StockMarket",
+ "caption_b": "Nifty 50 dropped to 22,716.20 amid unclear market movements. FIIs were major sellers, impacting sentiment.\n\nWatch for key economic data releases tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n\n#Nifty #IndianStockMarket #MarketDecline #FIISelling #StockMarket"
+}
