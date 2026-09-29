@@ -320,6 +320,135 @@ def default_prose():
     }
 
 
+def _fold_sector(name):
+    text = str(name or "").strip().lower().replace("&", " and ")
+    text = re.sub(r"[^a-z0-9]+", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _sector_alias_table():
+    """Folded label -> short name the sector slide actually looks up."""
+    table = {}
+    for full, short in SECTOR_SHORT.items():
+        bare = full[6:] if full.startswith("Nifty ") else full
+        for label in (short, full, bare):
+            table[_fold_sector(label)] = short
+    return table
+
+
+_SECTOR_ALIASES = _sector_alias_table()
+
+
+def canonical_sector_key(key):
+    """Map 'Nifty IT', 'IT', 'nifty financial services' onto the short name.
+
+    Returns None when the label is not one of the sectoral indices the slide
+    can show (so 'Nifty Midcap 150' or 'Nifty INR' is dropped, not guessed).
+    """
+    folded = _fold_sector(key)
+    if not folded:
+        return None
+    if folded in _SECTOR_ALIASES:
+        return _SECTOR_ALIASES[folded]
+    if folded.startswith("nifty "):
+        rest = folded[6:]
+        if rest in _SECTOR_ALIASES:
+            return _SECTOR_ALIASES[rest]
+    return None
+
+
+def normalize_sector_reasons(reasons):
+    """Return (short_key_dict, unknown_keys).
+
+    'Nifty IT' and 'IT' both resolve to 'IT'. When both are present the short
+    key wins. Blank notes are dropped. Unknown keys are returned for the lint.
+    """
+    if not isinstance(reasons, dict):
+        return {}, []
+    unknown = []
+    chosen = {}
+    for key, value in reasons.items():
+        short = canonical_sector_key(key)
+        if short is None:
+            unknown.append(str(key))
+            continue
+        text = str(value or "").strip()
+        if not text:
+            continue
+        priority = 1 if _fold_sector(key) == _fold_sector(short) else 0
+        prev = chosen.get(short)
+        if prev is None or priority >= prev[0]:
+            chosen[short] = (priority, text)
+    return {short: text for short, (_pri, text) in chosen.items()}, unknown
+
+
+def with_normalized_sector_reasons(prose):
+    """Shallow copy of prose with sector_reasons rewritten onto short keys."""
+    if not isinstance(prose, dict):
+        return prose
+    out = dict(prose)
+    norm, _unknown = normalize_sector_reasons(out.get("sector_reasons"))
+    out["sector_reasons"] = norm
+    return out
+
+
+def sector_short_name(name):
+    return SECTOR_SHORT.get(name, str(name).replace("Nifty ", ""))
+
+
+def sector_board(pack, weekly=False):
+    """Six sector rows on the scorecard: top 3, then the bottom 3 worst-first.
+
+    The daily edition ranks by session percent. Friday's weekly edition ranks
+    by five_day_change_pct when those figures exist.
+    """
+    d = pack["derived"]
+    idx = d["indices"]
+    f5 = d.get("five_day_change_pct") or {}
+    if weekly and any(k in f5 for k in SECTORAL):
+        present = [(k, f5[k]) for k in SECTORAL if f5.get(k) is not None]
+    else:
+        present = [(k, idx[k]["pct_chg"]) for k in SECTORAL
+                   if k in idx and idx[k].get("pct_chg") is not None]
+    present.sort(key=lambda x: -x[1])
+    return present[:3] + present[-3:][::-1]
+
+
+def sector_shorts_today(pack, weekly=False):
+    return [sector_short_name(name) for name, _pct in sector_board(pack, weekly=weekly)]
+
+
+def sector_key_instruction(pack, weekly=False):
+    shorts = sector_shorts_today(pack, weekly=weekly)
+    return ("\n\nSECTOR_SHORTS_TODAY (use these EXACT keys in sector_reasons, "
+            "one cause-bearing note each; never prefix a key with Nifty): "
+            + json.dumps(shorts))
+
+
+VOICE_EXAMPLE_NOTE = (
+    "## VOICE EXAMPLE (2026-09-18 only)\n"
+    "Craft reference from a broad up-day carousel. Match the patterns: "
+    "a contrast headline, causal why titles, cause-bearing sector notes on "
+    "SHORT keys, insight lessons, and a CTA that belongs to that close. "
+    "Do not copy this example's numbers, stock names, sector keys, or "
+    "direction onto another session. Today's sector_reasons keys are "
+    "SECTOR_SHORTS_TODAY in the user message, not the keys below. "
+    "Do not invent an analyst quote. Do not use a calendar emoji."
+)
+
+
+def system_prompt():
+    """Carousel skill plus the 18 Sep voice example, when that file is present."""
+    with open(os.path.join(REPO, "skills", "carousel.md"), encoding="utf-8") as fh:
+        skill = fh.read()
+    example_path = os.path.join(REPO, "skills", "carousel_voice_example.json")
+    if not os.path.exists(example_path):
+        return skill
+    with open(example_path, encoding="utf-8") as fh:
+        example = fh.read().strip()
+    return skill + "\n\n" + VOICE_EXAMPLE_NOTE + "\n\n" + example
+
+
 # ------------------------------------------------------------------- build --
 def build(pack, prose, weekly=False):
     d = pack["derived"]
@@ -396,18 +525,12 @@ def build(pack, prose, weekly=False):
     ]
 
     # --- sectors (top 3 + bottom 3; weekly edition ranks by 5-day move) ---
-    f5 = d.get("five_day_change_pct") or {}
-    if weekly and any(k in f5 for k in SECTORAL):
-        present = [(k, f5[k]) for k in SECTORAL if f5.get(k) is not None]
-    else:
-        present = [(k, idx[k]["pct_chg"]) for k in SECTORAL
-                   if k in idx and idx[k].get("pct_chg") is not None]
-    present.sort(key=lambda x: -x[1])
-    picks = present[:3] + present[-3:][::-1]
-    reasons = prose.get("sector_reasons") or {}
+    picks = sector_board(pack, weekly=weekly)
+    # Accept "Nifty IT" and "IT". The slide still looks up the short name.
+    reasons, _unknown = normalize_sector_reasons(prose.get("sector_reasons") or {})
 
     def sec_row(name, pct, i):
-        short = SECTOR_SHORT.get(name, name.replace("Nifty ", ""))
+        short = sector_short_name(name)
         # Rank-aware fallback beats the old generic "led/lagged the day".
         fallback = ("strongest sector" if i == 0 else
                     "second strongest" if i == 1 else
@@ -525,7 +648,8 @@ def build(pack, prose, weekly=False):
                       f"stockpulse-postmarket-{tdate.day}{MONTHS_SHORT[tdate.month - 1]}-"),
     }
 
-    html = open(TEMPLATE, encoding="utf-8").read()
+    with open(TEMPLATE, encoding="utf-8") as fh:
+        html = fh.read()
     for k, v in model.items():
         html = html.replace("{{" + k + "}}", str(v))
     leftover = re.findall(r"\{\{[A-Z0-9_]+\}\}", html)
@@ -581,6 +705,189 @@ def _flat(node):
     if isinstance(node, list):
         return " ".join(_flat(v) for v in node)
     return ""
+
+
+# Phrases that keep showing up when the model fills a slot instead of naming
+# a cause. Checked on carousel prose so the retry loop can send them back.
+_HEADLINE_CLICHES = (
+    "amid global cues",
+    "amid global concerns",
+    "amid global pressure",
+    "on global cues",
+)
+_CTA_EVERGREEN = (
+    "stay informed",
+    "stay updated",
+    "follow us for",
+    "follow for the full picture",
+    "check back at the close",
+    "daily updates",
+)
+_SECTOR_FILLER = (
+    "global cues",
+    "market sentiment",
+    "volatile markets",
+    "sector-specific",
+    "sector specific",
+    "broader market",
+    "risk-off sentiment",
+    "risk off sentiment",
+    "overall market",
+)
+_RANK_STUBS = {
+    "strongest sector",
+    "second strongest",
+    "third strongest",
+    "biggest drag",
+    "second weakest",
+    "weakest sector",
+    "led the day",
+    "lagged the day",
+}
+_WHY_CATEGORY_TITLES = {
+    "market downturn",
+    "global pressure",
+    "volatility rise",
+    "market sentiment",
+    "global cues",
+}
+_AI_PHRASES = (
+    "worth noting",
+    "furthermore",
+    "moreover",
+    "in conclusion",
+    "delve",
+    "leverage",
+    "robust",
+    "pivotal",
+    "it is important to highlight",
+)
+# "%" is not a word character, so a trailing \b would miss "1.56%." 
+_PCT_RE = re.compile(r"\d+(?:\.\d+)?\s*(?:%|percent\b)", re.I)
+_INSIGHT_RE = re.compile(
+    r"\b(while|whereas|but|versus|vs\.?|breadth|broader|midcaps?|smallcaps?|"
+    r"led|lagg?ed|drag(?:ged)?|split|cluster|streak|only|except|outpac\w*|"
+    r"outran|ahead|diverg\w*|unlike|despite|held|capped|flat|fear|every)\b",
+    re.I,
+)
+_STAT_SUBJECT_RE = re.compile(
+    r"\b(nifty(?:\s*50)?|sensex|india vix|bank nifty|(?<![a-z])vix)\b",
+    re.I,
+)
+
+
+def _clean_phrase(text):
+    return re.sub(r"\s+", " ", str(text or "").strip().lower()).rstrip(".")
+
+
+def lesson_restates_stat(lesson):
+    """True when a lesson is mostly an index or VIX percent from slide 1 or 2.
+
+    A second sentence with no percent, or a contrast word (while, breadth,
+    broader, drag), keeps the lesson: the number supports the point.
+    """
+    text = " ".join(str(lesson or "").split())
+    if not text or not _PCT_RE.search(text):
+        return False
+    # A decimal point is not a sentence break ("1.56%" is one clause).
+    masked = re.sub(r"(?<=\d)\.(?=\d)", "\x00", text)
+    parts = [p.replace("\x00", ".").strip()
+             for p in re.split(r"[.!?]+", masked) if p.strip()]
+    if len(parts) >= 2 and any(not _PCT_RE.search(p) for p in parts):
+        return False
+    if _INSIGHT_RE.search(text):
+        return False
+    return _STAT_SUBJECT_RE.search(text) is not None
+
+
+def prose_issues(prose, pack=None, weekly=False):
+    """Voice and sector-key problems to feed back into the carousel retry.
+
+    Sector coverage uses the same six names the slide will render. Prefixed
+    keys ('Nifty IT') count once they normalize; keys that do not normalize,
+    and any of today's six shorts with no note, are failures.
+    """
+    if not isinstance(prose, dict):
+        return ["carousel prose must be a JSON object"]
+    issues = []
+    raw = prose.get("sector_reasons")
+    if raw is None:
+        raw = {}
+    if not isinstance(raw, dict):
+        issues.append(
+            "sector_reasons must be a JSON object keyed by SHORT sector names "
+            "(IT, Bank, Metal, Financials), never a list and never \"Nifty IT\"")
+        raw = {}
+    norm, unknown = normalize_sector_reasons(raw)
+    if unknown:
+        issues.append(
+            "sector_reasons keys are not short sector names: "
+            + ", ".join(unknown)
+            + ". Use the exact shorts from SECTOR_SHORTS_TODAY "
+            "(IT, Bank, Financials, Auto, Metal, FMCG, Realty, Pharma, "
+            "Healthcare, Energy, Oil & Gas, PSU Bank, Private Bank, Media, "
+            "Consumer Durables, Infra). Do not prefix with Nifty.")
+    if pack is not None:
+        shorts = sector_shorts_today(pack, weekly=weekly)
+        missing = [name for name in shorts if not (norm.get(name) or "").strip()]
+        if shorts and missing:
+            issues.append(
+                "sector_reasons missing cause notes for today's sector slide: "
+                + ", ".join(missing)
+                + ". Required keys exactly: " + ", ".join(shorts)
+                + ". Each value names a cause (a stock, a catalyst, a "
+                "divergence), not a rank label like \"strongest sector\" "
+                "or \"biggest drag\".")
+    for key, text in norm.items():
+        low = text.lower()
+        filler = next((phrase for phrase in _SECTOR_FILLER if phrase in low), None)
+        if filler:
+            issues.append(
+                f"sector_reasons[{key}] uses filler '{filler}'. "
+                "Name what moved that sector.")
+            continue
+        if _clean_phrase(text) in _RANK_STUBS:
+            issues.append(
+                f"sector_reasons[{key}] is a rank label ('{text.strip()}'). "
+                "Say the cause instead.")
+    for i, row in enumerate(prose.get("why") or [], 1):
+        if not isinstance(row, dict):
+            continue
+        title = _clean_phrase(row.get("title"))
+        if title in _WHY_CATEGORY_TITLES:
+            issues.append(
+                f"why[{i}].title is a category label ('{title}'). "
+                "Use a causal clause that names the driver "
+                "(for example 'The Tata cluster dragged').")
+    for i, lesson in enumerate(prose.get("lessons") or [], 1):
+        if lesson_restates_stat(lesson):
+            issues.append(
+                f"lessons[{i}] restates a percent already shown on the cover "
+                "or snapshot. Write the relationship (breadth versus the index, "
+                "who led below the frontline, a sector divergence, a streak "
+                "break). A percent may support a second sentence; it is not "
+                "the lesson.")
+    headline = str(prose.get("headline") or "")
+    cliche = next((phrase for phrase in _HEADLINE_CLICHES
+                   if phrase in headline.lower()), None)
+    if cliche:
+        issues.append(
+            f"headline uses the cliche '{cliche}'. Lead with a contrast or "
+            "surprise from today's brief, not a verb, a percent, and "
+            "'global cues'.")
+    for field in ("cta_headline", "cta_sub"):
+        low = str(prose.get(field) or "").lower()
+        evergreen = next((phrase for phrase in _CTA_EVERGREEN if phrase in low), None)
+        if evergreen:
+            issues.append(
+                f"{field} is evergreen marketing ('{evergreen}'). Name this "
+                "session's character and the next trading session.")
+    flat = _flat(prose).lower()
+    for phrase in _AI_PHRASES:
+        if re.search(r"\b" + re.escape(phrase) + r"\b", flat):
+            issues.append(
+                f"banned filler phrase '{phrase}'. Say it in plain words.")
+    return issues
 
 
 def validate(html, pack):

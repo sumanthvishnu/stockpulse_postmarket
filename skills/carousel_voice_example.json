@@ -1,0 +1,58 @@
+{
+  "headline": "Nifty rose while the *broader market ran ahead*",
+  "subline": "Midcaps and smallcaps led the day. Fear fell hard.",
+  "hero_text": "Nifty Smallcap 250 led. The broader market outran the frontline, with Midcap 150 up 1.48 percent.",
+  "why_head": "Why the market rose",
+  "why": [
+    {
+      "emoji": "📈",
+      "title": "Moody's lifted the growth view",
+      "desc": "FY27 GDP forecast raised to 7 percent from 6 percent.",
+      "badge": "7% FY27"
+    },
+    {
+      "emoji": "🛢️",
+      "title": "Crude and global yields eased",
+      "desc": "Softer oil and a lower US 10 year improved appetite.",
+      "badge": "Brent 104"
+    },
+    {
+      "emoji": "📊",
+      "title": "Participation was broad",
+      "desc": "Metals and realty led. Midcaps and smallcaps outpaced.",
+      "badge": "A/D 2.12"
+    },
+    {
+      "emoji": "🏢",
+      "title": "The Tata cluster dragged",
+      "desc": "A Tata Sons versus Tata Trusts dispute pulled Tata stocks down.",
+      "badge": "TCS -3.88%"
+    }
+  ],
+  "sector_reasons": {
+    "Metal": "Led the session as metals firmed",
+    "Media": "Held a strong bid all day",
+    "Realty": "Ran with metals among the leaders",
+    "Energy": "Broad bid lifted the space",
+    "Auto": "Flat as names stayed mixed",
+    "IT": "Weakest sector on the TCS drag"
+  },
+  "bonus_title": "THE SPLIT",
+  "bonus_text": "Metals and realty carried the day. IT was the only real drag, held back by the Tata cluster.",
+  "movers_note_gainers": "Adani names and Airtel led the pack.",
+  "movers_note_losers": "TCS fell on the Tata Sons dispute.",
+  "watch_text": "FII cash turned positive. But stock futures selling stayed on. More hedging than a clean turn.",
+  "lessons": [
+    "Breadth backed the move. About 2 stocks rose for every 1 that fell.",
+    "The broader market led. Midcaps and smallcaps beat the frontline.",
+    "Fear fell fast. India VIX dropped 7.36 percent to 11.39.",
+    "One cluster can cap an index. The Tata drag held the Sensex flat."
+  ],
+  "alert_title": "Next up",
+  "alert_text": "The Nifty weekly expiry falls on Tuesday 22 September.",
+  "cta_headline": "A *broad up day*. Save it for the open.",
+  "cta_sub": "Full wrap every evening. Check back when the bell rings on Monday.",
+  "next_text": "Monday 21 September opens the week. The Nifty weekly expiry lands Tuesday.",
+  "caption_a": "Nifty closed up 0.33% at 23,346 but the real story sat below the frontline.\nMidcaps rose 1.48% and smallcaps 1.54%. Breadth ran 2 to 1.\nFear collapsed. India VIX fell 7.36% to 11.39.\nFIIs turned buyers of Rs 599.5 Cr, breaking a selling run.\nWatch: TCS and the Tata cluster capped the Sensex.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #Sensex #StockMarket #Moodys",
+  "caption_b": "Moody's raised India's FY27 growth view to 7% from 6%. The market noticed.\nMetals led at 1.51%, realty 1.19%, IT lagged at 1.03% down.\nFII cash flipped positive at Rs 599.5 Cr. DIIs added Rs 1,019.7 Cr.\nNifty PCR sits at 1.12, max pain near 23,350, a balanced read.\nWatch: the Nifty weekly expiry falls on Tuesday.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #FII #MarketWrap"
+}

@@ -15,6 +15,9 @@ the authoritative narrative:
 
 - `headline`, `subline` and `hero_text` must retell the brief's `one_liner`
   and `mood` in carousel language. Do not invent a different angle.
+- When that story is a split (the index versus breadth, one pocket versus
+  the rest), the headline states the split. Do not replace it with a verb,
+  a percent, and "global cues".
 - The 4 `why` rows map 1:1 onto the brief's `drivers` (same order, same
   facts); you may rephrase the wording, never the meaning.
 - `lessons` grow out of the brief's `lesson_seeds`.
@@ -79,7 +82,10 @@ the SHAPE, not text to copy):
      "desc": "one sentence, <= 12 words",
      "badge": "short data chip whose number MUST come from the datapack"}
   ],
-  "sector_reasons": {"SectorShortName": "short reason string"},
+  "sector_reasons": {
+    "Metal": "cause-bearing note, not a rank label",
+    "IT": "cause-bearing note, not a rank label"
+  },
   "bonus_title": "string",
   "bonus_text": "string",
   "movers_note_gainers": "string",
@@ -117,12 +123,25 @@ the SHAPE, not text to copy):
   `derived.nifty50_movers`) or to the group as a whole. Never name a
   broader-market stock that is not displayed — the slide must not contradict
   itself.
-- `sector_reasons`: keyed by the SHORT sector names you expect the day's 6
-  sectors to be. The renderer picks the top 3 and bottom 3 sectors by daily %
-  change (by 5-day change in the weekly edition); any missing reason gets a
-  rank-based fallback. Provide reasons for at least the sectors you mention
-  in `why`/`lessons`.
-- `lessons`: exactly 4, past tense, observational. A wrap describes what
+- `sector_reasons`: one note per name in the user message's
+  SECTOR_SHORTS_TODAY list. Keys are SHORT names only. The slide looks up
+  `IT`, `Bank`, `Financials`, `Metal`, `Realty`, `PSU Bank`, `Oil & Gas`,
+  `Consumer Durables`, `Infra`, `Healthcare`. It does not look up `Nifty IT`
+  or `Nifty Financial Services`. A key that is not a known short is dropped.
+  A short that is not in SECTOR_SHORTS_TODAY never appears on the slide.
+  A missing short from that list becomes a rank stub ("strongest sector",
+  "biggest drag") and fails the build. Code will map a leading "Nifty "
+  onto the short name when it can, but do not rely on that: write the
+  exact shorts.
+  Example: `{"IT": "Weakest sector on the TCS drag", "Metal": "Led the session as metals firmed"}`.
+  Each note names a cause (a stock, a catalyst, a divergence). "strongest
+  sector", "global cues", "market sentiment", and "volatile markets" are
+  not reasons.
+- `lessons`: exactly 4, past tense, observational. Each lesson is a
+  relationship: breadth versus the index, who led below the frontline, one
+  cluster capping an index, a streak that broke. Do not restate Nifty's
+  percent, the VIX percent, or the FII figure as the lesson. A percent may
+  support a second sentence. It is not the lesson. A wrap describes what
   happened; it never tells anyone what to do next.
 - `captions`: under 500 characters each including hashtags. Caption A opens
   with the day's most surprising fact; Caption B uses a different hook. Each
@@ -153,9 +172,10 @@ A repeat fails the build and you will be asked to rewrite.
 
 ## WRITING RULES
 
-- Short sentences, 6-10 words. Past tense, settled ("closed", "ended",
-  "fell", "led the gains"). Plain language, like a smart friend explaining
-  the market.
+- Prefer short sentences. Two short sentences are fine when the second
+  one is the surprise. Punch over padding. Past tense, settled ("closed",
+  "ended", "fell", "led the gains"). Plain language, like a smart friend
+  explaining the market.
 - NO em dashes, no hyphens joining thoughts. "200 week" not "200-week",
   "5 session" not "5-session". Use a full stop or a new line instead.
 - No AI-sounding words: worth noting, furthermore, moreover, in conclusion,
@@ -168,6 +188,36 @@ A repeat fails the build and you will be asked to rewrite.
 - Never invent an analyst name or quote. Slide 6's WHAT TO WATCH box is
   built from the report's own outlook lines only.
 - Green up, red down, orange neutral (the renderer handles colour).
+
+## VOICE
+
+The pipeline appends a 2026-09-18 voice example after this skill. Match its
+craft. Do not copy its numbers, names, sector keys, or up-day claims onto
+another session. SECTOR_SHORTS_TODAY is the key list for the run in front
+of you. On Fridays that list is the week's six sectors, which can differ
+from the example.
+
+- Headline: a contrast or surprise, with one *orange highlight* on the
+  surprise. Good: "Nifty rose while the *broader market ran ahead*".
+  Bad: "Nifty 50 *plunges 1.56%* amid global cues".
+- Subline: concrete structure (midcaps, smallcaps, breadth, fear, one
+  sector). Bad: "A risk-off sentiment gripped markets today."
+- Why titles: a causal clause of about 3 to 5 words that names the driver.
+  Good: "The Tata cluster dragged", "Participation was broad".
+  Bad: "Market Downturn", "Global Pressure", "Volatility Rise".
+  The badge is a datapack chip that adds a fact. It is not a category label.
+- Sector notes: a cause for every SECTOR_SHORTS_TODAY key, short keys only.
+  Good: "Weakest sector on the TCS drag", "Led the session as metals firmed".
+  Bad: "strongest sector", "Impact from global cues", "Pressure from volatile markets".
+- Lessons: the insight, not the percent already printed on slides 1 and 2.
+  Good: "Breadth backed the move. About 2 stocks rose for every 1 that fell."
+  Good: "One cluster can cap an index. The Tata drag held the Sensex flat."
+  Bad: "Nifty 50 experienced a sharp drop of 1.56%."
+  Bad: "Volatility saw a notable increase with VIX rising 12.15%."
+- CTA: this close, and the next session by its weekday. Good: "A *broad up
+  day*. Save it for the open." Bad: "Stay informed with *daily updates*".
+- Caption A opens on the day's surprising split, not on a restated percent.
+- Never use 📅, 📆, or 🗓️. Those glyphs print a fake date on phones.
 
 ## NUMBERS (copy from the datapack only, never invent)
 

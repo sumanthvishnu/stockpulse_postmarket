@@ -10,6 +10,7 @@ Env knobs:
     DRY_RUN=1         don't send Telegram, just print what would be sent
     GH_PAGES_BASE     https://<owner>.github.io/<repo>  (builds links)
     OPENAI_API_KEY / LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
+    LLM_MODEL_CAROUSEL   carousel prose only; blank falls through to LLM_MODEL
     TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 """
 import json
@@ -467,10 +468,10 @@ def generate_carousel(pack, brief, weekly=False):
     Never crashes the run: any LLM/parse error is retried with feedback, and
     after 3 attempts it falls back to prose COMPUTED from the datapack (not a
     static canned text). Returns (html, prose, issues, fell_back)."""
-    system = open(os.path.join(REPO, "skills", "carousel.md"),
-                  encoding="utf-8").read()
+    system = carousel.system_prompt()
     tdate = date.fromisoformat(pack["meta"]["trading_date"])
     memory_block, seen_headlines, seen_emojis = recent_prose_memory(tdate)
+    log(f"  [carousel] prose model: {llm.carousel_model()}")
 
     base_user = ("Here is today's datapack (JSON), followed by THE DAY'S "
                  "STORY - the brief distilled from today's post-market "
@@ -488,6 +489,7 @@ def generate_carousel(pack, brief, weekly=False):
                       "closing act. Movers and levels stay Friday's.")
     base_user += calendar_brief(pack)
     base_user += memory_block
+    base_user += carousel.sector_key_instruction(pack, weekly=weekly)
     issues = []
     for attempt in range(1, 4):
         user = base_user
@@ -503,10 +505,25 @@ def generate_carousel(pack, brief, weekly=False):
             else:
                 prose = parse_json_lenient(llm.chat(
                     system, user, max_tokens=8000, temperature=0.85,
-                    model=(os.environ.get("LLM_MODEL_CAROUSEL") or None)))
+                    model=llm.carousel_model()))
+            # Voice lint sees the model's keys (including "Nifty IT") before
+            # they are rewritten. Fallback prose is plain on purpose, so a
+            # MOCK dry-run does not spend its retries on that lint.
+            voice_issues = ([] if MOCK else
+                            carousel.prose_issues(prose, pack, weekly=weekly))
+            raw_reasons = (prose.get("sector_reasons")
+                           if isinstance(prose, dict) else None)
+            prose = carousel.with_normalized_sector_reasons(prose)
+            if (not MOCK and isinstance(raw_reasons, dict)
+                    and set(map(str, raw_reasons)) != set(
+                        prose.get("sector_reasons") or {})):
+                log("  [carousel] sector_reasons keys normalized: "
+                    f"{list(raw_reasons)} -> "
+                    f"{list(prose.get('sector_reasons') or {})}")
             html, leftover = carousel.build(pack, prose, weekly=weekly)
             issues = carousel.validate(html, pack)
             issues += carousel.budget_issues(prose)
+            issues += voice_issues
             prose_flat = _prose_text(prose)
             issues += compliance.number_lock(prose_flat, pack)
             issues += compliance.calendar_lock(prose_flat, pack)
@@ -938,7 +955,8 @@ def main():
         payload = {"pdf_name": pdf_name(tdate), "carousel_url": carousel_url,
                    "pdf_url": pdf_url, "issues": all_issues,
                    "carousel_fallback": carousel_fallback,
-                   "brief_fallback": brief_fallback}
+                   "brief_fallback": brief_fallback,
+                   "carousel_model": llm.carousel_model()}
         with open(os.path.join(day_dir, "notify_payload.json"), "w",
                   encoding="utf-8") as f:
             json.dump(payload, f, ensure_ascii=False)

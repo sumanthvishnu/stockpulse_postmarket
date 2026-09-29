@@ -34,17 +34,37 @@ def _retry_after_seconds(r):
     return 45.0
 
 
+def resolve_model(model=None):
+    """Model id for one chat call.
+
+    An explicit argument wins. Otherwise LLM_MODEL, otherwise gpt-4o.
+    Blank or whitespace-only values (an unset GitHub secret is injected as
+    "") fall through, so they never become the request model.
+    """
+    chosen = (model or "").strip()
+    if not chosen:
+        chosen = (os.environ.get("LLM_MODEL") or "").strip()
+    return chosen or "gpt-4o"
+
+
+def carousel_model():
+    """Model id for the carousel prose pass only.
+
+    LLM_MODEL_CAROUSEL overrides LLM_MODEL when it is non-blank. Report and
+    brief calls do not read this variable.
+    """
+    override = (os.environ.get("LLM_MODEL_CAROUSEL") or "").strip()
+    return resolve_model(override or None)
+
+
 def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3,
          model=None):
     # Empty-string env vars (an unset GitHub secret is injected as "") must
     # fall back to defaults, else the URL becomes "/chat/completions".
     base = (os.environ.get("LLM_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
-    # A caller (e.g. the carousel prose pass) can pin a stronger model via
-    # LLM_MODEL_CAROUSEL without touching the report model. Default is gpt-4o:
-    # the report/carousel copy is brand-facing, so quality beats the ~20x cost
-    # delta of mini at this volume (one report + one carousel per day). Set
-    # LLM_MODEL=gpt-4o-mini in the workflow to downgrade later.
-    model = (model or os.environ.get("LLM_MODEL") or "gpt-4o")
+    # Carousel prose passes carousel_model() (LLM_MODEL_CAROUSEL, if set).
+    # Report and brief leave model=None and stay on LLM_MODEL / gpt-4o.
+    model = resolve_model(model)
     key = ((os.environ.get("OPENAI_API_KEY") or "").strip()
            or (os.environ.get("LLM_API_KEY") or "").strip())
     if not key:

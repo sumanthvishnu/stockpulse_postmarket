@@ -75,6 +75,10 @@ jobs:
         if: steps.guard.outputs.run == 'true'
         run: pip install -r requirements.txt
 
+      - name: Carousel prose unit tests
+        if: steps.guard.outputs.run == 'true'
+        run: python -m unittest test_carousel_prose -v
+
       - uses: browser-actions/setup-chrome@v1
         if: steps.guard.outputs.run == 'true'
 

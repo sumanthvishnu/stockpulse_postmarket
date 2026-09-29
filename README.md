@@ -101,7 +101,8 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 | `TELEGRAM_CHAT_ID` | numeric chat id from step 3 |
 
 Optional (defaults used if unset): `LLM_BASE_URL` (default OpenAI), `LLM_MODEL`
-(default `gpt-4o`), `LLM_MODEL_CAROUSEL` (default: same as `LLM_MODEL`).
+(default `gpt-4o`), `LLM_MODEL_CAROUSEL` (carousel prose only; a blank secret
+falls through to `LLM_MODEL`).
 
 Without `TRENDLYNE_MCP_TOKEN` the run still works: index levels, the GIFT
 Nifty cue and mover catalysts are logged as gaps and the report's Data Gaps
