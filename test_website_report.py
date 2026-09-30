@@ -6,7 +6,7 @@ from website_collect import source_key, validate_source
 
 def fixture():
     pack={"meta":{"trading_date":"2026-09-25"},"data":{"holiday_check":{"is_holiday":False}},"derived":{"indices_date":"2026-09-25","indices":{"Nifty 50":{"close":10100,"pts_chg":100,"pct_chg":1},"Nifty Bank":{"close":19800,"pts_chg":-200,"pct_chg":-1}},"breadth":{"advances":40,"declines":60,"unchanged":0,"universe":100,"ad_ratio":.667},"sanity_flags":[]},"failures":[]}
-    receipts={key:{"status":"validated","effectiveDate":"2026-09-25","retrievedAt":"2026-09-25T20:30:00+05:30","sha256":"a"*64,"url":"https://nsearchives.nseindia.com/"+key+".csv"} for key in ("indices","bhavcopy")}
+    receipts={key:{"status":"validated","effectiveDate":"2026-09-25","retrievedAt":"2026-09-25T20:30:00+05:30","sha256":"a"*64,"url":"https://nsearchives.nseindia.com/"+key+".csv"} for key in ("indices","bhavcopy","calendar")}
     return pack,receipts
 
 class ReportTests(unittest.TestCase):
@@ -19,9 +19,34 @@ class ReportTests(unittest.TestCase):
         self.assertIn("fell 1.00%",self.build(p,r)["summary"][0]["text"])
         self.assertEqual(fmt(-3693.93,signed=True),"-3,693.93")
     def test_missing_or_wrong_core_receipt_blocks(self):
-        for key in ("indices","bhavcopy"):
+        for key in ("indices","bhavcopy","calendar"):
             p,r=fixture();r[key]["effectiveDate"]="2026-09-24"
             with self.assertRaises(ValueError):self.build(p,r)
+    def test_unknown_trading_session_cannot_publish(self):
+        for status in (None,"false",0):
+            p,r=fixture();p["data"]["holiday_check"]["is_holiday"]=status
+            with self.subTest(status=status),self.assertRaises(ValueError):self.build(p,r)
+
+    def test_zero_declines_is_not_zero_ratio(self):
+        p,r=fixture();p["derived"]["breadth"]={"advances":100,"declines":0,"unchanged":0,"universe":100,"ad_ratio":0}
+        with self.assertRaises(ValueError):self.build(p,r)
+        p["derived"]["breadth"]["ad_ratio"]=None
+        self.assertEqual(self.build(p,r)["status"],"available_with_gaps")
+
+    def test_calendar_claim_requires_receipts_and_discloses_truncation(self):
+        p,r=fixture()
+        from website_enrichment import CALENDAR_KEYS
+        coverage={k:"available" for k in CALENDAR_KEYS}
+        p["derived"]["website_enrichment"]={"coverage":coverage,"calendar":[]}
+        calendar=lambda:next(s for s in self.build(p,r)["sections"] if s["id"]=="calendar")
+        self.assertEqual(calendar()["status"],"unavailable")
+        for k in coverage:r[k]=copy.deepcopy(r["indices"])
+        p["derived"]["website_enrichment"]["nyfedSourceIds"]=["nyfed"]
+        self.assertEqual(calendar()["status"],"available")
+        p["derived"]["website_enrichment"]["calendar"]=[{"event":"Release "+str(i),"country":"US","dateTime":"2026-09-28","basis":"Official schedule"} for i in range(31)]
+        report=self.build(p,r)
+        self.assertEqual(next(s for s in report["sections"] if s["id"]=="calendar")["status"],"partial")
+        self.assertTrue(any("first 30 of 31" in g["reason"] for g in report["gaps"]))
     def test_bad_index_arithmetic_blocks(self):
         p,r=fixture();p["derived"]["indices"]["Nifty 50"]["pct_chg"]=42
         with self.assertRaises(ValueError):self.build(p,r)
