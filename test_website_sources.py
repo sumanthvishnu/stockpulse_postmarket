@@ -3,7 +3,7 @@ import unittest
 import calendar
 from datetime import date,datetime
 from types import SimpleNamespace
-from unittest.mock import Mock,patch
+from unittest.mock import Mock,patch,MagicMock
 from website_enrichment import IST,Sources,ons_events,ecb_events
 from website_verification import nasdaq_composite,comparison,verify
 from website_filings import document_evidence,permitted_url,run
@@ -106,6 +106,62 @@ class SourceTests(unittest.TestCase):
             with self.assertRaises(ValueError):document_evidence(b'%PDF-example',{**self.event,"companyName":"Other Limited","symbol":"OTHER"})
         with patch('pypdf.PdfReader',return_value=self.reader([sentence,""])):
             with self.assertRaises(ValueError):document_evidence(b'%PDF-example',self.event)
+
+    def test_rumour_denial_separated_from_letterhead(self):
+        denial="The aforesaid news item is a rumour and the Company cannot comment on market rumours."
+        raw="ABC Limited www.example.com Sub: Possible demerger\n"+denial
+        with patch('pypdf.PdfReader',return_value=self.reader([raw])):
+            result=document_evidence(b'%PDF-example',self.event)
+        self.assertEqual(result['excerpts'],[{'page':1,'text':denial}])
+
+    def test_transaction_update_keeps_uncertainty_and_conditions(self):
+        ongoing="In continuation of our earlier intimations, the process relating to the aforesaid transaction is still underway."
+        timing="The documentation in connection with the said transaction is expected to be completed by 31st October 2026, on the same terms and conditions as stated in our initial intimation."
+        raw="ABC Limited\n\n"+ongoing+"\n\n"+timing
+        with patch('pypdf.PdfReader',return_value=self.reader([raw])):
+            result=document_evidence(b'%PDF-example',self.event)
+        self.assertEqual([e['text'] for e in result['excerpts']],[ongoing,timing])
+
+    def test_questions_and_unrelated_voting_prose_are_not_excerpts(self):
+        for text in ["ABC Limited\n\nWhether the acquisition would fall within related party transactions?",
+                     "ABC Limited\n\nWe are enclosing the voting results and polls held during the annual general meeting."]:
+            with patch('pypdf.PdfReader',return_value=self.reader([text])):
+                with self.assertRaises(ValueError):document_evidence(b'%PDF-example',self.event)
+
+    def test_word_spaced_pdf_preserves_whole_sentences(self):
+        sentence="The aggregate investment by ABC Limited in the venture till date is Rs. 375 crore."
+        raw='\n \n'.join(("ABC Limited company disclosure for the current reporting date. "*5+sentence).split())
+        with patch('pypdf.PdfReader',return_value=self.reader([raw])):
+            result=document_evidence(b'%PDF-example',self.event)
+        self.assertIn(sentence,[item['text'] for item in result['excerpts']])
+
+    def test_global_diagnostics_never_retain_exception_payload(self):
+        import json
+        from website_context import context
+        for stage in ('calendar','vendor_fetch','session_validation'):
+            calendars=MagicMock(); vendor=MagicMock()
+            schedule=MagicMock(); completed=MagicMock()
+            calendars.get_calendar.return_value.schedule.return_value=schedule
+            schedule.__getitem__.return_value.__le__.return_value=True
+            schedule.__getitem__.return_value=completed
+            completed.__le__.return_value=True
+            completed.__len__.return_value=2
+            completed.index=[datetime(2026,9,28),datetime(2026,9,29)]
+            bars=MagicMock();bars.index=[datetime(2026,9,28)]
+            bars.iterrows.return_value=[]
+            vendor.Ticker.return_value.history.return_value=bars
+            if stage=='calendar':calendars.get_calendar.side_effect=ValueError('token=PRIVATE payload')
+            if stage=='vendor_fetch':vendor.Ticker.return_value.history.side_effect=OSError('https://user:PRIVATE@host/')
+            pack={'derived':{}}
+            with tempfile.TemporaryDirectory() as folder,patch.dict('sys.modules',{'pandas_market_calendars':calendars,'yfinance':vendor}),patch('website_verification.verify'):
+                context(pack,{},folder,date(2026,9,30))
+            diagnostics=pack['derived']['website_context']['diagnostics']
+            self.assertEqual(len(diagnostics),10)
+            self.assertTrue(all(d['stage']==stage for d in diagnostics))
+            self.assertNotIn('PRIVATE',json.dumps(diagnostics))
+            if stage=='session_validation':
+                self.assertEqual(diagnostics[0]['observedSessions'],['2026-09-28'])
+                self.assertEqual(diagnostics[0]['expectedSession'],'2026-09-29')
 
     def test_original_url_and_historical_no_fetch(self):
         self.assertFalse(permitted_url('https://user:password@nsearchives.nseindia.com/a.pdf'))

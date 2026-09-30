@@ -16,23 +16,33 @@ def context(pack,receipts,archives,target):
     import yfinance as yf
     cutoff=datetime(target.year,target.month,target.day,20,30,tzinfo=IST)
     if target==datetime.now(IST).date():cutoff=min(cutoff,datetime.now(IST))
-    output={"global":[],"gaps":[]}
+    output={"global":[],"gaps":[],"diagnostics":[]}
     instruments=[("S&P 500","^GSPC","NYSE"),("Dow","^DJI","NYSE"),("Nasdaq Composite","^IXIC","NASDAQ"),("Nikkei 225","^N225","JPX"),("Hang Seng","^HSI","HKEX"),("Shanghai Composite","000001.SS","SSE"),("Kospi","^KS11","XKRX"),("FTSE 100","^FTSE","LSE"),("DAX","^GDAXI","XETR"),("Sensex","^BSESN","BSE")]
     for label,ticker,calendar in instruments:
+        diagnostic={"ticker":ticker,"calendar":calendar,"stage":"calendar","expectedSession":None,"previousSession":None,"observedSessions":[]}
         try:
             schedule=calendars.get_calendar(calendar).schedule(start_date=(target-timedelta(days=20)).isoformat(),end_date=target.isoformat())
             completed=schedule[schedule["market_close"]<=cutoff]
             if len(completed)<2:raise ValueError("Completed sessions unavailable")
             expected=completed.index[-1].date();previous=completed.index[-2].date()
+            diagnostic.update(expectedSession=expected.isoformat(),previousSession=previous.isoformat(),stage="vendor_fetch")
             bars=yf.Ticker(ticker).history(start=previous.isoformat(),end=(target+timedelta(days=1)).isoformat(),auto_adjust=False,timeout=10)
+            diagnostic["stage"]="bar_parse"
+            diagnostic["observedSessions"]=sorted({index.date().isoformat() for index in bars.index})[:32]
             values={index.date():float(row["Close"]) for index,row in bars.iterrows() if finite(float(row["Close"]))}
+            diagnostic["stage"]="session_validation"
             if expected not in values or previous not in values or values[previous]<=0:raise ValueError("Vendor bar not current for venue")
             close,prev=values[expected],values[previous]
             key="global:"+ticker
             observation={"name":label,"ticker":ticker,"session":expected.isoformat(),"close":close,"previousSession":previous.isoformat(),"previousClose":prev,"ptsChange":close-prev,"pctChange":round((close/prev-1)*100,2),"sourceId":key,"sessionClose":completed.iloc[-1]["market_close"].isoformat(),"artifactBasis":"Decoded vendor closing bars and deterministic changes; not raw HTTP response bytes"}
+            diagnostic["stage"]="evidence_write"
             store_source(receipts,archives,key,"Yahoo Finance vendor: "+label,"https://finance.yahoo.com/quote/"+quote(ticker,safe="")+"/history/",observation,expected.isoformat())
             output["global"].append(observation)
-        except Exception:
+        except Exception as error:
+            # Closed categories only: never retain exception text, URLs, headers,
+            # provider payloads or provider-defined exception class names.
+            diagnostic["failureType"]=("value" if isinstance(error,ValueError) else "schema" if isinstance(error,(KeyError,TypeError,AttributeError)) else "io" if isinstance(error,OSError) else "other")
+            output["diagnostics"].append(diagnostic)
             output["gaps"].append(label+": a matching completed-session vendor bar was unavailable.")
     from website_verification import verify
     verify(output,receipts,archives)
