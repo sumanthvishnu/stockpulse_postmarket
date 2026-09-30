@@ -12,6 +12,9 @@ GIFT="https://www.nseix.com/api/streamer-market-watch/"
 MOSPI="https://www.mospi.gov.in/uploads/documents/releaseCalender/1770293210621-ADVANCE%20RELEASE%20CALENDAR%202026-27%20FINAL%2005.02.2026.pdf"
 BLS="https://www.bls.gov/schedule/news_release/bls.ics"
 BEA="https://www.bea.gov/news/schedule/ics/online-calendar-subscription.ics"
+ONS="https://www.ons.gov.uk/calendar/releasecalendar"
+ECB="https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html"
+CALENDAR_KEYS=("mospi","bls","bea","rbi","fed","ons","ecb","boj","nyfed")
 MATERIAL=re.compile(r"order|contract|acqui|merger|demerger|approval|regulat|results|litigation|penalt|fund rais|rights|buyback|rating|dividend|capacity|agreement",re.I)
 
 def stamp(value):
@@ -49,6 +52,7 @@ def announcements(records,target,cutoff):
         if not MATERIAL.search(description+" "+str(r.get("attchmntText",""))):continue
         if not official_url(r.get("attchmntFile")):continue
         selected.append({"symbol":safe_text(r.get("symbol"),40),"publishedAt":published.isoformat(),
+                         "companyName":safe_text(r.get("sm_name"),180),"isin":safe_text(r.get("sm_isin"),20),
                          "event":description,"detail":excerpt(r.get("attchmntText")),
                          "url":r["attchmntFile"],"basis":"NSE issuer announcement; not a causal attribution"})
     selected.sort(key=lambda r:r["publishedAt"],reverse=True)
@@ -113,21 +117,81 @@ def trend_news(text,symbol,target,cutoff):
         out.append({"symbol":symbol,"publishedAt":ts.isoformat(),"event":"Exchange filing indexed by Trendlyne","detail":excerpt(r.get("title")),"url":url,"basis":"Trendlyne-indexed filing metadata; not independently fetched"})
     return out[:1]
 
-def calendar_ics(payload,cutoff,end):
+def calendar_ics(payload,cutoff,end,country="US",source_zone="America/New_York"):
     from icalendar import Calendar
     events=[];all_dates=[]
     for e in Calendar.from_ical(payload).walk("VEVENT"):
-        if not e.get("DTSTART"):continue
+        if str(e.get("STATUS","")).upper()=="CANCELLED":continue
+        # A partial parse is not evidence that the remaining window is empty.
+        if not e.get("DTSTART"):raise ValueError("Calendar event has no start date")
+        if any(e.get(k) is not None for k in ("RRULE","RDATE","EXDATE","RECURRENCE-ID")):
+            raise ValueError("Recurring calendar events require expansion before validation")
+        if not safe_text(e.get("SUMMARY"),160):raise ValueError("Calendar event has no release name")
         dt=e.decoded("DTSTART")
         if isinstance(dt,datetime):
             if not dt.tzinfo:raise ValueError("Calendar timestamp has no timezone")
             observed=dt.astimezone(IST);day=observed.date();display=observed.isoformat()
-        else:day=dt;observed=None;display=dt.isoformat()+" (time not published)"
+        else:
+            day=dt;observed=None
+            display=dt.isoformat()+" ("+country+" calendar date; time not published, may already have occurred)"
         all_dates.append(day)
-        if day>date.fromisoformat(end) or (observed is not None and observed<=cutoff) or (observed is None and day<=cutoff.date()):continue
-        events.append({"event":safe_text(e.get("SUMMARY"),160),"dateTime":display,"basis":"Official release calendar","country":"US"})
+        if observed is not None:
+            if day>date.fromisoformat(end) or observed<=cutoff:continue
+        elif not untimed_in_window(day,cutoff,end,ZoneInfo(source_zone)):continue
+        events.append({"event":safe_text(e.get("SUMMARY"),160),"dateTime":display,"basis":"Official release calendar","country":country})
     if not all_dates or max(all_dates)<date.fromisoformat(end):raise ValueError("Official calendar does not cover the requested window")
     return events
+
+def ons_events(payload,cutoff,end):
+    from icalendar import Calendar
+    if "Office for National Statistics" not in str(Calendar.from_ical(payload).get("PRODID","")):
+        raise ValueError("ONS calendar publisher identity missing")
+    rows=calendar_ics(payload,cutoff,end,"UK","Europe/London")
+    macro=re.compile(r"economic|GDP|gross domestic|inflation|price|labour|labor|employment|earnings|income|retail|production|productivity|trade|investment|balance of payments|public sector finances|pension",re.I)
+    return [{**row,"basis":"Official ONS calendar; economic, labour, income and pension releases selected by title"}
+            for row in rows if macro.search(row["event"])]
+
+def ecb_events(payload,cutoff,end):
+    from html.parser import HTMLParser
+    class Schedule(HTMLParser):
+        def __init__(self):super().__init__();self.field=None;self.text=[];self.fields=[]
+        def handle_starttag(self,tag,attrs):
+            if tag in ("dt","dd"):
+                if self.field:raise ValueError("ECB schedule nesting changed")
+                self.field=tag;self.text=[]
+        def handle_data(self,data):
+            if self.field:self.text.append(data)
+        def handle_endtag(self,tag):
+            if tag==self.field:
+                self.fields.append((tag,safe_text(" ".join(self.text),1000)));self.field=None
+    text=payload.decode("utf-8")
+    if "Schedules for the meetings of the Governing Council" not in text:
+        raise ValueError("ECB meeting calendar identity missing")
+    parsed=Schedule();parsed.feed(text)
+    fields=parsed.fields
+    if parsed.field or len(fields)<16 or len(fields)%2:raise ValueError("ECB meeting schedule incomplete")
+    rows=[];dates=[]
+    for i in range(0,len(fields),2):
+        if fields[i][0]!="dt" or fields[i+1][0]!="dd":raise ValueError("ECB date/event binding failed")
+        day=datetime.strptime(fields[i][1],"%d/%m/%Y").date();event=fields[i+1][1]
+        if "ECB" not in event:raise ValueError("ECB meeting identity absent")
+        dates.append(day)
+        if untimed_in_window(day,cutoff,end,ZoneInfo("Europe/Berlin")):
+            rows.append({"event":event,"dateTime":day.isoformat()+" (Frankfurt date; time unpublished, may already have occurred)","country":"Euro area","basis":"Official ECB meeting schedule; no release time inferred"})
+    if max(dates)<date.fromisoformat(end):raise ValueError("ECB calendar does not cover requested window")
+    return rows
+
+def untimed_in_window(day,cutoff,end,zone=IST):
+    """Keep an unknown-time event if its source date overlaps the watch window.
+
+    A date-only schedule cannot establish that a same-day event is over. Convert
+    both day boundaries before filtering; US evening dates can extend into IST's
+    next day. Callers explicitly disclose that these events may have occurred.
+    """
+    start=datetime.combine(day,time.min,zone)
+    finish=datetime.combine(day+timedelta(days=1),time.min,zone)
+    window_end=datetime.combine(date.fromisoformat(end)+timedelta(days=1),time.min,IST)
+    return finish>cutoff and start<window_end
 
 def mospi_events(payload,cutoff,end):
     from pypdf import PdfReader
@@ -148,8 +212,8 @@ def mospi_events(payload,cutoff,end):
         if not wanted:continue
         if day.weekday()>=5:
             while day.weekday()>=5:day+=timedelta(days=1)
-        if cutoff.date()<day<=date.fromisoformat(end):
-            out.append({"event":safe_text(wanted.group(1),180),"dateTime":day.isoformat()+" (time unconfirmed)","country":"India","basis":"MoSPI planned date; publisher holiday/revision rules apply"})
+        if untimed_in_window(day,cutoff,end):
+            out.append({"event":safe_text(wanted.group(1),180),"dateTime":day.isoformat()+" (time unconfirmed; may already have occurred)","country":"India","basis":"MoSPI planned date; publisher holiday/revision rules apply"})
     return out
 
 def central_bank_events(raw,cutoff,end,bank):
@@ -163,8 +227,8 @@ def central_bank_events(raw,cutoff,end,bank):
         if len(matches)!=6:raise ValueError("RBI MPC schedule parse incomplete")
         for month,start,last,year in matches:
             day=datetime.strptime(f"{last} {month} {year}","%d %B %Y").date()
-            if cutoff.date()<day<=date.fromisoformat(end):
-                output.append({"event":"RBI MPC meeting concludes","country":"India","dateTime":day.isoformat()+" (time not confirmed)","basis":"Official annual RBI meeting schedule"})
+            if untimed_in_window(day,cutoff,end):
+                output.append({"event":"RBI MPC meeting concludes","country":"India","dateTime":day.isoformat()+" (time not confirmed; may already have occurred)","basis":"Official annual RBI meeting schedule"})
     else:
         year=date.fromisoformat(end).year
         m=re.search(str(year)+r" FOMC Meetings(.*?)(?:</div>\s*</div>\s*<div class=\"panel|<h4>|$)",text,re.S)
@@ -182,8 +246,9 @@ def central_bank_events(raw,cutoff,end,bank):
             for fmt in ("%d %B %Y","%d %b %Y"):
                 try:day=datetime.strptime(numbers[-1]+" "+month+" "+str(year),fmt).date();break
                 except ValueError:day=None
-            if day and cutoff.date()<day<=date.fromisoformat(end):
-                output.append({"event":"FOMC meeting concludes","country":"US","dateTime":day.isoformat()+" (US date; release time unconfirmed)","basis":"Official Federal Reserve meeting schedule"})
+            if day is None:raise ValueError("Federal Reserve meeting date could not be parsed")
+            if untimed_in_window(day,cutoff,end,ZoneInfo("America/New_York")):
+                output.append({"event":"FOMC meeting concludes","country":"US","dateTime":day.isoformat()+" (US date; release time unconfirmed, may already have occurred)","basis":"Official Federal Reserve meeting schedule"})
     return output
 
 class Sources:
@@ -249,6 +314,9 @@ def run(pack,receipts,archives,nse_client=None,now=None):
                 key="trendlyne:"+sym;sources.save(key,"Trendlyne indexed issuer filings: "+sym,"https://trendlyne.com/",value.encode(),target.isoformat())
                 for row in rows:row["sourceId"]=key
                 output["catalysts"].extend(rows)
+    from website_filings import run as read_filings
+    output["filingContent"]=read_filings(output["catalysts"],sources,target,cutoff,now.date())
+    output["gaps"].extend(output["filingContent"]["gaps"])
     def results_stage():
         url=NSE+"/api/corporate-board-meetings?"+urlencode({"index":"equities","from_date":date.fromisoformat(next_day).strftime("%d-%m-%Y"),"to_date":date.fromisoformat(end).strftime("%d-%m-%Y")})
         output["results"]=results_calendar(json.loads(sources.get("results","NSE results board-meeting calendar",url,target.isoformat())),next_day,end,cutoff)
@@ -260,7 +328,7 @@ def run(pack,receipts,archives,nse_client=None,now=None):
         output["gift"]["captureCutoff"]=quote_cutoff.isoformat()
     stage("gift",gift_stage)
     def calendar_stage(key,label,url,parser):
-        if target!=now.date() and key in ("bls","bea","fed"):
+        if target!=now.date() and key in ("bls","bea","fed","ons","ecb","boj"):
             raise ValueError("Historical calendar revision not archived; current schedule is not backdated")
         raw=sources.get(key,label,url,target.isoformat())
         rows=parser(raw,cutoff,end)
@@ -270,6 +338,14 @@ def run(pack,receipts,archives,nse_client=None,now=None):
         stage(key,lambda k=key,l=label,u=url,p=parser:calendar_stage(k,l,u,p))
     for key,label,url,bank in [("rbi","RBI official MPC schedule","https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62422","RBI"),("fed","Federal Reserve official FOMC calendar","https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm","Fed")]:
         stage(key,lambda k=key,l=label,u=url,b=bank:calendar_stage(k,l,u,lambda raw,c,e:central_bank_events(raw,c,e,b)))
+    for key,label,url,parser in (("ons","UK ONS official release calendar",ONS,ons_events),("ecb","ECB official meeting calendar",ECB,ecb_events)):
+        stage(key,lambda k=key,l=label,u=url,p=parser:calendar_stage(k,l,u,p))
+    from website_calendars import BOJ,boj_events,collect_nyfed
+    stage("boj",lambda:calendar_stage("boj","BOJ official meeting/publication schedule",BOJ,boj_events))
+    def nyfed_stage():
+        rows,ids=collect_nyfed(sources,target,cutoff,end,now.date(),output["coverage"])
+        output["calendar"].extend(rows);output["nyfedSourceIds"]=ids
+    stage("nyfed",nyfed_stage)
     def block_stage():
         raw=sources.get("blocks","NSE block-deal disclosures","https://nsearchives.nseindia.com/content/equities/block.csv",target.isoformat())
         rows=list(csv.DictReader(io.StringIO(raw.decode("utf-8-sig"))))

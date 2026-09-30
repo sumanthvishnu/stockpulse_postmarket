@@ -34,5 +34,7 @@ def context(pack,receipts,archives,target):
             output["global"].append(observation)
         except Exception:
             output["gaps"].append(label+": a matching completed-session vendor bar was unavailable.")
-    output["gaps"].append("Global vendor indices are not independently cross-verified.")
+    from website_verification import verify
+    verify(output,receipts,archives)
+    output["gaps"].append("Direct original-publisher checking is limited to Nasdaq Composite when matching dated data is available. Other vendor indices lack a second-source check; common upstream providers are not independent measurements.")
     pack["derived"]["website_context"]=output

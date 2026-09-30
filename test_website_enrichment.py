@@ -83,7 +83,7 @@ class EnrichmentTests(unittest.TestCase):
     def test_rbi_calendar_requires_full_fiscal_coverage(self):
         raw=b"Meeting Schedule of the Monetary Policy Committee for 2026-2027 April 6, 7 and 8, 2026 June 3, 4 and 5, 2026 August 3, 4 and 5, 2026 October 5, 6 and 7, 2026 December 2, 3 and 4, 2026 February 3, 4 and 5, 2027"
         rows=central_bank_events(raw,self.cutoff,"2026-10-08","RBI")
-        self.assertEqual(rows[0]["dateTime"],"2026-10-07 (time not confirmed)")
+        self.assertEqual(rows[0]["dateTime"],"2026-10-07 (time not confirmed; may already have occurred)")
         with self.assertRaises(ValueError):central_bank_events(raw,self.cutoff,"2027-04-01","RBI")
         with self.assertRaises(ValueError):central_bank_events(raw.replace(b"June 3, 4 and 5, 2026",b""),self.cutoff,"2026-10-08","RBI")
 

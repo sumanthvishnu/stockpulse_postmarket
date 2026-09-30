@@ -70,6 +70,8 @@ def build_report(pack, receipts, now=None):
     def usable(key):
         r = receipts.get(key, {})
         return r.get("status") == "validated" and r.get("effectiveDate") == session and isinstance(r.get("sha256"), str) and len(r["sha256"]) == 64
+    if not usable("calendar") or raw.get("holiday_check",{}).get("is_holiday") is not False:
+        raise ValueError("Validated trading calendar and explicit open-session status required")
     if not usable("indices") or not usable("bhavcopy"):
         raise ValueError("Original dated index and bhavcopy evidence required")
     indices = d.get("indices", {})
@@ -90,6 +92,8 @@ def build_report(pack, receipts, now=None):
     expected_ad = breadth["advances"] / breadth["declines"] if breadth["declines"] else None
     if expected_ad is not None and (not finite(breadth.get("ad_ratio")) or abs(expected_ad - breadth["ad_ratio"]) > .0006):
         raise ValueError("Breadth ratio mismatch")
+    if expected_ad is None and breadth.get("ad_ratio") is not None:
+        raise ValueError("Breadth ratio must be unavailable when declines are zero")
     if d.get("sanity_flags"):
         raise ValueError("Unresolved source plausibility flags")
     gaps, sections, sources = [], [], []
@@ -228,9 +232,9 @@ def build_report(pack, receipts, now=None):
     section("ban","F&O ban list",["Trading date","Securities"],rows,"ban","Applies to the stated next trading session. Entry/exit changes are omitted unless prior comparable evidence is available.")
     context=d.get("website_context",{})
     globals=context.get("global",[])
-    global_rows=[row(x["name"],[x["session"],fmt(x["close"]),fmt(x["pctChange"],signed=True)+"%"],["derived.website_context.global."+str(i)]) for i,x in enumerate(globals) if finite(x.get("close")) and finite(x.get("pctChange"))]
-    section("global","Global context",["Index","Completed venue session","Close","Change (%)"],global_rows,None,"Vendor quotes for the latest completed local session available by the reporting cutoff. No live US quote is labelled a close.","Independent second-source verification is unavailable.")
-    sections[-1]["sourceIds"]=[x["sourceId"] for x in globals if x.get("sourceId") in source_ids]
+    global_rows=[row(x["name"],[x["session"],fmt(x["close"]),fmt(x["pctChange"],signed=True)+"%",x.get("verification","No direct publisher comparison available")],["derived.website_context.global."+str(i)]) for i,x in enumerate(globals) if finite(x.get("close")) and finite(x.get("pctChange"))]
+    section("global","Global context",["Index","Completed venue session","Close","Change (%)","Verification"],global_rows,None,"Vendor quotes for the latest completed local session available by cutoff. Direct publisher comparison does not establish independent upstream measurement. Conflicted observations are withheld.","Original-publisher verification is incomplete across the configured global indices.")
+    sections[-1]["sourceIds"]=[key for x in globals for key in (x.get("sourceId"),x.get("publisherSourceId")) if key in source_ids]
     enr=d.get("website_enrichment",{})
     coverage=enr.get("coverage",{})
     cats=enr.get("catalysts",[])
@@ -239,18 +243,34 @@ def build_report(pack, receipts, now=None):
         rows=[row("Reviewed NSE announcements",["By the report cutoff","No matching material event","No verified catalyst identified in the reviewed announcements."],["derived.website_enrichment.announcementCount"])]
     section("catalysts","Documented company events",["Security","Published (IST)","Event","Issuer disclosure"],rows,"catalysts","Selected dated issuer announcements, prioritising covered movers. These establish events, not why a share price moved.")
     sections[-1]["sourceIds"]+=list(dict.fromkeys(x["sourceId"] for x in cats if x.get("sourceId") in source_ids))[:3]
+    filing_rows=[];filing_sources=[]
+    for i,event in enumerate(cats):
+        evidence=event.get("documentEvidence",{})
+        if evidence.get("sourceId") not in source_ids:continue
+        filing_sources.append(evidence["sourceId"])
+        for j,passage in enumerate(evidence.get("excerpts",[])):
+            item=row(event["symbol"],[event["publishedAt"],"Page "+str(passage["page"]),passage["text"]],[f"derived.website_enrichment.catalysts.{i}.documentEvidence.excerpts.{j}"])
+            item["href"]=event["url"];filing_rows.append(item)
+    filing_coverage=enr.get("filingContent",{})
+    section("filing-content","Original filing passages",["Issuer","Published (IST)","Document location","Issuer statement (extract)"],filing_rows,None,"Bounded full-text PDF reading with issuer matching and page references. Selected original issuer statements are not independent verification or an explanation of price moves. No model interpretation or numeric recomputation. Scans, unreadable pages and over-budget files remain gaps.",None if filing_coverage.get("state")=="available" else "Full original-document content coverage is incomplete; metadata is not document analysis.")
+    sections[-1]["sourceIds"]=list(dict.fromkeys(filing_sources))
     results=enr.get("results",[])
     rows=[row(x["symbol"],[x["date"],x["purpose"]],[f"derived.website_enrichment.results.{i}"]) for i,x in enumerate(results[:30])]
     if not rows and coverage.get("results")=="available":
         rows=[row("NSE board-meeting calendar",["Through T+2","No results meetings found in the validated window"],["derived.website_enrichment.results"])]
-    section("results","Upcoming results meetings",["Security","Meeting date","Published purpose"],rows,"results","Results-related NSE equity board meetings announced by cutoff. This is a meeting calendar, not a guarantee of a result release time. BSE-only issuers are outside this scope.")
+    section("results","Upcoming results meetings",["Security","Meeting date","Published purpose"],rows,"results","Results-related NSE equity board meetings announced by cutoff. This is a meeting calendar, not a guarantee of a result release time. BSE-only issuers are outside this scope.","Only the first 30 of "+str(len(results))+" meetings are displayed; remaining records are retained in the datapack." if len(results)>30 else None)
     events=enr.get("calendar",[])
     rows=[row(x["event"],[x["country"],x["dateTime"],x["basis"]],[f"derived.website_enrichment.calendar.{i}"]) for i,x in enumerate(events[:30])]
-    checked=[k for k in ("mospi","bls","bea","rbi","fed") if coverage.get(k)=="available"]
-    if not rows and len(checked)==5:
+    from website_enrichment import CALENDAR_KEYS
+    nyfed_ids=enr.get("nyfedSourceIds",[])
+    checked=[k for k in CALENDAR_KEYS if coverage.get(k)=="available" and (bool(nyfed_ids) and all(usable(key) for key in nyfed_ids) if k=="nyfed" else usable(k))]
+    if not rows and len(checked)==len(CALENDAR_KEYS):
         rows=[row("Configured official publishers",["India / US","Through T+2","No scheduled releases found in the checked window"],["derived.website_enrichment.calendar"])]
-    section("calendar","Economic release watch",["Release","Economy","Date/time (IST)","Basis"],rows,None,"MoSPI macro releases plus US BLS and BEA. Dates are publisher schedules, not predictions. RBI MPC and Federal Reserve meetings are also checked. Other economies and private surveys are outside the configured coverage.",None if len(checked)==5 else "Some configured official calendars could not be validated.")
-    sections[-1]["sourceIds"]=[k for k in checked if k in source_ids]
+    calendar_gaps=[]
+    if len(checked)!=len(CALENDAR_KEYS):calendar_gaps.append("Official calendars not validated: "+", ".join(k.upper() for k in CALENDAR_KEYS if k not in checked)+".")
+    if len(events)>30:calendar_gaps.append("Only the first 30 of "+str(len(events))+" events are displayed; remaining records are retained in the datapack.")
+    section("calendar","Economic release watch",["Release","Economy","Date/time (IST unless labelled)","Basis"],rows,None,"MoSPI, BLS/BEA, selected ONS releases and RBI/Fed/ECB/BOJ policy calendars. New York Fed's selected weekday schedule supplies attributed secondary US coverage; primary BLS/BEA dates take precedence. It does not establish full BLS or private-survey coverage. China and other publishers remain gaps. Date-only events retain timing uncertainty."," ".join(calendar_gaps) or None)
+    sections[-1]["sourceIds"]=[k for k in checked if k in source_ids]+(nyfed_ids if "nyfed" in checked else [])
     gift=enr.get("gift");rows=[]
     if gift:
         rows=[row(gift["instrument"],[gift["expiry"],gift["observedAt"],fmt(gift["level"]),fmt(gift["spotDifference"],signed=True)],["derived.website_enrichment.gift"])]
