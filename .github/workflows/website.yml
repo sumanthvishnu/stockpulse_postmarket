@@ -1,7 +1,6 @@
 name: StockPulse website post-market
 on:
-  schedule:
-    - cron: '0 15 * * *'
+  # Timer supplied by Supabase Cron; GitHub runs the dispatched worker only.
   push:
     branches: [codex/postmarket-website, codex/postmarket-v4-coverage, codex/postmarket-briefing, codex/postmarket-reliability]
   workflow_dispatch:
@@ -39,7 +38,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MANUAL_DATE: ${{ inputs.date }}
-          INITIAL_REPLAY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[pm-recover-2026-09-29]') && '2026-09-29' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[pm-collect]') && '2026-09-25' || '') }}
+          INITIAL_REPLAY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[pm-collect]') && '2026-09-25' || '' }}
         run: node website_due.mjs
       - name: Install collector dependencies
         if: steps.due.outputs.run == 'true'
@@ -52,7 +51,7 @@ jobs:
           SCHEDULED_DATE: ${{ steps.due.outputs.session }}
           TRENDLYNE_MCP_TOKEN: ${{ secrets.TRENDLYNE_MCP_TOKEN }}
           MANUAL_DATE: ${{ inputs.date }}
-          INITIAL_REPLAY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[pm-recover-2026-09-29]') && '2026-09-29' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[pm-collect]') && '2026-09-25' || '') }}
+          INITIAL_REPLAY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[pm-collect]') && '2026-09-25' || '' }}
         run: |
           if [ -n "$MANUAL_DATE" ]; then
             python website_collect.py --date "$MANUAL_DATE"
