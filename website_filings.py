@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 MAX_DOCUMENTS=12
 MAX_BYTES=8_000_000
 MAX_PAGES=40
-MATERIAL=re.compile(r"acquir|acquisit|order|contract|penalt|settlement|merger|capacity|approval|buyback|fund.?rais|investment|default|litigation",re.I)
+MATERIAL=re.compile(r"acquir|acquisit|order|contract|penalt|settlement|merger|capacity|approval|buyback|fund.?rais|investment|default|litigation|rumou?r|transaction",re.I)
 
 
 def permitted_url(url):
@@ -23,7 +23,8 @@ def document_evidence(raw,event):
     reader=PdfReader(io.BytesIO(raw))
     if reader.is_encrypted:raise ValueError("Encrypted filing requires separate review")
     if not 1<=len(reader.pages)<=MAX_PAGES:raise ValueError("Filing exceeds full-document page budget")
-    pages=[re.sub(r"\s+"," ",page.extract_text() or "").strip() for page in reader.pages]
+    raw_pages=[page.extract_text() or "" for page in reader.pages]
+    pages=[re.sub(r"\s+"," ",text).strip() for text in raw_pages]
     if any(len(text)<60 for text in pages):raise ValueError("Some filing pages lack readable text; OCR review required")
     if sum(map(len,pages))>500_000:raise ValueError("Filing text exceeds bounded review budget")
     combined=" ".join(pages)
@@ -37,16 +38,28 @@ def document_evidence(raw,event):
             (isin and isin in combined)):
         raise ValueError("Original document issuer identity not matched")
     candidates=[]
-    for page,text in enumerate(pages,1):
-        for sentence in re.split(r"(?<=[.!?])\s+(?=[A-Z])",text):
+    for page,raw_text in enumerate(raw_pages,1):
+        # Preserve paragraph boundaries before normalization. A PDF's letterhead
+        # and subject may have no sentence terminator; never join them to prose.
+        lines=[line.strip() for line in raw_text.splitlines() if line.strip()]
+        word_spaced=len(lines)>40 and sum(len(line.split())<=2 for line in lines)>len(lines)*.75
+        paragraphs=[raw_text] if word_spaced else re.split(r"\n\s*\n|\n(?=(?:The aforesaid|The documentation|In continuation|Pursuant to|We (?:bring|inform|confirm))\b)",raw_text)
+        for paragraph in paragraphs:
+          text=re.sub(r"\s+"," ",paragraph).strip()
+          for sentence in re.split(r"(?<=[.!?])\s+(?=[A-Z])",text):
             # Preserve whole prose sentences; never assemble table cells or trim a
             # qualification midway. No model interprets these quotations.
             if 40<=len(sentence)<=800 and len(sentence.split())<=110 and MATERIAL.search(sentence):
                 if re.search(r"(?:registered office|www\.|digitally signed)",sentence,re.I):continue
+                if sentence.endswith('?') or re.match(r"(?:Sub\s*[:.]|Whether\b|Particulars\b)",sentence,re.I):continue
                 candidates.append({"page":page,"text":sentence})
     if not candidates:raise ValueError("No bounded material prose passage; manual document review required")
-    return {"method":"original-pdf-extractive-v1","pageCount":len(pages),"pagesRead":len(pages),
-            "issuerMatched":True,"excerpts":candidates[:2],
+    # Prefer explicit current updates/denials over a letter's acquisition history.
+    # Preserve source order and whole qualifications within the selected passages.
+    ranked=sorted(enumerate(candidates),key=lambda pair:(not bool(re.search(r"\brumou?r\b|still underway|documentation.*expected",pair[1]['text'],re.I)),pair[0]))[:2]
+    excerpts=[item for _,item in sorted(ranked)]
+    return {"method":"original-pdf-extractive-v2","pageCount":len(pages),"pagesRead":len(pages),
+            "issuerMatched":True,"excerpts":excerpts,
             "limitation":"Selected issuer statements, not independently verified facts or a causal explanation; full document linked"}
 
 
@@ -68,7 +81,7 @@ def fetch_pdf(url):
 
 def run(events,sources,target,cutoff,collection_day,fetch=fetch_pdf):
     from website_enrichment import stamp
-    result={"method":"original-pdf-extractive-v1","attempted":0,"read":0,"gaps":[],"maxDocuments":MAX_DOCUMENTS}
+    result={"method":"original-pdf-extractive-v2","attempted":0,"read":0,"gaps":[],"maxDocuments":MAX_DOCUMENTS}
     seen={}
     for event in events:
         key="filing:"+str(len(seen)+1)
