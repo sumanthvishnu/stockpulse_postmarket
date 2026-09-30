@@ -38,6 +38,22 @@ def parse_date(value):
 def canonical(value):
     return json.dumps(value, ensure_ascii=False, allow_nan=False, sort_keys=True, separators=(",", ":"))
 
+def index_change_consistent(row):
+    """Check overlap of source rounding intervals, without replacing its values.
+
+    NSE publishes close, point change and percent change to two decimals.
+    A fixed percentage tolerance falsely rejects low-level indices such as VIX.
+    """
+    close, change, percent = (Decimal(str(row[k])) for k in ("close", "pts_chg", "pct_chg"))
+    half = Decimal("0.005")
+    possible = []
+    for c in (close - half, close + half):
+        for delta in (change - half, change + half):
+            if c <= 0 or c - delta <= 0:
+                return False
+            possible.append(100 * delta / (c - delta))
+    return min(possible) <= percent + half and max(possible) >= percent - half
+
 def build_report(pack, receipts, now=None):
     now = now or datetime.now(IST)
     if now.tzinfo is None:
@@ -64,8 +80,7 @@ def build_report(pack, receipts, now=None):
         if not isinstance(row, dict):
             raise ValueError("Invalid index row")
         if all(finite(row.get(k)) for k in ("close", "pts_chg", "pct_chg")):
-            previous = row["close"] - row["pts_chg"]
-            if previous <= 0 or abs((row["close"] / previous - 1) * 100 - row["pct_chg"]) > .025:
+            if not index_change_consistent(row):
                 raise ValueError("Index change inconsistent: " + name)
     breadth = d.get("breadth", {})
     if not all(type(breadth.get(k)) is int and breadth[k] >= 0 for k in ("advances", "declines", "unchanged", "universe")):

@@ -160,10 +160,10 @@ def collect_report(target, output):
     enrich_website(pack,receipts,archives,fetcher.Client())
     # Replace the legacy disabled-bond warning with the actual dated feed receipt.
     pack["failures"]=[f for f in pack["failures"] if f.get("source")!="india_10y"]
-    report=build_report(pack,receipts)
     # Keep receipt and original datapack with the workflow evidence artifact.
     (Path(output)/"datapack.json").write_text(canonical(pack),encoding="utf-8")
     (Path(output)/"receipts.json").write_text(canonical(receipts),encoding="utf-8")
+    report=build_report(pack,receipts)
     entry=write_report(report,output)
     return {"state":"available","session":target.isoformat(),"report":entry}
 
