@@ -5,7 +5,10 @@ from pathlib import Path
 def validated_history(pack,receipts,archives,target,holidays,fetcher):
     expected=[];day=target
     while len(expected)<21:
-        if day.weekday()<5 and day.isoformat() not in holidays:expected.append(day)
+        from website_session_calendar import session_open
+        calendar=pack.get('meta',{}).get('sessionCalendar',{})
+        if calendar.get('state')=='unconfigured':calendar={}
+        if session_open(day,holidays,calendar):expected.append(day)
         day-=timedelta(days=1)
     rows={};ids=[]
     for day in expected:

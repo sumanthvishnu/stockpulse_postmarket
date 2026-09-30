@@ -19,6 +19,7 @@ class BriefingTests(unittest.TestCase):
         rows=market_movers(p);self.assertEqual([x["symbol"] for x in rows],["ABC","DOWN"])
         self.assertEqual(rows[0]["change"],10);self.assertIn("After the cash-market close",rows[0]["event"])
         self.assertIsNone(rows[1]["delivery"]);self.assertIn("No verified catalyst",rows[1]["event"])
+        r["catalysts"]=dict(r["indices"])
         report=build_report(p,r,datetime(2026,9,25,20,30,tzinfo=IST))
         movers=next(s for s in report["sections"] if s["id"]=="liquid-movers")
         self.assertEqual(movers["rows"][0]["href"],"https://nsearchives.nseindia.com/corporate/abc.pdf")

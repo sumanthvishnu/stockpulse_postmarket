@@ -92,10 +92,14 @@ def validate_source(key, payload, target, fetcher):
         result=fetcher.parse_ban_list(text)
         if not parse_date(result.get("trade_date")): raise ValueError("Ban date missing")
 
-def collect_report(target, output):
+def collect_report(target, output, session_calendar_path=None):
     import stockpulse_data_fetcher as fetcher
     receipts={}
     archives=Path(output)/"evidence"; archives.mkdir(parents=True,exist_ok=True)
+    from website_session_calendar import load_calendar,next_sessions,session_open
+    session_calendar=load_calendar(session_calendar_path,target,min(datetime.now(IST),datetime(target.year,target.month,target.day,20,30,tzinfo=IST)),archives,receipts)
+    # Only this website process receives the reviewed override; legacy jobs are unchanged.
+    fetcher.next_trading_days=lambda day,count,holidays=():next_sessions(day,count,holidays,session_calendar)
     OriginalClient=fetcher.Client
     class RecordingClient(OriginalClient):
         def __init__(self,*args,**kwargs):
@@ -131,13 +135,16 @@ def collect_report(target, output):
     fetcher.fetch_india_10y=lambda:(None,"Not collected: vendor session validation pending")
     fetcher.collect(target)
     pack=copy.deepcopy(fetcher.pack)
+    pack['meta']['sessionCalendar']=session_calendar or {'state':'unconfigured'}
     if receipts.get("calendar",{}).get("status")!="validated":
         raise ValueError("Trading calendar unavailable")
     holidays=[parse_date(h.get("tradingDate")) for h in json.loads((archives/(receipts["calendar"]["sha256"]+".source")).read_text())["CM"]]
+    if target.weekday()>=5 and not session_calendar:
+        raise ValueError("Weekend session status requires reviewed exchange exception calendar")
+    pack['data']['holiday_check']={'is_holiday':not session_open(target,holidays,session_calendar),
+        'detail':'Dated exchange holiday master with reviewed session exceptions' if session_calendar else 'Dated exchange holiday master'}
     if pack.get("data",{}).get("holiday_check",{}).get("is_holiday"):
         return {"state":"market_closed","session":target.isoformat(),"reason":pack["data"]["holiday_check"].get("detail") or "Exchange holiday"}
-    if target.weekday()>=5:
-        raise ValueError("Special weekend session is not independently configured")
     # Match all next-session logic to the same exchange holiday master.
     pack["derived"]["next_trading_session"]=fetcher.next_trading_session(target,holidays)
     ban=pack["derived"].get("fo_ban",{})
@@ -171,15 +178,16 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--date")
     parser.add_argument("--output",default="website-output")
+    parser.add_argument("--session-calendar",help="Reviewed exchange exception registry with preserved circular bytes")
     args=parser.parse_args()
     target=date.fromisoformat(args.date or os.environ["SCHEDULED_DATE"]) if args.date or os.environ.get("SCHEDULED_DATE") else datetime.now(IST).date()
     output=Path(args.output);output.mkdir(parents=True,exist_ok=True)
-    # Weekend default runs record market closure without downloading dozens of archives.
-    if not args.date and target.weekday()>=5:
-        status={"state":"market_closed","session":target.isoformat(),"reason":"Weekend; special-session support requires an exchange calendar override"}
+    # Unknown special-session coverage is not a confirmed market-closed notice.
+    if target.weekday()>=5 and not args.session_calendar:
+        status={"state":"blocked","session":target.isoformat(),"reason":"Weekend session status requires reviewed exchange exception calendar"}
     else:
         try:
-            status=collect_report(target,output)
+            status=collect_report(target,output,args.session_calendar)
         except Exception as e:
             status={"state":"blocked","session":target.isoformat(),"reason":str(e)[:240]}
     status["checkedAt"]=datetime.now(IST).isoformat()

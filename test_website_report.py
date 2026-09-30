@@ -11,6 +11,35 @@ def fixture():
 
 class ReportTests(unittest.TestCase):
     def build(self,p,r): return build_report(p,r,datetime(2026,9,25,20,30,tzinfo=IST))
+    def test_global_row_requires_its_own_validated_dated_source(self):
+        for fault in ('missing','retrieved','wrong-date','bad-hash','missing-url','missing-time','future-session'):
+            p,r=fixture()
+            p['derived']['website_context']={'global':[{'name':'Nasdaq Composite','ticker':'^IXIC','session':'2026-09-24','close':100,'pctChange':1,'sourceId':'global:^IXIC'}]}
+            receipt={**r['indices'],'effectiveDate':'2026-09-24'}
+            if fault!='missing':r['global:^IXIC']=receipt
+            if fault=='retrieved':receipt['status']='retrieved'
+            if fault=='wrong-date':receipt['effectiveDate']='2026-09-23'
+            if fault=='bad-hash':receipt['sha256']='z'*64
+            if fault=='missing-url':receipt.pop('url')
+            if fault=='missing-time':receipt.pop('retrievedAt')
+            if fault=='future-session':
+                p['derived']['website_context']['global'][0]['session']='2026-09-26'
+                receipt['effectiveDate']='2026-09-26'
+            with self.subTest(fault=fault),self.assertRaisesRegex(ValueError,'Global source'):
+                self.build(p,r)
+
+    def test_prior_completed_global_session_and_publisher_receipt(self):
+        p,r=fixture()
+        observation={'name':'Nasdaq Composite','ticker':'^IXIC','session':'2026-09-24','close':100,'pctChange':1,'sourceId':'global:^IXIC'}
+        p['derived']['website_context']={'global':[observation]}
+        r['global:^IXIC']={**r['indices'],'effectiveDate':'2026-09-24'}
+        report=self.build(p,r)
+        self.assertEqual(len(next(s for s in report['sections'] if s['id']=='global')['rows']),1)
+        observation['publisherSourceId']='publisher:nasdaq-comp'
+        with self.assertRaisesRegex(ValueError,'Global.*source'):self.build(p,r)
+        r['publisher:nasdaq-comp']={**r['global:^IXIC']}
+        self.assertEqual(next(s for s in self.build(p,r)['sections'] if s['id']=='global')['sourceIds'],['global:^IXIC','publisher:nasdaq-comp'])
+
     def test_named_signed_fields_and_divergence(self):
         p,r=fixture();report=self.build(p,r)
         self.assertIn("rose 1.00%",report["summary"][0]["text"])
@@ -43,7 +72,7 @@ class ReportTests(unittest.TestCase):
         for k in coverage:r[k]=copy.deepcopy(r["indices"])
         p["derived"]["website_enrichment"]["nyfedSourceIds"]=["nyfed"]
         self.assertEqual(calendar()["status"],"available")
-        p["derived"]["website_enrichment"]["calendar"]=[{"event":"Release "+str(i),"country":"US","dateTime":"2026-09-28","basis":"Official schedule"} for i in range(31)]
+        p["derived"]["website_enrichment"]["calendar"]=[{"event":"Release "+str(i),"country":"US","dateTime":"2026-09-28","basis":"Official schedule","sourceId":"bea"} for i in range(31)]
         report=self.build(p,r)
         self.assertEqual(next(s for s in report["sections"] if s["id"]=="calendar")["status"],"partial")
         self.assertTrue(any("first 30 of 31" in g["reason"] for g in report["gaps"]))
