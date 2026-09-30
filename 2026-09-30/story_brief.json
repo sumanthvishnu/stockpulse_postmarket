@@ -1,0 +1,40 @@
+{
+ "one_liner": "Markets mixed as Nifty 50 dips while broader indices show gains.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Market Decline",
+   "detail": "Nifty 50 fell by 0.42% today.",
+   "stat": "-95.75 pts"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Institutional Flows",
+   "detail": "DIIs net bought Rs 11,271.73 Cr; FIIs net sold Rs 10,148.41 Cr.",
+   "stat": "DII: +11,271.73 Cr"
+  },
+  {
+   "emoji": "📈",
+   "title": "Volatility Spike",
+   "detail": "India VIX rose by 0.58%, indicating higher volatility.",
+   "stat": "+0.08 pts"
+  },
+  {
+   "emoji": "❓",
+   "title": "No Clear Catalyst",
+   "detail": "No identifiable catalyst for market movements today.",
+   "stat": "Data Gaps Register"
+  }
+ ],
+ "flows_line": "FIIs net sold Rs 10,148.41 Cr; DIIs net bought Rs 11,271.73 Cr.",
+ "watch_next": "Tomorrow, watch for economic data including ISM Manufacturing PMI at 23:30 IST.",
+ "week_pct": -3.52,
+ "lesson_seeds": [
+  "Nifty 50 declined for the third consecutive session.",
+  "Broader indices like Nifty Midcap 150 showed resilience.",
+  "Volatility remains elevated with India VIX up 30.34% over five days.",
+  "Institutional flows were mixed, with DIIs supporting the market."
+ ],
+ "source": "llm"
+}
