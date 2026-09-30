@@ -25,6 +25,23 @@ class ReportTests(unittest.TestCase):
     def test_bad_index_arithmetic_blocks(self):
         p,r=fixture();p["derived"]["indices"]["Nifty 50"]["pct_chg"]=42
         with self.assertRaises(ValueError):self.build(p,r)
+    def test_exchange_vix_rounding_does_not_block(self):
+        # Original NSE 29 September archive: rounded close/point change differ
+        # from the percentage calculated from underlying higher precision.
+        p,r=fixture()
+        p["derived"]["indices"]["India VIX"]={"close":13.41,"pts_chg":-0.23,"pct_chg":-1.65}
+        report=self.build(p,r)
+        row=next(x for x in next(s for s in report["sections"] if s["id"]=="snapshot")["rows"] if x["label"]=="India VIX")
+        self.assertIn("-1.65%",row["values"])
+        p["derived"]["indices"]["India VIX"]["pct_chg"]=-1.50
+        with self.assertRaises(ValueError):self.build(p,r)
+
+    def test_rounding_bound_is_not_a_broad_percentage_waiver(self):
+        from website_report import index_change_consistent
+        self.assertTrue(index_change_consistent({"close":13.64,"pts_chg":1.48,"pct_chg":12.15}))
+        self.assertFalse(index_change_consistent({"close":10100,"pts_chg":100,"pct_chg":1.02}))
+        self.assertFalse(index_change_consistent({"close":0,"pts_chg":1,"pct_chg":100}))
+
     def test_breadth_inconsistency_blocks(self):
         p,r=fixture();p["derived"]["breadth"]["universe"]=99
         with self.assertRaises(ValueError):self.build(p,r)

@@ -1,9 +1,8 @@
 name: StockPulse website post-market
 on:
-  schedule:
-    - cron: '0 15 * * *'
+  # Timer supplied by Supabase Cron; GitHub runs the dispatched worker only.
   push:
-    branches: [codex/postmarket-website, codex/postmarket-v4-coverage, codex/postmarket-briefing]
+    branches: [codex/postmarket-website, codex/postmarket-v4-coverage, codex/postmarket-briefing, codex/postmarket-reliability]
   workflow_dispatch:
     inputs:
       date:
@@ -26,7 +25,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
-      - run: pip install icalendar pypdf
+      - run: pip install requests icalendar pypdf
       - run: python -m unittest test_website_report test_website_enrichment test_website_briefing test_carousel_prose -v
       - run: node --test test_website_schedule.mjs
       - name: Read-only current provider diagnostics
