@@ -59,14 +59,14 @@ def summary(pack,sections):
         if n["pct_chg"]>0 and h["Nifty 50"]<0:title="A positive day within a weaker five-session period"
         elif n["pct_chg"]<0 and h["Nifty 50"]>0:title="A decline within a stronger five-session period"
         text+=" One session alone does not establish a change in trend."
-    first={"title":title,"text":text,"refs":["derived.indices.Nifty 50","derived.website_history.fiveSessionChange.Nifty 50"]}
+    first={"title":title,"text":text,"refs":["derived.indices.Nifty 50.close","derived.indices.Nifty 50.pct_chg"]+(["derived.website_history.fiveSessionChange.Nifty 50"] if finite(h.get("Nifty 50")) else [])}
     relation="more securities advanced than declined" if b["advances"]>b["declines"] else "more securities declined than advanced" if b["advances"]<b["declines"] else "advances and declines were balanced"
     text=f"In the NSE EQ universe, {relation}: {fmt(b['advances'],0)} advances and {fmt(b['declines'],0)} declines."
     internals=d.get("internals_52wk",{}) if any(s["id"]=="internals" and s["status"]=="available" for s in sections) else {}
     if isinstance(internals.get("new_highs"),int) and isinstance(internals.get("new_lows"),int):
         text+=f" The separate adjusted 52-week measure recorded {internals['new_highs']} new highs and {internals['new_lows']} new lows."
         if b["advances"]>b["declines"] and internals["new_lows"]>internals["new_highs"]:text+=" Daily participation was stronger than this longer-horizon measure; the two describe different aspects of the market."
-    second={"title":"A divergence to note" if (n["pct_chg"]>0 and b["advances"]<b["declines"]) or (n["pct_chg"]<0 and b["advances"]>b["declines"]) else "Look beneath the headline index","text":text,"refs":["derived.breadth","derived.internals_52wk"]}
+    second={"title":"A divergence to note" if (n["pct_chg"]>0 and b["advances"]<b["declines"]) or (n["pct_chg"]<0 and b["advances"]>b["declines"]) else "Look beneath the headline index","text":text,"refs":["derived.breadth.advances","derived.breadth.declines"]+(["derived.internals_52wk.new_highs","derived.internals_52wk.new_lows"] if internals else [])}
     from website_report import SECTORS
     sectors=[(k,d["indices"][k]["pct_chg"]) for k in SECTORS if k in d["indices"] and finite(d["indices"][k].get("pct_chg"))]
     text="Sector observations are descriptive; no causal explanation is inferred."
@@ -75,4 +75,8 @@ def summary(pack,sections):
         text=f"Among configured sectors, {top[0]} had the strongest daily change ({fmt(top[1],signed=True)}%); {bottom[0]} had the weakest ({fmt(bottom[1],signed=True)}%)."
         if all(finite(h.get(x[0])) for x in (top,bottom)):text+=f" Their five-session changes were {fmt(h[top[0]],signed=True)}% and {fmt(h[bottom[0]],signed=True)}%, respectively."
         text+=" This comparison shows relative performance, not an investment ranking."
-    return [first,second,{"title":"Where performance differed","text":text,"refs":["derived.indices","derived.website_history.fiveSessionChange"]}]
+    refs=[]
+    if sectors:
+        refs=["derived.indices."+x[0]+".pct_chg" for x in (top,bottom)]
+        if all(finite(h.get(x[0])) for x in (top,bottom)):refs += ["derived.website_history.fiveSessionChange."+x[0] for x in (top,bottom)]
+    return [first,second,{"title":"Where performance differed","text":text,"refs":refs}]

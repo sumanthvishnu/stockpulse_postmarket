@@ -96,6 +96,10 @@ def build_report(pack, receipts, now=None):
         raise ValueError("Breadth ratio must be unavailable when declines are zero")
     if d.get("sanity_flags"):
         raise ValueError("Unresolved source plausibility flags")
+    from website_evidence import validate_enrichment,require_receipt
+    validate_enrichment(pack,receipts,session)
+    for key,receipt in receipts.items():
+        if receipt.get('status')=='validated':require_receipt(receipts,key,receipt.get('effectiveDate'),'Report')
     gaps, sections, sources = [], [], []
     source_ids = {}
     for key, rec in receipts.items():
@@ -114,9 +118,20 @@ def build_report(pack, receipts, now=None):
         sections.append({"id":key,"title":title,"status":status,"columns":columns,"rows":rows,"sourceIds":[source] if source in source_ids else [],"note":note or unavailable or ""})
     def row(label, values, refs):
         return {"label":str(label),"values":values,"refs":refs}
+    if not pack.get('meta',{}).get('sessionCalendar',{}).get('sha256'):
+        gap('Exchange session exceptions','Special-session exceptions have not been independently reviewed for this period; ordinary dated holiday-master rules apply. An unconfigured weekend report is blocked.')
     snapshot = [row(n,[fmt(indices.get(n,{}).get("close")),fmt(indices.get(n,{}).get("pts_chg"),signed=True),fmt(indices.get(n,{}).get("pct_chg"),signed=True)+"%"],["derived.indices."+n+"."+k for k in ("close","pts_chg","pct_chg")]) for n in MAIN if n in indices]
-    section("snapshot","Market snapshot",["Index","Close","Change (pts)","Change (%)"],snapshot,"indices","NSE closing observations for "+session+". India VIX is an index, not a price.")
-    section("sectors","Sector performance",["Index","Close","Change (%)"],[row(n,[fmt(indices[n].get("close")),fmt(indices[n].get("pct_chg"),signed=True)+"%"],["derived.indices."+n+".close","derived.indices."+n+".pct_chg"]) for n in SECTORS if n in indices],"indices","Configured NSE sector indices. No causal explanation is inferred from price changes.")
+    sensex=next(((i,x) for i,x in enumerate(d.get('website_context',{}).get('global',[])) if x.get('ticker')=='^BSESN' and x.get('session')==session),None)
+    absent=[n for n in MAIN if n not in indices]
+    if sensex:
+        i,x=sensex
+        snapshot.append(row('Sensex (vendor)',[fmt(x.get('close')),fmt(x.get('ptsChange'),signed=True),fmt(x.get('pctChange'),signed=True)+'%'],['derived.website_context.global.'+str(i)+'.'+k for k in ('close','ptsChange','pctChange')]))
+        if not finite(x.get('ptsChange')):absent.append('Sensex point change')
+    else:absent.append('Sensex')
+    section("snapshot","Market snapshot",["Index","Close","Change (pts)","Change (%)"],snapshot,"indices","NSE closing observations for "+session+"; Sensex, when present, is separately labelled Yahoo vendor data for the matching completed BSE session. India VIX is an index, not a price.","Snapshot coverage unavailable: "+", ".join(absent) if absent else None)
+    if sensex:sections[-1]['sourceIds'].append(sensex[1]['sourceId'])
+    absent_sectors=[n for n in SECTORS if n not in indices]
+    section("sectors","Sector performance",["Index","Close","Change (%)"],[row(n,[fmt(indices[n].get("close")),fmt(indices[n].get("pct_chg"),signed=True)+"%"],["derived.indices."+n+".close","derived.indices."+n+".pct_chg"]) for n in SECTORS if n in indices],"indices","Configured NSE sector indices. No causal explanation is inferred from price changes.","Sector coverage unavailable: "+", ".join(absent_sectors) if absent_sectors else None)
     history=d.get("website_history",{})
     changes=history.get("fiveSessionChange",{})
     hrows=[row(n,[fmt(changes[n],signed=True)+"%",fmt(history.get("twentySessionChange",{}).get(n),signed=True)+"%" if finite(history.get("twentySessionChange",{}).get(n)) else "Unavailable"],["derived.website_history.fiveSessionChange."+n,"derived.website_history.twentySessionChange."+n]) for n in dict.fromkeys(MAIN+SECTORS) if finite(changes.get(n))]
@@ -239,7 +254,7 @@ def build_report(pack, receipts, now=None):
     coverage=enr.get("coverage",{})
     cats=enr.get("catalysts",[])
     rows=[row(x["symbol"],[x["publishedAt"],x["event"],x["detail"]],[f"derived.website_enrichment.catalysts.{i}"]) for i,x in enumerate(cats)]
-    if not rows and coverage.get("catalysts")=="available":
+    if not rows and coverage.get("catalysts")=="available" and usable("catalysts"):
         rows=[row("Reviewed NSE announcements",["By the report cutoff","No matching material event","No verified catalyst identified in the reviewed announcements."],["derived.website_enrichment.announcementCount"])]
     section("catalysts","Documented company events",["Security","Published (IST)","Event","Issuer disclosure"],rows,"catalysts","Selected dated issuer announcements, prioritising covered movers. These establish events, not why a share price moved.")
     sections[-1]["sourceIds"]+=list(dict.fromkeys(x["sourceId"] for x in cats if x.get("sourceId") in source_ids))[:3]
@@ -256,7 +271,7 @@ def build_report(pack, receipts, now=None):
     sections[-1]["sourceIds"]=list(dict.fromkeys(filing_sources))
     results=enr.get("results",[])
     rows=[row(x["symbol"],[x["date"],x["purpose"]],[f"derived.website_enrichment.results.{i}"]) for i,x in enumerate(results[:30])]
-    if not rows and coverage.get("results")=="available":
+    if not rows and coverage.get("results")=="available" and usable("results"):
         rows=[row("NSE board-meeting calendar",["Through T+2","No results meetings found in the validated window"],["derived.website_enrichment.results"])]
     section("results","Upcoming results meetings",["Security","Meeting date","Published purpose"],rows,"results","Results-related NSE equity board meetings announced by cutoff. This is a meeting calendar, not a guarantee of a result release time. BSE-only issuers are outside this scope.","Only the first 30 of "+str(len(results))+" meetings are displayed; remaining records are retained in the datapack." if len(results)>30 else None)
     events=enr.get("calendar",[])
@@ -350,6 +365,8 @@ def build_report(pack, receipts, now=None):
         series=d.get("website_history",{}).get("series",[])
         series_rows=[row(x["date"],[fmt(x.get(field))],["derived.website_history.series."+str(i)+"."+field]) for i,x in enumerate(series) if finite(x.get(field))]
         section(field+"-trend",title,["Session","Close"],series_rows,"indices","Consecutive verified exchange sessions. Chart axes are labelled; the series is not a forecast.")
+    from website_contract import attach_contract
+    attach_contract(report,pack,receipts)
     body=canonical(report).encode()
     report["id"]=session+"-"+hashlib.sha256(body).hexdigest()[:16]
     return report

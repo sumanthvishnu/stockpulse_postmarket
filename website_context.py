@@ -29,7 +29,7 @@ def context(pack,receipts,archives,target):
             if expected not in values or previous not in values or values[previous]<=0:raise ValueError("Vendor bar not current for venue")
             close,prev=values[expected],values[previous]
             key="global:"+ticker
-            observation={"name":label,"ticker":ticker,"session":expected.isoformat(),"close":close,"pctChange":round((close/prev-1)*100,2),"sourceId":key,"sessionClose":completed.iloc[-1]["market_close"].isoformat()}
+            observation={"name":label,"ticker":ticker,"session":expected.isoformat(),"close":close,"previousSession":previous.isoformat(),"previousClose":prev,"ptsChange":close-prev,"pctChange":round((close/prev-1)*100,2),"sourceId":key,"sessionClose":completed.iloc[-1]["market_close"].isoformat(),"artifactBasis":"Decoded vendor closing bars and deterministic changes; not raw HTTP response bytes"}
             store_source(receipts,archives,key,"Yahoo Finance vendor: "+label,"https://finance.yahoo.com/quote/"+quote(ticker,safe="")+"/history/",observation,expected.isoformat())
             output["global"].append(observation)
         except Exception:
