@@ -1,0 +1,35 @@
+{
+ "one_liner": "Nifty closed down 0.88% at 22,421.95.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "💻",
+   "title": "IT led",
+   "detail": "Led the session, closed +2.17%.",
+   "stat": "IT +2.17%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Private Bank led",
+   "detail": "Nearly flat, closed +0.01%.",
+   "stat": "Private Bank +0.01%"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Auto lagged",
+   "detail": "Deepest loss, closed -3.46%.",
+   "stat": "Auto -3.46%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Breadth stayed weak",
+   "detail": "570 advances versus 2,068 declines.",
+   "stat": "570 : 2,068"
+  }
+ ],
+ "flows_line": "FII sold while DII bought",
+ "watch_next": "Support 22,000, resistance 23,000.",
+ "week_pct": -2.78,
+ "lesson_seeds": [],
+ "source": "deterministic"
+}
