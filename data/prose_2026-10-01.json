@@ -1,0 +1,58 @@
+{
+ "headline": "Fear jumped while the *flows stayed split*",
+ "subline": "IT led the tape. Fear jumped.",
+ "hero_text": "Nifty closed down 0.88% at 22,421.95. India VIX rose 7.15%.",
+ "why_head": "Why the market fell",
+ "why": [
+  {
+   "emoji": "💻",
+   "title": "IT led",
+   "desc": "Led the session, closed +2.17%.",
+   "badge": "IT +2.17%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Private Bank led",
+   "desc": "Nearly flat, closed +0.01%.",
+   "badge": "Private Bank +0.01%"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Auto lagged",
+   "desc": "Deepest loss, closed -3.46%.",
+   "badge": "Auto -3.46%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Breadth stayed weak",
+   "desc": "More names fell than rose.",
+   "badge": "570 : 2,068"
+  }
+ ],
+ "sector_reasons": {
+  "IT": "Led the session, closed +2.17%.",
+  "Private Bank": "Nearly flat, closed +0.01%.",
+  "Healthcare": "Held up better than most, -0.26%.",
+  "Auto": "Deepest loss, closed -3.46%.",
+  "Metal": "Lagged the tape, closed -2.35%.",
+  "Media": "Lagged the tape, closed -2.33%."
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "FII sold while DII bought.",
+ "movers_note_gainers": "Infosys and HDFC Life led the gainers.",
+ "movers_note_losers": "Bajaj Auto and Maruti Suzuki led the losers.",
+ "watch_text": "Support at 22,000 and resistance at 23,000 frame Monday's open.",
+ "lessons": [
+  "Breadth was the tell. About 4 stocks fell for every 1 that rose.",
+  "The frontline and the broader market finished on the same side.",
+  "FII sold while DII bought. The cash tape was split.",
+  "The down close extended a 4 session run."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "Monday 05 October opens next. Nifty expiry lands Tuesday.",
+ "cta_headline": "A down day. *Save it for the open*.",
+ "cta_sub": "Full wrap every evening. Next bell is Monday.",
+ "next_text": "Next bell is Monday. Nifty expiry lands Tuesday.",
+ "caption_a": "Nifty closed down 0.88% at 22,421.95, while IT led and Auto lagged.\n\nBreadth: 570 advances vs 2,068 declines.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #NiftyIT #MarketWrap #Sensex",
+ "caption_b": "FII sold while DII bought.\n\nWatch Monday's open. IT led the sectors.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #BankNifty #MarketWrap #FII"
+}
