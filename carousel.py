@@ -1055,40 +1055,46 @@ def lesson_skeleton(text):
     return re.sub(r"\s+", " ", t).strip()
 
 
-def prose_quality_issues(prose, pack, weekly=False, memory=None):
-    """Voice and sameness checks. The pipeline feeds these back into the
-    carousel retry. Empty list means the prose is allowed to ship.
+def quality_findings(prose, pack, weekly=False, memory=None):
+    """Voice findings as {message, action}. action tells salvage which field
+    to replace. message text is what the retry prompt shows the model."""
+    found = []
 
-    Sector keys are normalized first, so 'Nifty IT' counts as 'IT'. Rank
-    stubs and filler notes do not count as coverage."""
-    issues = []
+    def add(message, action):
+        found.append({"message": message, "action": action})
+
     prose = prose or {}
     flat_norm = norm_phrase(_flat(prose))
     for phrase in CANNED_PHRASES:
         if phrase in flat_norm:
-            issues.append(
-                f"canned filler '{phrase}' - replace it with a line that "
-                "could only be written for this session")
+            message = (f"canned filler '{phrase}' - replace it with a line "
+                       "that could only be written for this session")
+            hits = _fields_with_phrase(prose, phrase)
+            if hits:
+                for action in hits:
+                    add(message, action)
+            else:
+                add(message, ("unlocated", phrase))
 
     for word in AI_WORDS:
         if word in flat_norm:
-            issues.append(f"banned AI wording '{word}'")
+            add(f"banned AI wording '{word}'", ("ai_word", word))
 
     headline = str(prose.get("headline") or "")
     h_norm = norm_phrase(headline)
     if "amid global cues" in h_norm:
-        issues.append("headline uses the 'amid global cues' cliche - lead "
-                      "with today's contrast instead")
+        add("headline uses the 'amid global cues' cliche - lead "
+            "with today's contrast instead", ("field", "headline"))
     elif _PCT_RE.search(h_norm) and not _CONTRAST_RE.search(h_norm):
-        issues.append("headline restates a percent with no contrast - name "
-                      "what diverged (breadth, sector, flows)")
+        add("headline restates a percent with no contrast - name "
+            "what diverged (breadth, sector, flows)", ("field", "headline"))
 
     for i, row in enumerate(prose.get("why") or [], 1):
-        title = norm_phrase((row or {}).get("title"))
+        title = norm_phrase((row or {}).get("title") if isinstance(row, dict)
+                            else "")
         if title in GENERIC_WHY_TITLES:
-            issues.append(
-                f"why[{i}].title '{title}' is a category label - use a "
-                "causal clause that names the driver")
+            add(f"why[{i}].title '{title}' is a category label - use a "
+                "causal clause that names the driver", ("why_row", i))
 
     reasons = normalize_sector_reasons(prose.get("sector_reasons"))
     board = sector_board(pack, weekly=weekly)
@@ -1099,26 +1105,24 @@ def prose_quality_issues(prose, pack, weekly=False, memory=None):
         if not text:
             continue
         if is_rank_stub(text) or FILLER_REASON.search(text):
-            issues.append(
-                f"sector_reasons['{short}'] is a rank stub or filler "
+            add(f"sector_reasons['{short}'] is a rank stub or filler "
                 f"('{text}') - state a cause, and key it '{short}' not "
-                "'Nifty …'")
+                "'Nifty …'", ("sector", short))
             continue
         usable.append(short)
     if len(shorts) >= 4 and len(usable) < 4:
         missing = [s for s in shorts if s not in usable]
-        issues.append(
-            f"sector_reasons covered {len(usable)} of {len(shorts)} "
+        add(f"sector_reasons covered {len(usable)} of {len(shorts)} "
             f"displayed sectors after normalizing to short keys {shorts}. "
             f"Missing or unusable: {missing}. Use those exact short names, "
-            "never a 'Nifty ' prefix.")
+            "never a 'Nifty ' prefix.", ("sectors", tuple(missing)))
 
     for i, lesson in enumerate(prose.get("lessons") or [], 1):
         text = str(lesson or "")
         if _PCT_RE.search(text) and not _RELATION_RE.search(text):
-            issues.append(
-                f"lessons[{i}] restates a percent with no relationship - "
-                "say what diverged, not the figure already on the slides")
+            add(f"lessons[{i}] restates a percent with no relationship - "
+                "say what diverged, not the figure already on the slides",
+                ("lesson", i))
 
     skeletons = [lesson_skeleton(x) for x in (prose.get("lessons") or [])]
     seen_sk = {}
@@ -1126,34 +1130,32 @@ def prose_quality_issues(prose, pack, weekly=False, memory=None):
         if len(sk) < 12:
             continue
         if sk in seen_sk:
-            issues.append(
-                f"lessons[{i}] repeats the pattern of lessons[{seen_sk[sk]}]")
+            add(f"lessons[{i}] repeats the pattern of lessons[{seen_sk[sk]}]",
+                ("lesson", i))
         else:
             seen_sk[sk] = i
 
     for field in ("cta_headline", "cta_sub"):
         text = str(prose.get(field) or "")
         if _EVERGREEN_CTA.search(text):
-            issues.append(
-                f"{field} is an evergreen marketing line - name this close "
-                "or the next session's weekday")
+            add(f"{field} is an evergreen marketing line - name this close "
+                "or the next session's weekday", ("field", field))
 
     memory = memory or {}
     if h_norm and h_norm in (memory.get("headlines") or ()):
-        issues.append(f"headline repeats a previous day: '{h_norm}' - write "
-                      "a fresh one from today's contrast")
+        add(f"headline repeats a previous day: '{h_norm}' - write "
+            "a fresh one from today's contrast", ("field", "headline"))
     day_emojis = {r.get("emoji") for r in (prose.get("why") or [])
                   if isinstance(r, dict) and r.get("emoji")}
     seen_emojis = memory.get("emojis") or set()
     if day_emojis and seen_emojis and day_emojis == seen_emojis:
-        issues.append("the exact emoji set was already used - pick emojis "
-                      "that depict today's specific drivers")
+        add("the exact emoji set was already used - pick emojis "
+            "that depict today's specific drivers", ("why_emojis",))
     prior_sk = memory.get("lesson_skeletons") or set()
     for i, sk in enumerate(skeletons, 1):
         if len(sk) >= 12 and sk in prior_sk:
-            issues.append(
-                f"lessons[{i}] matches a previous day's lesson pattern "
-                f"('{sk}') - find a different relationship")
+            add(f"lessons[{i}] matches a previous day's lesson pattern "
+                f"('{sk}') - find a different relationship", ("lesson", i))
     for field, bucket in (
         ("movers_note_gainers", "movers"),
         ("movers_note_losers", "movers"),
@@ -1163,14 +1165,325 @@ def prose_quality_issues(prose, pack, weekly=False, memory=None):
     ):
         val = norm_phrase(prose.get(field))
         if val and val in (memory.get(bucket) or ()):
-            issues.append(f"{field} repeats a previous day: '{val}'")
+            add(f"{field} repeats a previous day: '{val}'", ("field", field))
     for i, row in enumerate(prose.get("why") or [], 1):
         if not isinstance(row, dict):
             continue
         title = norm_phrase(row.get("title"))
         if title and title in (memory.get("why_titles") or ()):
-            issues.append(f"why[{i}].title repeats a previous day: '{title}'")
+            add(f"why[{i}].title repeats a previous day: '{title}'",
+                ("why_row", i))
+    return found
+
+
+def prose_quality_issues(prose, pack, weekly=False, memory=None):
+    """Voice and sameness checks. The pipeline feeds these back into the
+    carousel retry. Empty list means the prose is allowed to ship.
+
+    Sector keys are normalized first, so 'Nifty IT' counts as 'IT'. Rank
+    stubs and filler notes do not count as coverage."""
+    return [f["message"] for f in quality_findings(
+        prose, pack, weekly=weekly, memory=memory)]
+
+
+_AI_WORD_FIX = {
+    "robust": "firm",
+    "pivotal": "key",
+    "delve": "look",
+    "leverage": "use",
+}
+_CALENDAR_EMOJI = ("\U0001F4C5", "\U0001F4C6", "\U0001F5D3")
+
+
+def _auto_fix_text(text):
+    """Strip or replace a banned word without touching the rest of the line.
+    Returns (text, list of words changed)."""
+    out = str(text or "")
+    changed = []
+    for emoji in _CALENDAR_EMOJI:
+        if emoji in out:
+            out = out.replace(emoji, "")
+            changed.append("calendar emoji")
+    for word in AI_WORDS:
+        pat = re.compile(r"\b" + re.escape(word) + r"\b", re.I)
+        if not pat.search(out):
+            continue
+        repl = _AI_WORD_FIX.get(word, "")
+        out = pat.sub(repl, out)
+        changed.append(word)
+    out = re.sub(r"[ \t]{2,}", " ", out)
+    out = re.sub(r" +([,.;:!?])", r"\1", out)
+    out = re.sub(r"\(\s*\)", "", out)
+    return out.strip(), changed
+
+
+def _walk_text(node, path, visit):
+    if isinstance(node, str):
+        visit(path, node)
+    elif isinstance(node, dict):
+        for key, val in node.items():
+            child = f"{path}.{key}" if path else str(key)
+            _walk_text(val, child, visit)
+    elif isinstance(node, list):
+        for i, val in enumerate(node, 1):
+            _walk_text(val, f"{path}[{i}]", visit)
+
+
+def _fields_with_phrase(prose, phrase):
+    """Actions for every string that contains a canned phrase."""
+    hits = []
+
+    def visit(path, text):
+        if phrase not in norm_phrase(text):
+            return
+        action = _action_for_path(path)
+        if action and action not in hits:
+            hits.append(action)
+
+    _walk_text(prose, "", visit)
+    return hits
+
+
+def _action_for_path(path):
+    """Map a walk path onto a salvage action."""
+    if path in ("headline", "subline", "hero_text", "why_head", "bonus_title",
+                "bonus_text", "movers_note_gainers", "movers_note_losers",
+                "watch_text", "alert_title", "alert_text", "cta_headline",
+                "cta_sub", "next_text", "caption_a", "caption_b"):
+        return ("field", path)
+    m = re.fullmatch(r"why\[(\d+)\](?:\.(title|desc|badge|emoji))?", path)
+    if m:
+        idx = int(m.group(1))
+        sub = m.group(2)
+        if sub in (None, "title"):
+            return ("why_row", idx)
+        return ("why_part", idx, sub)
+    m = re.fullmatch(r"lessons\[(\d+)\]", path)
+    if m:
+        return ("lesson", int(m.group(1)))
+    m = re.fullmatch(r"sector_reasons\.(.+)", path)
+    if m:
+        return ("sector", m.group(1))
+    return None
+
+
+def field_hard_issues(text, pack):
+    """Hard rules for one prose string: numbers, calendar, advice, glyphs.
+    A fragment is not required to carry the deck disclaimer."""
+    text = str(text or "")
+    if not text.strip():
+        return []
+    issues = []
+    issues += compliance.number_lock(text, pack)
+    issues += compliance.calendar_lock(text, pack)
+    issues += compliance.lint(text, kind="carousel")
     return issues
+
+
+def _copy_why_row(base, index):
+    rows = base.get("why") or []
+    i = index - 1
+    if 0 <= i < len(rows) and isinstance(rows[i], dict):
+        return dict(rows[i])
+    return None
+
+
+def _copy_lesson(base, index):
+    rows = base.get("lessons") or []
+    i = index - 1
+    if 0 <= i < len(rows):
+        return rows[i]
+    return None
+
+
+def salvage_prose(pack, prose, weekly=False, memory=None):
+    """Keep the model draft. Swap only fields that fail a soft voice rule
+    or a per-field hard rule for the datapack-computed line.
+
+    Returns (prose, field_fallbacks, auto_fixes). field_fallbacks are paths
+    such as sector_reasons[Pharma]. auto_fixes are banned-word edits that
+    left the rest of the sentence in place."""
+    import copy
+    base = fallback_prose(pack, weekly=weekly)
+    out = copy.deepcopy(prose or {})
+    fallbacks = []
+    auto_fixes = []
+
+    def swapped(path):
+        if path not in fallbacks:
+            fallbacks.append(path)
+
+    def fix_node(node, path):
+        if isinstance(node, str):
+            cleaned, changed = _auto_fix_text(node)
+            if changed and cleaned and cleaned != node:
+                for word in changed:
+                    auto_fixes.append(
+                        f"rewrote banned wording '{word}' in {path}")
+                return cleaned
+            return node
+        if isinstance(node, dict):
+            return {k: fix_node(v, f"{path}.{k}" if path else str(k))
+                    for k, v in node.items()}
+        if isinstance(node, list):
+            return [fix_node(v, f"{path}[{i}]")
+                    for i, v in enumerate(node, 1)]
+        return node
+
+    out = fix_node(out, "")
+
+    def apply(action):
+        kind = action[0]
+        if kind == "field":
+            field = action[1]
+            if field in base and out.get(field) != base[field]:
+                out[field] = base[field]
+                swapped(field)
+        elif kind == "why_row":
+            row = _copy_why_row(base, action[1])
+            rows = out.get("why")
+            i = action[1] - 1
+            if row and isinstance(rows, list) and 0 <= i < len(rows):
+                if rows[i] != row:
+                    rows[i] = row
+                    swapped(f"why[{action[1]}]")
+        elif kind == "why_part":
+            idx, sub = action[1], action[2]
+            row = _copy_why_row(base, idx)
+            rows = out.get("why")
+            i = idx - 1
+            if (row and isinstance(rows, list) and 0 <= i < len(rows)
+                    and isinstance(rows[i], dict)):
+                if rows[i].get(sub) != row.get(sub):
+                    rows[i][sub] = row.get(sub)
+                    swapped(f"why[{idx}].{sub}")
+        elif kind == "why_emojis":
+            rows = out.get("why")
+            if not isinstance(rows, list):
+                return
+            changed = False
+            for i, src in enumerate(base.get("why") or []):
+                if i >= len(rows) or not isinstance(rows[i], dict):
+                    break
+                if isinstance(src, dict) and rows[i].get("emoji") != src.get("emoji"):
+                    rows[i]["emoji"] = src.get("emoji")
+                    changed = True
+            if changed:
+                swapped("why emojis")
+        elif kind == "lesson":
+            text = _copy_lesson(base, action[1])
+            rows = out.get("lessons")
+            i = action[1] - 1
+            if text and isinstance(rows, list) and 0 <= i < len(rows):
+                if rows[i] != text:
+                    rows[i] = text
+                    swapped(f"lessons[{action[1]}]")
+        elif kind == "sector":
+            short = action[1]
+            repl = (base.get("sector_reasons") or {}).get(short)
+            if not repl:
+                return
+            reasons = out.get("sector_reasons")
+            if not isinstance(reasons, dict):
+                reasons = {}
+                out["sector_reasons"] = reasons
+            if reasons.get(short) != repl:
+                reasons[short] = repl
+                swapped(f"sector_reasons[{short}]")
+        elif kind == "sectors":
+            for short in action[1]:
+                apply(("sector", short))
+        elif kind == "ai_word":
+            word = action[1]
+            # A second pass: any string that still contains the word is
+            # replaced wholesale, because the in-place edit did not clear it.
+            def visit(path, text):
+                if word in norm_phrase(text):
+                    apply(_action_for_path(path) or ("unlocated", path))
+            _walk_text(out, "", visit)
+
+    seen_actions = set()
+    for finding in quality_findings(out, pack, weekly=weekly, memory=memory):
+        action = finding["action"]
+        key = tuple(action) if isinstance(action[-1], tuple) else action
+        if key in seen_actions:
+            continue
+        seen_actions.add(key)
+        apply(action)
+
+    # Per-field hard rules. Swapping the offending string keeps the rule
+    # (the bad number or advice line does not ship) without discarding
+    # the rest of the draft.
+    for field in ("headline", "subline", "hero_text", "why_head",
+                  "bonus_title", "bonus_text", "movers_note_gainers",
+                  "movers_note_losers", "watch_text", "alert_title",
+                  "alert_text", "cta_headline", "cta_sub", "next_text",
+                  "caption_a", "caption_b"):
+        if field_hard_issues(out.get(field), pack):
+            apply(("field", field))
+    for i, row in enumerate(list(out.get("why") or []), 1):
+        if not isinstance(row, dict):
+            continue
+        blob = " ".join(str(row.get(k) or "") for k in
+                        ("title", "desc", "badge", "emoji"))
+        if field_hard_issues(blob, pack):
+            apply(("why_row", i))
+    for i, lesson in enumerate(list(out.get("lessons") or []), 1):
+        if field_hard_issues(lesson, pack):
+            apply(("lesson", i))
+    for short, text in list((out.get("sector_reasons") or {}).items()):
+        if field_hard_issues(text, pack):
+            apply(("sector", short))
+
+    # Slide budgets are soft: an over-long line is swapped, not fatal.
+    for field, limit in BUDGETS.items():
+        if len(str(out.get(field) or "")) > limit:
+            apply(("field", field))
+    for i, row in enumerate(list(out.get("why") or []), 1):
+        if not isinstance(row, dict):
+            continue
+        if (len(str(row.get("title") or "")) > 30
+                or len(str(row.get("desc") or "")) > 90
+                or len(str(row.get("badge") or "")) > 24):
+            apply(("why_row", i))
+    for i, lesson in enumerate(list(out.get("lessons") or []), 1):
+        if len(str(lesson)) > 100:
+            apply(("lesson", i))
+    for short, text in list((out.get("sector_reasons") or {}).items()):
+        if len(str(text)) > 90:
+            apply(("sector", short))
+
+    return out, fallbacks, auto_fixes
+
+
+def resolve_carousel_draft(pack, prose, weekly=False, memory=None):
+    """Turn one model draft into a shippable deck.
+
+    Soft voice failures become field-level computed text. Hard rules are
+    still enforced on the repaired deck: if a number, calendar, advice, or
+    structure check still fails, ship is False and the caller may retry.
+    """
+    repaired, fallbacks, auto_fixes = salvage_prose(
+        pack, prose, weekly=weekly, memory=memory)
+    shipping = finalize_prose(pack, repaired, weekly=weekly)
+    html, leftover = build(pack, shipping, weekly=weekly)
+    hard = []
+    hard += validate(html, pack)
+    flat = _flat(shipping)
+    hard += compliance.number_lock(flat, pack)
+    hard += compliance.calendar_lock(flat, pack)
+    if leftover:
+        hard += [f"unfilled template tokens: {leftover}"]
+    for issue in budget_issues(shipping):
+        hard.append(issue)
+    return {
+        "ship": not hard,
+        "html": html,
+        "prose": shipping,
+        "field_fallbacks": fallbacks,
+        "auto_fixes": auto_fixes,
+        "hard_issues": hard,
+    }
 
 
 def _flat(node):

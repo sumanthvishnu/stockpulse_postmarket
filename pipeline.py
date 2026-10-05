@@ -491,9 +491,13 @@ def generate_carousel(pack, brief, weekly=False):
     the report) and an anti-repetition memory of recent days; code renders it
     through the fixed template.
 
-    Never crashes the run: any LLM/parse error is retried with feedback, and
-    after 3 attempts it falls back to prose COMPUTED from the datapack (not a
-    static canned text). Returns (html, prose, issues, fell_back)."""
+    Never crashes the run. Hard rules (numbers, calendar, SEBI/advice, the
+    disclaimer) still reject a draft. Soft voice failures do not: the
+    offending field is swapped for datapack-computed text and the rest of
+    the model draft ships. A whole-deck computed fallback happens only when
+    the LLM never answers, or every draft still fails a hard rule after that
+    repair. Returns (html, prose, issues, fell_back, meta). meta has
+    llm_reached, field_fallbacks, and auto_fixes."""
     system = open(os.path.join(REPO, "skills", "carousel.md"),
                   encoding="utf-8").read()
     tdate = date.fromisoformat(pack["meta"]["trading_date"])
@@ -528,11 +532,14 @@ def generate_carousel(pack, brief, weekly=False):
     base_user += calendar_brief(pack)
     base_user += memory_block
     issues = []
+    llm_reached = False
+    meta = {"llm_reached": False, "field_fallbacks": [], "auto_fixes": []}
     for attempt in range(1, 4):
         user = base_user
         if issues:
             user += ("\n\nYour previous response had problems. Return the FULL "
-                     "corrected JSON object, fixing exactly these issues:\n- " +
+                     "JSON object. Change the fields named below and keep "
+                     "every other field as you wrote it:\n- " +
                      "\n- ".join(issues))
         try:
             if MOCK:
@@ -543,36 +550,59 @@ def generate_carousel(pack, brief, weekly=False):
                 prose = parse_json_lenient(llm.chat(
                     system, user, max_tokens=8000, temperature=0.85,
                     model=carousel_model))
-            # Lint the model's own words. finalize_prose (inside build) then
-            # fills gaps so a missing key cannot leak canned mock copy.
+                llm_reached = True
             checked = dict(prose or {})
             checked["sector_reasons"] = carousel.normalize_sector_reasons(
                 checked.get("sector_reasons"))
-            shipping = carousel.finalize_prose(pack, checked, weekly=weekly)
-            html, leftover = carousel.build(pack, shipping, weekly=weekly)
-            issues = carousel.validate(html, pack)
-            issues += carousel.budget_issues(shipping)
-            prose_flat = _prose_text(shipping)
-            issues += compliance.number_lock(prose_flat, pack)
-            issues += compliance.calendar_lock(prose_flat, pack)
-            if leftover:
-                issues += [f"unfilled template tokens: {leftover}"]
-            # Voice lint on the model text, not the computed fill. A dry run
-            # uses the datapack fallback on purpose, so it is not retried
-            # for sounding plain.
-            if not MOCK:
-                issues += carousel.prose_quality_issues(
+            if MOCK:
+                shipping = carousel.finalize_prose(pack, checked, weekly=weekly)
+                html, leftover = carousel.build(pack, shipping, weekly=weekly)
+                issues = carousel.validate(html, pack)
+                issues += carousel.budget_issues(shipping)
+                prose_flat = _prose_text(shipping)
+                issues += compliance.number_lock(prose_flat, pack)
+                issues += compliance.calendar_lock(prose_flat, pack)
+                if leftover:
+                    issues += [f"unfilled template tokens: {leftover}"]
+                if not issues:
+                    meta = {"llm_reached": True, "field_fallbacks": [],
+                            "auto_fixes": []}
+                    return html, shipping, [], False, meta
+            else:
+                # Soft voice failures are repaired here. A draft ships when
+                # the repaired text still passes the hard rules, even if some
+                # fields were replaced with computed lines.
+                resolved = carousel.resolve_carousel_draft(
+                    pack, checked, weekly=weekly, memory=memory)
+                if resolved["ship"]:
+                    notes = resolved["field_fallbacks"]
+                    fixes = resolved["auto_fixes"]
+                    if notes or fixes:
+                        log("  [carousel] kept the model draft. "
+                            f"computed fields: {notes or 'none'}; "
+                            f"auto-fixes: {fixes or 'none'}")
+                    else:
+                        log("  [carousel] kept the model draft")
+                    meta = {"llm_reached": True, "field_fallbacks": notes,
+                            "auto_fixes": fixes}
+                    return (resolved["html"], resolved["prose"], [], False,
+                            meta)
+                voice = carousel.prose_quality_issues(
                     checked, pack, weekly=weekly, memory=memory)
-            if not issues:
-                return html, shipping, [], False
+                issues = resolved["hard_issues"] + voice
         except Exception as e:  # noqa: BLE001 - LLM/parse failure must not kill the run
             issues = [f"carousel generation error: {e}"]
         log(f"  [carousel] attempt {attempt}: {issues}")
-    log("  [carousel] LLM failed - using computed fallback prose "
-        "(numbers AND story from the datapack)")
+    meta["llm_reached"] = llm_reached
+    if llm_reached:
+        log("  [carousel] LLM answered, but every draft failed a hard rule "
+            "- using computed fallback prose")
+    else:
+        log("  [carousel] LLM unreachable - using computed fallback prose "
+            "(numbers AND story from the datapack)")
     prose = carousel.fallback_prose(pack, weekly=weekly)
     html, _ = carousel.build(pack, prose, weekly=weekly)
-    return html, prose, (issues or ["used fallback prose"]), True
+    return html, prose, (issues or ["used fallback prose"]), True, meta
 
 
 def minimal_report(pack):
@@ -820,7 +850,9 @@ def tg_escape(s):
 
 
 def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues,
-           carousel_fallback=False, brief_fallback=False):
+           carousel_fallback=False, brief_fallback=False,
+           carousel_llm_reached=True, carousel_field_fallbacks=None,
+           carousel_auto_fixes=None):
     import requests
     d = pack["derived"]
     n50 = d["indices"]["Nifty 50"]
@@ -843,12 +875,39 @@ def notify(tdate, pack, pdf_path, carousel_url, pdf_url, issues,
         f"Carousel model: {tg_escape(llm.resolved_carousel_model())}",
     ]
     if carousel_fallback:
-        # Loud, not buried: fallback prose means yesterday's-style generic
-        # wording is exactly what you must NOT post without a look.
+        # Loud, not buried. Say whether the model never answered or answered
+        # and still failed a hard rule. Those are different problems.
         lines.append("")
-        lines.append("‼️ CAROUSEL USED FALLBACK PROSE (LLM failed all "
-                     "retries). Text was computed from the datapack - correct "
-                     "but plain. Review before posting.")
+        if carousel_llm_reached:
+            lines.append(
+                "‼️ CAROUSEL USED FALLBACK PROSE (LLM drafts rejected by "
+                "the gate). The model answered, but every draft failed a "
+                "hard rule (numbers, calendar, SEBI, or the disclaimer). "
+                "The whole deck was computed from the datapack. Review "
+                "before posting.")
+        else:
+            lines.append(
+                "‼️ CAROUSEL USED FALLBACK PROSE (LLM unreachable). The "
+                "model did not return a draft. Text was computed from the "
+                "datapack - correct but plain. Review before posting.")
+    elif carousel_field_fallbacks or carousel_auto_fixes:
+        lines.append("")
+        bits = []
+        if carousel_field_fallbacks:
+            shown = list(carousel_field_fallbacks[:8])
+            extra = len(carousel_field_fallbacks) - len(shown)
+            joined = ", ".join(shown)
+            if extra > 0:
+                joined += f" (+{extra} more)"
+            bits.append("computed text replaced only: " + joined)
+        if carousel_auto_fixes:
+            shown = list(carousel_auto_fixes[:4])
+            extra = len(carousel_auto_fixes) - len(shown)
+            joined = "; ".join(shown)
+            if extra > 0:
+                joined += f" (+{extra} more)"
+            bits.append("auto-fixed: " + joined)
+        lines.append("ℹ️ LLM draft kept. " + " ".join(bits))
     if brief_fallback:
         lines.append("⚠️ Story brief fell back to datapack-computed (report "
                      "distillation failed); carousel may be less narrative.")
@@ -938,8 +997,8 @@ def main():
     log("== stage 2b/4: distill story brief from the report ==")
     brief, brief_fallback = generate_story_brief(pack, report_html)
     log("== stage 3/4: build carousel (story brief + anti-repeat memory) ==")
-    carousel_html, carousel_prose, carousel_issues, carousel_fallback = \
-        generate_carousel(pack, brief, weekly=weekly)
+    carousel_html, carousel_prose, carousel_issues, carousel_fallback, \
+        carousel_meta = generate_carousel(pack, brief, weekly=weekly)
     all_issues = report_issues + carousel_issues
     save_prose(tdate, carousel_prose)
 
@@ -955,7 +1014,12 @@ def main():
     with open(os.path.join(day_dir, "report_issues.json"), "w",
               encoding="utf-8") as f:
         json.dump({"report_issues": report_issues,
-                   "carousel_issues": carousel_issues}, f)
+                   "carousel_issues": carousel_issues,
+                   "carousel_llm_reached": carousel_meta.get("llm_reached"),
+                   "carousel_field_fallbacks": carousel_meta.get(
+                       "field_fallbacks") or [],
+                   "carousel_auto_fixes": carousel_meta.get("auto_fixes") or [],
+                   }, f)
     # Publish the SCRUBBED pack, not the on-disk original: shutil.copy would
     # re-expose the stale FII/DII rows that scrub_stale() just removed.
     with open(os.path.join(day_dir, "datapack.json"), "w",
@@ -971,7 +1035,10 @@ def main():
     pdf_url = site_url(f"{tdate.isoformat()}/{pdf_name(tdate)}")
     if os.environ.get("NOTIFY", "1") == "1":
         notify(tdate, pack, pdf_path, carousel_url, pdf_url, all_issues,
-               carousel_fallback=carousel_fallback, brief_fallback=brief_fallback)
+               carousel_fallback=carousel_fallback, brief_fallback=brief_fallback,
+               carousel_llm_reached=carousel_meta.get("llm_reached", True),
+               carousel_field_fallbacks=carousel_meta.get("field_fallbacks"),
+               carousel_auto_fixes=carousel_meta.get("auto_fixes"))
     else:
         # Deferral mode (workflow sets NOTIFY=0): the message is sent by the
         # post-publish step via --notify-only, after the site is verified
@@ -979,6 +1046,11 @@ def main():
         payload = {"pdf_name": pdf_name(tdate), "carousel_url": carousel_url,
                    "pdf_url": pdf_url, "issues": all_issues,
                    "carousel_fallback": carousel_fallback,
+                   "carousel_llm_reached": carousel_meta.get(
+                       "llm_reached", True),
+                   "carousel_field_fallbacks": carousel_meta.get(
+                       "field_fallbacks") or [],
+                   "carousel_auto_fixes": carousel_meta.get("auto_fixes") or [],
                    "brief_fallback": brief_fallback,
                    "carousel_model": llm.resolved_carousel_model()}
         with open(os.path.join(day_dir, "notify_payload.json"), "w",
@@ -1003,7 +1075,10 @@ def notify_only():
     notify(tdate, pack, os.path.join(day_dir, payload["pdf_name"]),
            payload["carousel_url"], payload["pdf_url"], payload["issues"],
            carousel_fallback=payload.get("carousel_fallback", False),
-           brief_fallback=payload.get("brief_fallback", False))
+           brief_fallback=payload.get("brief_fallback", False),
+           carousel_llm_reached=payload.get("carousel_llm_reached", True),
+           carousel_field_fallbacks=payload.get("carousel_field_fallbacks"),
+           carousel_auto_fixes=payload.get("carousel_auto_fixes"))
 
 
 if __name__ == "__main__":
