@@ -1,0 +1,35 @@
+{
+ "one_liner": "Nifty closed up 0.60% at 22,555.75.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "🧴",
+   "title": "FMCG led",
+   "detail": "Led the session, closed +1.80%.",
+   "stat": "FMCG +1.80%"
+  },
+  {
+   "emoji": "🛋️",
+   "title": "Consumer Durables led",
+   "detail": "Firm beside the leader, +1.53%.",
+   "stat": "Consumer Durables +1.53%"
+  },
+  {
+   "emoji": "🏥",
+   "title": "Healthcare lagged",
+   "detail": "Deepest loss, closed -1.00%.",
+   "stat": "Healthcare -1.00%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Breadth stayed weak",
+   "detail": "1,265 advances versus 1,385 declines.",
+   "stat": "1,265 : 1,385"
+  }
+ ],
+ "flows_line": "FII sold while DII bought",
+ "watch_next": "Support 21,500, resistance 23,000.",
+ "week_pct": -2.53,
+ "lesson_seeds": [],
+ "source": "deterministic"
+}
