@@ -116,11 +116,14 @@ days; to downgrade later set the `LLM_MODEL` secret to `gpt-4o-mini`. For
 Kimi later, set `LLM_BASE_URL=https://api.moonshot.ai/v1` and the models
 to Kimi ones — no code change.
 
-**Fallback behaviour (loud, not silent).** If the carousel LLM fails all
-retries, the run no longer ships a static canned text: prose is COMPUTED from
-the datapack (real top/bottom sectors, breadth, flows, streak, option
-levels), and the Telegram message carries a prominent "CAROUSEL USED
-FALLBACK PROSE" warning so you know to review before posting.
+**Fallback behaviour (loud, not silent).** A soft voice miss (vague sector
+note, a banned word, a title reused from an earlier day) does not throw the
+draft away. That field is replaced with datapack-computed text and the
+Telegram message names the fields. The whole deck is computed prose only when
+the LLM never answers ("LLM unreachable") or every draft still fails a hard
+rule after that repair ("LLM drafts rejected by the gate"): numbers, the
+calendar, the SEBI/advice lexicon, or the disclaimer. Both cases say so in
+Telegram. There is no static canned text.
 
 ### 5. Test it
 Repo → **Actions → "StockPulse Daily Post-Market" → Run workflow** (leave the
