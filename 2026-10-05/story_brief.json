@@ -1,40 +1,40 @@
 {
- "one_liner": "Nifty 50 gains 0.60% amid mixed broader market signals.",
+ "one_liner": "Nifty 50 gains 0.60% amid mixed sectoral performance and heightened volatility.",
  "mood": "mixed",
  "drivers": [
   {
-   "emoji": "🌍",
-   "title": "No Clear Catalyst",
-   "detail": "No identifiable catalyst for market movements.",
+   "emoji": "📈",
+   "title": "Large-cap gains",
+   "detail": "ITC and BSE lead Nifty 50 gains.",
    "stat": "Nifty 50 up 0.60%"
   },
   {
-   "emoji": "📈",
-   "title": "FMCG Surge",
-   "detail": "Nifty FMCG rose 1.80%, leading sectoral gains.",
-   "stat": "FMCG up 1.80%"
-  },
-  {
-   "emoji": "💹",
-   "title": "Volatility Spike",
-   "detail": "India VIX increased by 2.21%, indicating volatility.",
-   "stat": "VIX at 14.78"
-  },
-  {
-   "emoji": "🏦",
-   "title": "Institutional Flows",
+   "emoji": "📊",
+   "title": "Institutional flows",
    "detail": "DIIs net buyers, FIIs net sellers in cash market.",
    "stat": "DIIs +Rs 5181.62 Cr, FIIs -Rs 4699.14 Cr"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility spike",
+   "detail": "India VIX rises 2.21%, indicating increased volatility.",
+   "stat": "India VIX at 14.78"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global cues",
+   "detail": "US markets rally, mixed Asian performance.",
+   "stat": "Nasdaq up 1.05%"
   }
  ],
  "flows_line": "FIIs sold Rs 4699.14 Cr, DIIs bought Rs 5181.62 Cr in cash market.",
- "watch_next": "Watch for BOJ Gov Ueda's speech and NIFTY options expiry tomorrow.",
+ "watch_next": "Watch for BOJ Gov Ueda's speech and Nifty 50 options expiry tomorrow.",
  "week_pct": -2.53,
  "lesson_seeds": [
-  "Nifty 50 rose despite lack of clear catalysts.",
-  "FMCG sector outperformed with significant gains.",
-  "Volatility increased, reflected in rising India VIX.",
-  "Institutional flows showed DIIs buying, FIIs selling."
+  "Large-cap stocks can drive index gains despite broader market weakness.",
+  "Volatility indicators like VIX can signal market sentiment shifts.",
+  "Institutional flows can provide insights into market direction.",
+  "Global market movements can influence domestic market sentiment."
  ],
  "source": "llm"
 }
