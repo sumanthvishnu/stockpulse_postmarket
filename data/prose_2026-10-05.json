@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty closed up on a *split in the flows*",
+ "subline": "FII sold while DII bought. Breadth stayed weak.",
+ "hero_text": "Nifty closed up 0.60% at 22,555.75. FII sold while DII bought.",
+ "why_head": "Why the market rose",
+ "why": [
+  {
+   "emoji": "🧴",
+   "title": "FMCG led",
+   "desc": "Led the session, closed +1.80%.",
+   "badge": "FMCG +1.80%"
+  },
+  {
+   "emoji": "🛋️",
+   "title": "Consumer Durables led",
+   "desc": "Firm beside the leader, +1.53%.",
+   "badge": "Consumer Durables +1.53%"
+  },
+  {
+   "emoji": "🏥",
+   "title": "Healthcare lagged",
+   "desc": "Deepest loss, closed -1.00%.",
+   "badge": "Healthcare -1.00%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Breadth stayed weak",
+   "desc": "More names fell than rose.",
+   "badge": "1,265 : 1,385"
+  }
+ ],
+ "sector_reasons": {
+  "FMCG": "Led the session, closed +1.80%.",
+  "Consumer Durables": "Firm beside the leader, +1.53%.",
+  "Infra": "Firm beside the leader, +1.02%.",
+  "Healthcare": "Deepest loss, closed -1.00%.",
+  "Pharma": "Lagged the tape, closed -0.74%.",
+  "IT": "Nearly flat, closed -0.01%."
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,265 stocks rose and 1,385 fell.",
+ "movers_note_gainers": "ITC and BSE led the gainers.",
+ "movers_note_losers": "HCL Tech and Max Healthcare led the losers.",
+ "watch_text": "Support at 21,500 and resistance at 23,000 frame Tuesday's open.",
+ "lessons": [
+  "Breadth was only slightly negative. The decline was narrow.",
+  "The frontline and the broader market finished on the same side.",
+  "FII sold while DII bought. The cash tape was split.",
+  "One pocket lagged the rest. Healthcare trailed while FMCG led."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "Tuesday 06 October opens next. Nifty expiry lands Tuesday.",
+ "cta_headline": "A split close. *Save it for the open*.",
+ "cta_sub": "Full wrap every evening. Next bell is Tuesday.",
+ "next_text": "Next bell is Tuesday. Nifty expiry lands Tuesday.",
+ "caption_a": "Nifty closed up 0.60% at 22,555.75, while FMCG led and Healthcare lagged.\n\nBreadth: 1,265 advances vs 1,385 declines.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #NiftyFMCG #MarketWrap #Sensex",
+ "caption_b": "FII sold while DII bought.\n\nWatch Tuesday's open. FMCG led the sectors.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #BankNifty #MarketWrap #FII"
+}
