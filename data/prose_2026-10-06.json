@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty 50 surged in a *broad-based rally*",
+ "subline": "Indices rose across the board as volatility fell sharply.",
+ "hero_text": "Nifty 50 gained 0.98% amid broad gains, even as FIIs sold Rs 2,961.3 Cr offset by DII buying.",
+ "why_head": "What drove the rise",
+ "why": [
+  {
+   "emoji": "📈",
+   "title": "Broad-Based Rally",
+   "desc": "Indices climbed without a clear catalyst.",
+   "badge": "Nifty 50 up 0.98%"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Falls",
+   "desc": "India VIX dropped significantly.",
+   "badge": "VIX at 13.61"
+  },
+  {
+   "emoji": "💰",
+   "title": "DII Buying",
+   "desc": "Continued buying in the cash market.",
+   "badge": "Net Rs 5,088.92 Cr"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Positivity",
+   "desc": "Uplifted by positive global market cues.",
+   "badge": "Dow up 0.72%"
+  }
+ ],
+ "sector_reasons": {
+  "Pharma": "Strong gains as sentiment improved",
+  "Oil & Gas": "Lifted by energy price dynamics",
+  "Private Bank": "Strengthened alongside broad financials",
+  "IT": "Mild dip post recent rally",
+  "Realty": "Lagged with minor losses",
+  "PSU Bank": "Marginally down amid mixed flows"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "DII buying offset FII selling pressures, with a net positive impact on market sentiment.",
+ "movers_note_gainers": "TRENT and BSE stood out among today's top gainers.",
+ "movers_note_losers": "COALINDIA and TECHM led the losers on the index.",
+ "watch_text": "Tomorrow, watch for the FOMC Meeting Minutes at 03:30 IST.",
+ "lessons": [
+  "Broad rallies can occur without clear catalysts.",
+  "A significant drop in volatility amid a rising market.",
+  "DII buying offset FII selling, supporting the market.",
+  "Global cues influenced positive local sentiment."
+ ],
+ "alert_title": "Upcoming Events",
+ "alert_text": "Watch for FOMC Meeting Minutes tomorrow morning.",
+ "cta_headline": "A broad up day. *Save it for the open*.",
+ "cta_sub": "Full wrap every evening. Next bell is tomorrow.",
+ "next_text": "Tomorrow opens with key events in focus.",
+ "caption_a": "Nifty 50 rose 0.98% amid broad-based gains across sectors.\\nVolatility fell sharply with India VIX down 7.9%.\\nDII buying offset FII selling pressures.\\nWatch: FOMC Meeting Minutes expected tomorrow morning.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #VIX #DII #GlobalMarkets",
+ "caption_b": "Broad-based rally lifted Nifty 50 by 0.98%.\\nVolatility dropped significantly as India VIX fell 7.9%.\\nDIIs bought Rs 5,088.92 Cr, countering FII sales.\\nWatch: FOMC Meeting Minutes at 03:30 IST tomorrow.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #FII #DII #MarketWrap"
+}
