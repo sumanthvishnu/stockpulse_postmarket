@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 surged 0.98% amid broad-based rally with no clear catalyst.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "📈",
+   "title": "Broad-Based Rally",
+   "detail": "No identifiable catalyst for the rally.",
+   "stat": "Nifty 50 up 0.98%"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Drops",
+   "detail": "India VIX decreased significantly by 7.9%.",
+   "stat": "VIX at 13.61"
+  },
+  {
+   "emoji": "💰",
+   "title": "DII Buying",
+   "detail": "DIIs bought Rs 5,088.92 Cr in cash market.",
+   "stat": "DII net Rs 5,088.92 Cr"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Markets",
+   "detail": "Positive cues from global indices.",
+   "stat": "Dow up 0.72%"
+  }
+ ],
+ "flows_line": "FIIs sold Rs 2,961.3 Cr, while DIIs bought Rs 5,088.92 Cr.",
+ "watch_next": "Watch for FOMC Meeting Minutes at 03:30 IST tomorrow.",
+ "week_pct": -0.02,
+ "lesson_seeds": [
+  "Broad rallies can occur without clear catalysts.",
+  "Volatility can drop sharply even in active markets.",
+  "DII buying can offset FII selling pressures.",
+  "Global market cues often influence local sentiment."
+ ],
+ "source": "llm"
+}
