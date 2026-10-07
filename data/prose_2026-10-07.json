@@ -1,0 +1,58 @@
+{
+ "headline": "*Nifty falls* as broader market declines",
+ "subline": "A risk-off day saw FIIs selling and VIX rising.",
+ "hero_text": "The broader market followed Nifty's decline; FIIs sold Rs 6,121.37 Cr, DIIs bought Rs 4,596.57 Cr.",
+ "why_head": "Why the market fell",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "Market Slump",
+   "desc": "No clear catalyst drove the decline.",
+   "badge": "Nifty 22,603.05"
+  },
+  {
+   "emoji": "📡",
+   "title": "Media led",
+   "desc": "Firm beside the leader, +0.69%.",
+   "badge": "Media +0.69%"
+  },
+  {
+   "emoji": "⚠️",
+   "title": "Volatility Up",
+   "desc": "India VIX rose, indicating increased risk.",
+   "badge": "VIX 13.89"
+  },
+  {
+   "emoji": "❓",
+   "title": "No Clear Trigger",
+   "desc": "Markets lacked a specific driver.",
+   "badge": "Data Gaps"
+  }
+ ],
+ "sector_reasons": {
+  "PSU Bank": "PSU banks showed resilience with positive moves",
+  "Media": "Media sector was steady amid broader declines",
+  "Private Bank": "Private banks partially cushioned the fall",
+  "Metal": "Metals weighed heavily on the indices",
+  "Realty": "Realty faced selling pressure",
+  "Auto": "Auto sector hit by broad market negativity"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "While FIIs sold aggressively, DIIs provided support with significant buying.",
+ "movers_note_gainers": "Kotak Bank and Bharti Airtel led the gainers.",
+ "movers_note_losers": "Titan and Adani Enterprises fell sharply.",
+ "watch_text": "Tomorrow, watch for FOMC Member Waller's speech at 18:00 IST.",
+ "lessons": [
+  "Market breadth was weak with more declines than advances.",
+  "FIIs continued to sell, exerting pressure on the indices.",
+  "Volatility rose as India VIX climbed, reflecting market nervousness.",
+  "No specific catalyst was identified for the broad decline."
+ ],
+ "alert_title": "Next Event",
+ "alert_text": "FOMC Member Waller speaks at 18:00 IST tomorrow.",
+ "cta_headline": "*Nifty fell* amid broad-based declines.",
+ "cta_sub": "Full wrap every evening. Next bell is Thursday.",
+ "next_text": "The next trading session is tomorrow, Thursday, 08 October 2026.",
+ "caption_a": "Nifty fell 0.76% to 22,603.05 amid a broader market decline.\\nFIIs net sold Rs 6,121.37 Cr while DIIs net bought Rs 4,596.57 Cr.\\nIndia VIX rose to 13.89, signaling increased volatility.\\nWatch: FOMC Member Waller's speech tomorrow at 18:00 IST.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #FIISelling #Volatility #MarketWrap",
+ "caption_b": "A risk-off mood gripped the market today, dragging Nifty down by 0.76%.\\nBreadth was negative with more decliners than advancers.\\nNo clear catalyst for the decline, but FIIs sold heavily.\\nWatch: Key FOMC speech tomorrow at 18:00 IST.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #FIISelling #MarketVolatility #StockMarket"
+}
