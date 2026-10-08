@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 falls 1.64% amid broad-based market decline.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Market Decline",
+   "detail": "Broad-based selling pressure across sectors.",
+   "stat": "Nifty 50 fell 1.64%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Volatility Surge",
+   "detail": "India VIX increased by 10.01%.",
+   "stat": "India VIX at 15.28"
+  },
+  {
+   "emoji": "💰",
+   "title": "FII Selling",
+   "detail": "FIIs net sellers in cash market.",
+   "stat": "FIIs sold Rs 12,943.58 crore"
+  },
+  {
+   "emoji": "🛢️",
+   "title": "Crude Oil Spike",
+   "detail": "Brent crude surged 5.35%, raising inflation concerns.",
+   "stat": "Brent at $105.56"
+  }
+ ],
+ "flows_line": "FIIs sold Rs 12,943.58 crore; DIIs bought Rs 10,703.11 crore.",
+ "watch_next": "Watch for UoM Consumer Sentiment data at 23:30 IST tomorrow.",
+ "week_pct": -1.72,
+ "lesson_seeds": [
+  "Broad-based declines can occur without a specific catalyst.",
+  "Volatility spikes often accompany market downturns.",
+  "FII selling pressure can significantly impact market sentiment.",
+  "Rising crude prices may signal inflationary pressures."
+ ],
+ "source": "llm"
+}
