@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty drops sharply as *fear surges* in the market",
+ "subline": "The market faced widespread selling with a rise in volatility.",
+ "hero_text": "Fear rose sharply today as the India VIX spiked 10.01%. Broader market also fell.",
+ "why_head": "Why the market tumbled",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "Broad Selling Pressure",
+   "desc": "All sectors experienced declines.",
+   "badge": "Nifty 50 -1.64%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Private Bank held up",
+   "desc": "Held up better than most, -0.91%.",
+   "badge": "Private Bank -0.91%"
+  },
+  {
+   "emoji": "💸",
+   "title": "FII Net Selling",
+   "desc": "FIIs pulled money from the market.",
+   "badge": "Sold Rs 12,943.58 Cr"
+  },
+  {
+   "emoji": "🛢️",
+   "title": "Crude Price Surge",
+   "desc": "Rising crude triggered inflation concerns.",
+   "badge": "Brent $105.56"
+  }
+ ],
+ "sector_reasons": {
+  "IT": "Held ground better than others",
+  "Private Bank": "Faced selling pressure with broader banks",
+  "Bank": "Part of the sector-wide decline",
+  "Metal": "Hit hard by market-wide selling",
+  "Realty": "Struggled amid broad declines",
+  "Energy": "Under pressure from crude price surge"
+ },
+ "bonus_title": "FEAR CHECK",
+ "bonus_text": "India VIX rose sharply, signaling heightened market fear.",
+ "movers_note_gainers": "INFY and TECHM edged higher in a sea of red.",
+ "movers_note_losers": "ADANIENT and JSWSTEEL led the declines.",
+ "watch_text": "Tomorrow's UoM Consumer Sentiment data at 23:30 IST will be key.",
+ "lessons": [
+  "Broad-based declines occurred without a single catalyst.",
+  "Volatility spiked alongside market downturns.",
+  "FII selling weighed heavily on market sentiment.",
+  "Rising crude prices intensified inflation fears."
+ ],
+ "alert_title": "Upcoming Event",
+ "alert_text": "Watch for UoM Consumer Sentiment data released tomorrow at 23:30 IST.",
+ "cta_headline": "Nifty fell hard. *Save it for the open*.",
+ "cta_sub": "Full wrap every evening. Check back when the bell rings tomorrow.",
+ "next_text": "Next bell is Friday, 09 October 2026. Watch UoM data tomorrow.",
+ "caption_a": "Nifty fell 1.64% amid broad-based selling.\\nVolatility spiked, with India VIX up 10.01%.\\nFIIs sold Rs 12,943.58 crore, adding selling pressure.\\nWatch: UoM Consumer Sentiment data at 23:30 IST tomorrow.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #FIISelling #Volatility #CrudeOil",
+ "caption_b": "Fear surged as India VIX rose to 15.28, a 10.01% increase.\\nNifty declined sharply by 1.64%, with broad selling pressure.\\nRising crude oil prices fueled inflation concerns.\\nWatch: Key data on consumer sentiment tomorrow at 23:30 IST.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndiaVIX #BrentCrude #FIISelling #MarketWrap"
+}
