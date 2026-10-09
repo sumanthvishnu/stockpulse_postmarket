@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 rises 1.3% as IT and FMCG sectors lead gains.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "💻",
+   "title": "IT Sector Surge",
+   "detail": "Nifty IT index surged by 3.02%.",
+   "stat": "+3.02%"
+  },
+  {
+   "emoji": "🍽️",
+   "title": "FMCG Gains",
+   "detail": "FMCG sector rose by 2.20%.",
+   "stat": "+2.20%"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Drops",
+   "detail": "India VIX decreased by 5.89%.",
+   "stat": "-5.89%"
+  },
+  {
+   "emoji": "🔍",
+   "title": "No Specific Catalysts",
+   "detail": "No identifiable catalysts for market movements.",
+   "stat": "Data Gaps Register noted"
+  }
+ ],
+ "flows_line": "FIIs net outflow of Rs 3,568.9 Cr; DIIs net inflow of Rs 4,743.26 Cr.",
+ "watch_next": "On Monday, watch for corporate actions like OLAELEC's rights issue.",
+ "week_pct": 0.44,
+ "lesson_seeds": [
+  "IT and FMCG sectors can drive significant market gains.",
+  "Reduced volatility often accompanies market rallies.",
+  "Institutional flows can have contrasting impacts on market sentiment.",
+  "Data gaps can obscure specific market catalysts."
+ ],
+ "source": "llm"
+}
