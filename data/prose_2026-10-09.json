@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty bounces as *IT and FMCG lead* the week",
+ "subline": "Nifty 50 rose 0.44% this week with significant sector support.",
+ "hero_text": "This week, IT and FMCG drove gains while metals lagged. Nifty rose 0.44%.",
+ "why_head": "What drove the market",
+ "why": [
+  {
+   "emoji": "💻",
+   "title": "IT Sector Surge",
+   "desc": "IT bolstered the market with strong gains.",
+   "badge": "+3.02%"
+  },
+  {
+   "emoji": "🍽️",
+   "title": "FMCG Upswing",
+   "desc": "FMCG stocks rallied, aiding the market.",
+   "badge": "+2.20%"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Declines",
+   "desc": "Lower VIX supported a bullish tone.",
+   "badge": "-5.89% VIX"
+  },
+  {
+   "emoji": "🔍",
+   "title": "Muted Catalysts",
+   "desc": "No clear triggers defined the week.",
+   "badge": "Data Gaps"
+  }
+ ],
+ "sector_reasons": {
+  "FMCG": "Strong buying lifted the sector",
+  "PSU Bank": "Held by steady performances",
+  "Private Bank": "Gains on optimistic sentiment",
+  "Realty": "Lackluster amid mixed cues",
+  "Metal": "Trailed as gains were capped",
+  "Auto": "Stagnant with weak demand"
+ },
+ "bonus_title": "THE SPLIT",
+ "bonus_text": "IT and FMCG surged ahead, while metals struggled, widening the sector gap.",
+ "movers_note_gainers": "Apollo Hospitals and ITC drove the gains.",
+ "movers_note_losers": "BSE and Reliance saw minor declines.",
+ "watch_text": "On Monday, keep an eye on corporate actions, including OLAELEC's rights issue.",
+ "lessons": [
+  "IT and FMCG sectors significantly lifted the market this week.",
+  "A fall in volatility often aligns with market rallies.",
+  "Contrasting FII and DII flows reflect differing market views.",
+  "Data gaps left investors without clear catalysts."
+ ],
+ "alert_title": "Looking Ahead",
+ "alert_text": "Monday's session brings corporate actions like OLAELEC's rights issue.",
+ "cta_headline": "A resilient week. *Prepare for Monday*.",
+ "cta_sub": "Full wrap every evening. Next session opens Monday.",
+ "next_text": "Monday, 12 October 2026 is the next trading session.",
+ "caption_a": "Nifty 50 rose 0.44% this week, buoyed by IT and FMCG.\\nVolatility dipped 5.89%, supporting risk-on sentiment.\\nFII outflow of Rs 3,568.9 Cr, while DII inflow was Rs 4,743.26 Cr.\\nWatch: OLAELEC's rights issue on Monday.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #NiftyIT #FMCG #MarketWrap",
+ "caption_b": "IT led with a 3.02% surge; FMCG followed at 2.20%.\\nNifty 50 ended the week up 0.44%. Metal sector lagged behind.\\nVolatility fell as India VIX dropped 5.89%.\\nWatch: Corporate actions, including OLAELEC's rights issue on Monday.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #Volatility #FMCG #IT"
+}
