@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty dips amid *heightened volatility*",
+ "subline": "Nifty 50 declined 0.70% as fear surged.",
+ "hero_text": "Fear surged with India VIX up 6.1%, while the broader market showed mixed movements.",
+ "why_head": "Today's market drivers",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "Nifty Decline",
+   "desc": "Nifty 50 fell 0.70% with no clear catalyst.",
+   "badge": "22,363.35"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Auto led",
+   "desc": "Firm beside the leader, +0.90%.",
+   "badge": "Auto +0.90%"
+  },
+  {
+   "emoji": "💰",
+   "title": "Mixed Institutional Flows",
+   "desc": "FIIs sold, DIIs bought heavily.",
+   "badge": "DII: Rs 3,045.02 Cr"
+  },
+  {
+   "emoji": "📈",
+   "title": "Media Gains",
+   "desc": "Media sector surged 4.60%.",
+   "badge": "1,624.80"
+  }
+ ],
+ "sector_reasons": {
+  "Media": "Led gains with a 4.60% rise",
+  "Auto": "Recovered slightly despite pressure",
+  "Realty": "Modest gains amid mixed cues",
+  "FMCG": "Largely weighed by ITC declines",
+  "PSU Bank": "Struggled with sectoral weakness",
+  "Infra": "Lagged the tape, closed -0.87%."
+ },
+ "bonus_title": "FEAR CHECK",
+ "bonus_text": "India VIX rose sharply by 6.1%, reflecting heightened market fear.",
+ "movers_note_gainers": "Dr Reddy's and Bajaj Auto advanced.",
+ "movers_note_losers": "Apollo Hospitals and ITC dragged the index.",
+ "watch_text": "Tomorrow's Nifty 50 weekly options expiry adds potential volatility.",
+ "lessons": [
+  "Nifty declined without a singular catalyst.",
+  "Volatility rose sharply, as seen in the VIX spike.",
+  "Divergent FII and DII flows highlighted market uncertainty.",
+  "Media sector gains stood out amid a mixed day."
+ ],
+ "alert_title": "Upcoming Event",
+ "alert_text": "Nifty 50 weekly options expiry is set for tomorrow.",
+ "cta_headline": "Market moved with *rising fear*.",
+ "cta_sub": "Full wrap every evening. Watch for tomorrow's expiry.",
+ "next_text": "Expiry day tomorrow, Tuesday, 13 October 2026.",
+ "caption_a": "Nifty fell 0.70% to 22,363.35 amid rising fear.\\nIndia VIX surged 6.1%, indicating heightened volatility.\\nMedia led the gainers, rising 4.60%.\\nDivergent FII and DII flows marked the day.\\nTomorrow is the Nifty 50 weekly options expiry.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #Volatility #FIIDII #NiftyMedia",
+ "caption_b": "Market faced mixed cues as Nifty dipped 0.70%.\\nIndia VIX climbed 6.1%, signaling fear.\\nMedia sector gained 4.60%, leading the upside.\\nFIIs net sold while DIIs net bought.\\nWatch out for the options expiry tomorrow.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #MarketVolatility #SectorGains #OptionsExpiry"
+}
