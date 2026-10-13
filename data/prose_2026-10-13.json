@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty *jumps 1.60%* as IT leads the way",
+ "subline": "Strong IT rally fuels a positive session. Fear recedes.",
+ "hero_text": "The broader market advanced with Nifty up 1.60%, driven by falling fear levels as India VIX dropped 7.43%.",
+ "why_head": "Why the market surged",
+ "why": [
+  {
+   "emoji": "💻",
+   "title": "IT Rally",
+   "desc": "Nifty IT jumped sharply without clear catalysts.",
+   "badge": "5.22% rise"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Drops",
+   "desc": "A decrease in India VIX reduced market anxiety.",
+   "badge": "-7.43%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "DII Inflow",
+   "desc": "Domestic investors were net buyers today.",
+   "badge": "Rs 2,439.24 Cr in"
+  },
+  {
+   "emoji": "📈",
+   "title": "Positive Breadth",
+   "desc": "Advances outpaced declines significantly.",
+   "badge": "1,620 advances"
+  }
+ ],
+ "sector_reasons": {
+  "IT": "Led gains with a strong rally",
+  "Realty": "Firm beside the leader, +2.46%.",
+  "Consumer Durables": "Firm beside the leader, +1.56%.",
+  "Pharma": "Lagged amid mixed cues",
+  "Healthcare": "Held back by lack of clear drivers",
+  "Energy": "Saw modest gains with oil price stability"
+ },
+ "bonus_title": "FEAR CHECK",
+ "bonus_text": "A significant drop in India VIX by 7.43% reassured investors, indicating lower market fear.",
+ "movers_note_gainers": "HCLTECH and TCS led the gainers with notable upticks.",
+ "movers_note_losers": "Kotak Bank and Eternal saw minor declines today.",
+ "watch_text": "Tomorrow, watch for ECB and BOE speeches, and the crucial US CPI data release.",
+ "lessons": [
+  "Nifty IT's surge without a clear catalyst underscores sector unpredictability.",
+  "DII inflows provided support despite FII outflows.",
+  "Falling volatility aligned with a risk-on sentiment.",
+  "Strong breadth indicated firm market participation."
+ ],
+ "alert_title": "Upcoming Event",
+ "alert_text": "US CPI data and ECB/BOE speeches are key events to watch tomorrow.",
+ "cta_headline": "A broad up day. *See what's next*.",
+ "cta_sub": "Full wrap every evening. Prepare for tomorrow's action.",
+ "next_text": "Look ahead to Wednesday's session including major economic data.",
+ "caption_a": "Nifty soared 1.60% led by a strong IT sector rally.\\nIndia VIX fell 7.43% easing market fears.\\nDIIs were net buyers with inflows of Rs 2,439.24 Cr.\\nWatch: ECB, BOE speeches, and US CPI data tomorrow.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #NiftyIT #StockMarket #DII",
+ "caption_b": "A firm session for Nifty with a 1.60% rise thanks to IT.\\nIndia VIX declined 7.43%, indicating reduced volatility.\\nPositive breadth as advances significantly outnumbered declines.\\nWatch: Key economic data and speeches tomorrow.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #IndiaVIX #MarketWrap #FII"
+}
