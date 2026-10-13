@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 surges 1.60% driven by a strong IT sector rally.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "💻",
+   "title": "Nifty IT Surge",
+   "detail": "Nifty IT index jumped 5.22%, no specific catalyst identified.",
+   "stat": "5.22%"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Drops",
+   "detail": "India VIX fell by 7.43%, indicating reduced market volatility.",
+   "stat": "-7.43%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "DII Buying",
+   "detail": "DIIs were net buyers with Rs 2,439.24 Cr inflow.",
+   "stat": "Rs 2,439.24 Cr"
+  },
+  {
+   "emoji": "📈",
+   "title": "Positive Breadth",
+   "detail": "Market breadth positive with 1,620 advances.",
+   "stat": "1,620 advances"
+  }
+ ],
+ "flows_line": "FIIs sold Rs 1,305.13 Cr while DIIs bought Rs 2,439.24 Cr.",
+ "watch_next": "Watch for ECB and BOE speeches and US CPI data tomorrow.",
+ "week_pct": -0.24,
+ "lesson_seeds": [
+  "Nifty IT's unexplained surge highlights sector volatility.",
+  "DII buying supports market despite FII selling.",
+  "Reduced volatility may encourage risk-on sentiment.",
+  "Positive breadth indicates broad market strength."
+ ],
+ "source": "llm"
+}
