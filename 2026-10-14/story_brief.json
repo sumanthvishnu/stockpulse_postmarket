@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 dips 0.44% amid mixed sectoral performance and rising volatility.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "No Catalyst",
+   "detail": "No identifiable catalyst for market movements.",
+   "stat": "Nifty 50 closed at 22,622.70, down 99.25 points."
+  },
+  {
+   "emoji": "📈",
+   "title": "FMCG Gains",
+   "detail": "Nifty FMCG rose 1.21%, leading sectoral gains.",
+   "stat": "Nifty FMCG gained 540.55 points."
+  },
+  {
+   "emoji": "💻",
+   "title": "IT Sector Rise",
+   "detail": "Nifty IT climbed 1.14% with strong performance.",
+   "stat": "Nifty IT increased by 340.90 points."
+  },
+  {
+   "emoji": "📊",
+   "title": "Volatility Up",
+   "detail": "India VIX rose 3.58%, indicating increased volatility.",
+   "stat": "India VIX closed at 14.63."
+  }
+ ],
+ "flows_line": "FIIs sold Rs 1,857.44 Cr, while DIIs bought Rs 2,670.44 Cr.",
+ "watch_next": "Tomorrow's focus includes GDP data from the UK and US economic indicators.",
+ "week_pct": 0.09,
+ "lesson_seeds": [
+  "Market lacked a clear catalyst for movements.",
+  "FMCG and IT sectors showed resilience.",
+  "Volatility increased as indicated by India VIX.",
+  "Institutional flows showed contrasting FII and DII activities."
+ ],
+ "source": "llm"
+}
