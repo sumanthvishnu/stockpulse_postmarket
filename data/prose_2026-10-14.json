@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty slips as *volatility rises* and sector gains diverge",
+ "subline": "Mixed sector performances and rising volatility marked the session.",
+ "hero_text": "A mixed session with the FMCG and IT sectors showing resilience amid a lack of clear catalysts.",
+ "why_head": "Why the market shifted",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "No Clear Catalyst",
+   "desc": "Market dropped with no clear cause.",
+   "badge": "Nifty 22,622.70"
+  },
+  {
+   "emoji": "📈",
+   "title": "FMCG Gains",
+   "desc": "FMCG led sectoral gains.",
+   "badge": "+1.21%"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT Sector Rises",
+   "desc": "IT showed strong performance.",
+   "badge": "+1.14%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Volatility Increased",
+   "desc": "Volatility spiked, raising market jitters.",
+   "badge": "VIX 14.63"
+  }
+ ],
+ "sector_reasons": {
+  "Energy": "Supported by broader energy trends",
+  "FMCG": "Led gains as sector strengthened",
+  "IT": "Advanced with strong performance",
+  "Pharma": "Lagged amid broader sector pressure",
+  "Healthcare": "Lagged the tape, closed -1.25%.",
+  "Financials": "Weighed down by mixed results"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "Market breadth positive with 1.33 advancing stocks for every decliner.",
+ "movers_note_gainers": "NESTLEIND and TATACONSUM led the gains today.",
+ "movers_note_losers": "SHRIRAMFIN and HDFCLIFE were among the top losers.",
+ "watch_text": "Watch for tomorrow's GDP data from the UK and major US indicators.",
+ "lessons": [
+  "No clear catalysts for the market's dip today.",
+  "FMCG and IT sectors showed notable resilience.",
+  "Volatility increased, signaling market uncertainty.",
+  "Contrasting FII selling and DII buying marked institutional flows."
+ ],
+ "alert_title": "Upcoming",
+ "alert_text": "Focus on UK GDP and key US economic indicators tomorrow.",
+ "cta_headline": "Nifty dipped. *See what's next*.",
+ "cta_sub": "Full wrap every evening. Next bell is Thursday.",
+ "next_text": "Thursday, 15 October 2026. Watch the GDP data and US economic releases.",
+ "caption_a": "Nifty slipped 0.44% to close at 22,622.70 amid rising volatility.\\nFMCG and IT sectors showed strength while India VIX rose 3.58%.\\nFIIs sold Rs 1,857.44 Cr, DIIs bought Rs 2,670.44 Cr.\\nWatch: tomorrow's GDP data from the UK.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #FMCG #IT #Volatility",
+ "caption_b": "Mixed day for markets: Nifty fell, volatility rose.\\nFMCG gained 1.21%, IT climbed 1.14%, showing resilience.\\nFII sold heavily at Rs 1,857.44 Cr, DIIs bought Rs 2,670.44 Cr.\\nWatch: UK GDP and US economic updates tomorrow.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #FII #DII #EconomicData"
+}
