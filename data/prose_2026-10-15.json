@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty soars 1.66% as *heavyweights lead* the charge",
+ "subline": "Reliance and ICICI Bank were the key drivers amid mixed market performance.",
+ "hero_text": "Nifty 50 surged 1.66% led by heavyweight gains, while the broader market saw mixed results with 899 advances against 1,755 declines.",
+ "why_head": "Why the market moved",
+ "why": [
+  {
+   "emoji": "🏦",
+   "title": "Heavyweight Boost",
+   "desc": "Reliance and ICICI Bank were key drivers.",
+   "badge": "Nifty 50 +374.65 pts"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Eased",
+   "desc": "India VIX declined, reducing market tension.",
+   "badge": "VIX at 14.03"
+  },
+  {
+   "emoji": "💼",
+   "title": "FII Outflow",
+   "desc": "Foreign investors were net sellers.",
+   "badge": "Outflow Rs 5,285.37 Cr"
+  },
+  {
+   "emoji": "📊",
+   "title": "Narrow Market Breadth",
+   "desc": "More decliners than gainers.",
+   "badge": "899 vs 1,755"
+  }
+ ],
+ "sector_reasons": {
+  "Private Bank": "Gains led by ICICI Bank boost",
+  "IT": "TechM and others drove IT gains",
+  "Financials": "Rally helped by key financial stocks",
+  "PSU Bank": "Pressure from mixed performance",
+  "Media": "Dragged down as sentiment soured",
+  "FMCG": "Weighed on by Nestle's decline"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "Opposite directions as FIIs sold Rs 5,285.37 Cr and DIIs bought Rs 3,319.39 Cr.",
+ "movers_note_gainers": "Key gains led by TechM and ICICI Bank.",
+ "movers_note_losers": "Nestle was a major drag on the index.",
+ "watch_text": "Tomorrow, focus on speeches by BOE Gov Bailey and Fed Chairman Warsh.",
+ "lessons": [
+  "Heavyweight stocks like Reliance can drive the Nifty.",
+  "A decline in VIX suggests eased market tension.",
+  "FII outflows indicate potential market pressure.",
+  "Negative breadth points to a narrow-focused rally."
+ ],
+ "alert_title": "Upcoming Events",
+ "alert_text": "Watch for BOE and Fed Chair speeches tomorrow at 11:30 IST and 13:00 IST.",
+ "cta_headline": "Nifty gains as *heavyweights rally*",
+ "cta_sub": "Daily wrap every evening. Check back when the bell rings tomorrow.",
+ "next_text": "Tomorrow's session may be influenced by key global speeches.",
+ "caption_a": "Nifty surged 1.66% driven by heavyweights like Reliance and ICICI Bank.\\nVolatility eased as India VIX fell by 4.1% to 14.03.\\nFIIs were net sellers, outflowing Rs 5,285.37 Cr.\\nWatch: BOE and Fed Chair speeches tomorrow.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #Volatility #FII #MarketWrap",
+ "caption_b": "Despite the broader market's mixed performance, Nifty soared 1.66% with heavyweights leading the charge.\\n899 stocks advanced, but 1,755 declined, showing narrow breadth.\\nDIIs turned buyers, while FIIs net sold Rs 5,285.37 Cr.\\nWatch: Speeches from BOE and US Fed heads tomorrow.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #Reliance #Volatility #MarketWrap"
+}
