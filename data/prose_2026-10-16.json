@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty gains *driven by IT and telecom*",
+ "subline": "Nifty 50 rose 0.65% this week with IT leading.",
+ "hero_text": "Despite mixed global cues, Nifty climbed 2.78% this week, led by the IT sector's strong performance.",
+ "why_head": "Key drivers of the week",
+ "why": [
+  {
+   "emoji": "💻",
+   "title": "IT Stocks Lifted Gains",
+   "desc": "TCS and Infosys led with high delivery.",
+   "badge": "Nifty IT 11.72%"
+  },
+  {
+   "emoji": "📈",
+   "title": "Broad Market Participation",
+   "desc": "Advances outnumber declines.",
+   "badge": "A/D Ratio 1.476"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Indices Mixed",
+   "desc": "Dow up, Nasdaq down.",
+   "badge": "Dow +0.27%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Breadth stayed positive",
+   "desc": "More names rose than fell.",
+   "badge": "1,581 : 1,071"
+  }
+ ],
+ "sector_reasons": {
+  "IT": "Rallied on strong performances by TCS and Infosys",
+  "Media": "Benefited from strong market interest",
+  "Auto": "Mild gains amid sector choppiness",
+  "Healthcare": "Struggled with mixed sentiment",
+  "Pharma": "Faced pressure with slight losses",
+  "FMCG": "Weak as sector performance varied"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "FIIs added Rs 1165.92 Cr, while DIIs pulled out Rs 3661.28 Cr, showing diverging outlooks.",
+ "movers_note_gainers": "TechM and TCS pushed the Nifty higher.",
+ "movers_note_losers": "IndiGo and BSE faced declines.",
+ "watch_text": "Look out for potential impacts of the F&O ban on AMBUJACEM, KAYNES, and SAIL on Monday.",
+ "lessons": [
+  "IT sector's strength significantly boosted market sentiment this week.",
+  "Despite mixed signals from global markets, Nifty ended on a positive note.",
+  "Contrasting flows highlighted divergent institutional views.",
+  "Broad market participation underpinned the weekly rally."
+ ],
+ "alert_title": "Market Watch",
+ "alert_text": "Monitor F&O bans and institutional flows as markets open on Monday.",
+ "cta_headline": "IT leads the charge. *Mark your calendars*.",
+ "cta_sub": "Weekly wrap. Next session starts Monday.",
+ "next_text": "Next session is Monday, 19 October 2026.",
+ "caption_a": "Nifty advanced 2.78% this week, driven by IT sector gains.\\nFIIs net bought Rs 1165.92 Cr while DIIs sold Rs 3661.28 Cr.\\nWatch for F&O ban impacts on AMBUJACEM, KAYNES, and SAIL.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #NiftyIT #FII #WeeklyWrap",
+ "caption_b": "IT surge powered Nifty's 2.78% weekly gain. TCS and Infosys led.\\nMixed global cues had limited impact on Indian markets.\\nFIIs added Rs 1165.92 Cr; DIIs withdrew Rs 3661.28 Cr.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #NiftyIT #FII #IndianStockMarket #WeeklyWrap"
+}
