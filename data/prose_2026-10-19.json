@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty fell amid *rising volatility*",
+ "subline": "A broad decline marked the day with a volatile backdrop.",
+ "hero_text": "Fear gauge rose as Nifty slid. FIIs sold Rs 1,148.64 Cr, countered by DIIs buying Rs 3,201.19 Cr.",
+ "why_head": "The decline drivers",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "Broad Decline",
+   "desc": "No specific catalyst identified for market decline.",
+   "badge": "Nifty -257.2 pts"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Financials Dragged",
+   "desc": "Sector led the decline today.",
+   "badge": "Fin Services -400 pts"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT Sector Weakness",
+   "desc": "IT companies faced significant drops.",
+   "badge": "Nifty IT -407.8 pts"
+  },
+  {
+   "emoji": "📊",
+   "title": "Breadth stayed weak",
+   "desc": "More names fell than rose.",
+   "badge": "491 : 2,182"
+  }
+ ],
+ "sector_reasons": {
+  "PSU Bank": "Strong performance with key support",
+  "Oil & Gas": "Nearly flat, closed -0.12%.",
+  "Media": "Resilient with notable names advancing",
+  "Private Bank": "Fell with the broader financial sector",
+  "Financials": "Major drag due to broad selling",
+  "FMCG": "Underperformed as stocks faced sell-off"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "Contrasting flows with FIIs exiting and DIIs buying heavily.",
+ "movers_note_gainers": "JSW Steel and ONGC managed gains despite market pressure.",
+ "movers_note_losers": "Axis Bank and Bajaj Finance were major drags on the Nifty.",
+ "watch_text": "Focus on Wednesday's session with key GBP CPI data and BOE speech.",
+ "lessons": [
+  "Market breadth was heavily negative with declines outnumbering advances.",
+  "Financials and IT sectors led today's declines, shaping market sentiment.",
+  "Volatility surged as India VIX spiked sharply, indicating heightened caution.",
+  "Lack of clear catalysts marked today's moves among top gainers and losers."
+ ],
+ "alert_title": "Upcoming Watch",
+ "alert_text": "Wednesday's session will spotlight GBP CPI data and the BOE speech.",
+ "cta_headline": "Nifty slipped. *See what's next*.",
+ "cta_sub": "Daily wrap every evening. Catch the next session on Wednesday.",
+ "next_text": "Next session: Wednesday, 21 October 2026.",
+ "caption_a": "Nifty fell 1.11% to 22,888.95 amid rising volatility.\\nFIIs sold Rs 1,148.64 Cr whereas DIIs bought Rs 3,201.19 Cr.\\nFinancials and IT sectors led the declines.\\nWatch: GBP CPI data and BOE speech on Wednesday.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #IndianStockMarket #Volatility #Financials #ITSector",
+ "caption_b": "A volatile session as Nifty dipped 257.2 pts to 22,888.95.\\nIndia VIX surged by 5.05%, highlighting increased market fear.\\nFIIs exited while DIIs stepped in, balancing the flows.\\nWatch: Key data from UK on Wednesday.\\nDaily wrap every evening @getstockpulse\\nNot investment advice.\\n#Nifty #Volatility #FII #DII #MarketWrap"
+}
