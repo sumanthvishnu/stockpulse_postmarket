@@ -413,5 +413,176 @@ class Oct5GateTests(unittest.TestCase):
         self.assertIn("LLM draft kept", blob)
 
 
+class CarouselWriterChainTests(unittest.TestCase):
+    """Oct 2026: the carousel moves to Claude Sonnet 5.5, with the OpenAI
+    model as the safety net before computed text."""
+
+    ENV = ("LLM_MODEL_CAROUSEL", "LLM_MODEL", "LLM_PROVIDER_CAROUSEL",
+           "ANTHROPIC_API_KEY", "OPENAI_API_KEY")
+
+    @classmethod
+    def setUpClass(cls):
+        path = os.path.join(ROOT, "data",
+                            "stockpulse_datapack_2026-10-05_compiler.json")
+        with open(path, encoding="utf-8") as fh:
+            cls.pack = json.load(fh)
+        cls.good = json.dumps(carousel.fallback_prose(cls.pack),
+                              ensure_ascii=False)
+
+    def setUp(self):
+        self._saved = {k: os.environ.get(k) for k in self.ENV}
+        for k in self.ENV:
+            os.environ.pop(k, None)
+        self._chat, self._log, self._mock = llm.chat, pipeline.log, pipeline.MOCK
+        pipeline.log = lambda m: None
+        pipeline.MOCK = False
+        self.calls = []
+
+    def tearDown(self):
+        llm.chat, pipeline.log, pipeline.MOCK = self._chat, self._log, self._mock
+        for k, v in self._saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
+    def _brief(self):
+        return pipeline.deterministic_brief(self.pack)
+
+    def _fake(self, claude):
+        def chat(system, user, model=None, provider=None, **kw):
+            self.calls.append((provider, model))
+            if provider == "anthropic":
+                return claude()
+            return self.good
+        llm.chat = chat
+
+    def test_writers_and_provider_inference(self):
+        os.environ["LLM_MODEL_CAROUSEL"] = "claude-sonnet-5-5"
+        self.assertEqual(llm.carousel_writers(),
+                         [("anthropic", "claude-sonnet-5-5"),
+                          ("openai", "gpt-4o")])
+        os.environ["LLM_MODEL"] = "gpt-4o"
+        os.environ["LLM_MODEL_CAROUSEL"] = "gpt-4o"
+        self.assertEqual(llm.carousel_writers(), [("openai", "gpt-4o")])
+        os.environ["LLM_PROVIDER_CAROUSEL"] = "anthropic"
+        os.environ["LLM_MODEL_CAROUSEL"] = "claude-haiku-5-5"
+        self.assertEqual(llm.carousel_writers()[0],
+                         ("anthropic", "claude-haiku-5-5"))
+
+    def test_opus_and_fable_are_refused(self):
+        os.environ["ANTHROPIC_API_KEY"] = "test"
+        for m in ("claude-opus-5-5", "claude-fable-5-1"):
+            with self.assertRaises(RuntimeError):
+                self._chat("s", "u", model=m, provider="anthropic")
+
+    def test_anthropic_request_omits_temperature(self):
+        os.environ["ANTHROPIC_API_KEY"] = "test-key"
+        seen = {}
+
+        class R:
+            status_code = 200
+            headers = {}
+            text = ""
+
+            def json(self):
+                return {"choices": [{"message": {"content": "{}"}}],
+                        "usage": {"prompt_tokens": 1, "completion_tokens": 1}}
+
+        orig = llm.requests.post
+
+        def post(url, headers=None, json=None, timeout=None):
+            seen.update(url=url, headers=headers, json=json)
+            return R()
+        llm.requests.post = post
+        try:
+            out = self._chat("s", "u", model="claude-sonnet-5-5",
+                             provider="anthropic", temperature=0.85)
+        finally:
+            llm.requests.post = orig
+        self.assertEqual(out, "{}")
+        self.assertTrue(seen["url"].startswith("https://api.anthropic.com/v1"))
+        self.assertNotIn("temperature", seen["json"])
+        self.assertEqual(seen["headers"]["Authorization"], "Bearer test-key")
+
+    def test_missing_claude_key_falls_back_to_gpt4o(self):
+        os.environ["LLM_MODEL_CAROUSEL"] = "claude-sonnet-5-5"
+        llm.chat = self._chat  # real chat: no ANTHROPIC_API_KEY -> raises
+        real = llm.chat
+
+        def chat(system, user, model=None, provider=None, **kw):
+            self.calls.append((provider, model))
+            if provider == "anthropic":
+                return real(system, user, model=model, provider=provider)
+            return self.good
+        llm.chat = chat
+        html, prose, issues, fell_back, meta = pipeline.generate_carousel(
+            self.pack, self._brief())
+        self.assertFalse(fell_back)
+        self.assertEqual(meta["carousel_model"], "gpt-4o")
+        self.assertEqual(self.calls[0], ("anthropic", "claude-sonnet-5-5"))
+        self.assertEqual(self.calls[-1], ("openai", "gpt-4o"))
+        self.assertIn("Not investment advice.", html)
+
+    def test_broken_claude_json_falls_back_to_gpt4o(self):
+        os.environ["LLM_MODEL_CAROUSEL"] = "claude-sonnet-5-5"
+        self._fake(lambda: "{not json")
+        _h, _p, _i, fell_back, meta = pipeline.generate_carousel(
+            self.pack, self._brief())
+        self.assertFalse(fell_back)
+        self.assertEqual(meta["carousel_model"], "gpt-4o")
+        self.assertEqual([c for c in self.calls if c[0] == "anthropic"],
+                         [("anthropic", "claude-sonnet-5-5")] * 3)
+
+    def test_claude_draft_ships_without_calling_openai(self):
+        os.environ["LLM_MODEL_CAROUSEL"] = "claude-sonnet-5-5"
+        self._fake(lambda: self.good)
+        _h, _p, _i, fell_back, meta = pipeline.generate_carousel(
+            self.pack, self._brief())
+        self.assertFalse(fell_back)
+        self.assertEqual(meta["carousel_model"], "claude-sonnet-5-5")
+        self.assertEqual(self.calls, [("anthropic", "claude-sonnet-5-5")])
+
+    def test_both_writers_down_uses_computed_text(self):
+        os.environ["LLM_MODEL_CAROUSEL"] = "claude-sonnet-5-5"
+
+        def chat(system, user, model=None, provider=None, **kw):
+            self.calls.append((provider, model))
+            raise RuntimeError("HTTP 500")
+        llm.chat = chat
+        _h, _p, _i, fell_back, meta = pipeline.generate_carousel(
+            self.pack, self._brief())
+        self.assertTrue(fell_back)
+        self.assertFalse(meta["llm_reached"])
+        self.assertTrue(meta["carousel_model"].startswith("computed"))
+        self.assertEqual(self.calls, [("anthropic", "claude-sonnet-5-5"),
+                                      ("openai", "gpt-4o")])
+
+    def test_telegram_names_the_model_that_wrote_it(self):
+        messages = []
+        orig_dry = pipeline.DRY
+        pipeline.log = messages.append
+        pipeline.DRY = True
+        try:
+            common = dict(tdate=date(2026, 10, 5), pack=self.pack,
+                          pdf_path="/tmp/none.pdf", carousel_url="http://c",
+                          pdf_url="http://p", issues=[])
+            pipeline.notify(carousel_model="claude-sonnet-5-5",
+                            carousel_model_configured="claude-sonnet-5-5",
+                            **common)
+            first = "\n".join(messages)
+            messages.clear()
+            pipeline.notify(carousel_model="gpt-4o",
+                            carousel_model_configured="claude-sonnet-5-5",
+                            **common)
+            second = "\n".join(messages)
+        finally:
+            pipeline.DRY = orig_dry
+        self.assertIn("Carousel model: claude-sonnet-5-5", first)
+        self.assertNotIn("was unavailable", first)
+        self.assertIn("Carousel model: gpt-4o", second)
+        self.assertIn("claude-sonnet-5-5 was unavailable", second)
+
+
 if __name__ == "__main__":
     unittest.main()

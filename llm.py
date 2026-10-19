@@ -46,8 +46,53 @@ def resolved_carousel_model():
     return (os.environ.get("LLM_MODEL") or "gpt-4o").strip() or "gpt-4o"
 
 
+ANTHROPIC_BASE_URL = "https://api.anthropic.com/v1"
+
+
+def provider_for(model):
+    """'anthropic' for Claude model ids, else 'openai' (any OpenAI-compatible
+    endpoint behind LLM_BASE_URL)."""
+    m = (model or "").strip().lower()
+    return "anthropic" if m.startswith("claude") else "openai"
+
+
+def resolved_carousel_provider():
+    """Provider for the carousel prose pass. LLM_PROVIDER_CAROUSEL pins it
+    ('anthropic' or 'openai'); blank means infer from the carousel model id."""
+    pinned = (os.environ.get("LLM_PROVIDER_CAROUSEL") or "").strip().lower()
+    if pinned in ("anthropic", "openai"):
+        return pinned
+    return provider_for(resolved_carousel_model())
+
+
+def carousel_fallback_model():
+    """OpenAI-side model the carousel falls back to when the primary
+    (e.g. Claude) writer is unavailable: LLM_MODEL, then gpt-4o."""
+    return (os.environ.get("LLM_MODEL") or "gpt-4o").strip() or "gpt-4o"
+
+
+def carousel_writers():
+    """Ordered (provider, model) list the carousel pass tries before the
+    computed fallback. Claude first when configured, then the OpenAI model."""
+    primary = (resolved_carousel_provider(), resolved_carousel_model())
+    writers = [primary]
+    if primary[0] == "anthropic":
+        writers.append(("openai", carousel_fallback_model()))
+    return writers
+
+
+def _never_opus_or_fable(model):
+    m = (model or "").lower()
+    if "opus" in m or "fable" in m:
+        raise RuntimeError(f"refusing expensive model {model!r} "
+                           "(Opus/Fable are not allowed for StockPulse)")
+
+
 def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3,
-         model=None):
+         model=None, provider=None):
+    if provider == "anthropic":
+        return _chat_anthropic(system, user, max_tokens=max_tokens,
+                               model=model, attempts=min(attempts, 2))
     # Empty-string env vars (an unset GitHub secret is injected as "") must
     # fall back to defaults, else the URL becomes "/chat/completions".
     base = (os.environ.get("LLM_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
@@ -75,15 +120,50 @@ def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3,
         "temperature": temperature,
         "max_tokens": max_tokens,
     }
+    return _post_chat(url, headers, payload, attempts, timeout=600)
+
+
+def _chat_anthropic(system, user, max_tokens=8000, model=None, attempts=2):
+    """Claude through Anthropic's OpenAI-compatible /chat/completions.
+    Claude 5.5 rejects `temperature`, so it is omitted. Fails fast on a
+    missing key so the caller can fall back to the OpenAI writer."""
+    model = (model or "claude-sonnet-5-5").strip()
+    _never_opus_or_fable(model)
+    key = (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
+    if not key:
+        raise RuntimeError("no API key: ANTHROPIC_API_KEY is not set")
+    base = (os.environ.get("ANTHROPIC_BASE_URL") or ANTHROPIC_BASE_URL).rstrip("/")
+    headers = {"Authorization": f"Bearer {key}",
+               "Content-Type": "application/json"}
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+        "max_tokens": max_tokens,
+    }
+    return _post_chat(f"{base}/chat/completions", headers, payload, attempts,
+                      timeout=360)
+
+
+def _post_chat(url, headers, payload, attempts, timeout=600):
 
     last = "unknown"
     rate_waits = 0
     i = 0
     while i < attempts:
         try:
-            r = requests.post(url, headers=headers, json=payload, timeout=600)
+            r = requests.post(url, headers=headers, json=payload,
+                              timeout=timeout)
             if r.status_code == 200:
-                return r.json()["choices"][0]["message"]["content"]
+                body = r.json()
+                usage = body.get("usage") or {}
+                if usage:
+                    print(f"  [llm] {payload.get('model')} tokens in="
+                          f"{usage.get('prompt_tokens')} out="
+                          f"{usage.get('completion_tokens')}", flush=True)
+                return body["choices"][0]["message"]["content"]
             if r.status_code == 429 and rate_waits < 3:
                 # Per-minute token budget (TPM) exhausted. The window resets
                 # within a minute, so wait the server-specified time and
