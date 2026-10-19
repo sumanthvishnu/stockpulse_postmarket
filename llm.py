@@ -65,20 +65,46 @@ def resolved_carousel_provider():
     return provider_for(resolved_carousel_model())
 
 
+DEFAULT_CAROUSEL_FALLBACK = "gpt-6-luna"
+
+
 def carousel_fallback_model():
-    """OpenAI-side model the carousel falls back to when the primary
-    (e.g. Claude) writer is unavailable: LLM_MODEL, then gpt-4o."""
+    """Last-resort OpenAI model for the carousel: LLM_MODEL, then gpt-4o.
+    Shared with the report pass; kept until gpt-4o retires (14 Jan 2027)."""
     return (os.environ.get("LLM_MODEL") or "gpt-4o").strip() or "gpt-4o"
+
+
+def carousel_backup_models():
+    """Carousel-only backup writers tried after the primary, before the
+    last-resort model. LLM_MODEL_CAROUSEL_FALLBACK takes a comma-separated
+    list; blank means gpt-6-luna. Does not touch the report/brief model."""
+    raw = (os.environ.get("LLM_MODEL_CAROUSEL_FALLBACK") or "").strip()
+    models = [m.strip() for m in (raw or DEFAULT_CAROUSEL_FALLBACK).split(",")]
+    return [m for m in models if m]
 
 
 def carousel_writers():
     """Ordered (provider, model) list the carousel pass tries before the
-    computed fallback. Claude first when configured, then the OpenAI model."""
-    primary = (resolved_carousel_provider(), resolved_carousel_model())
-    writers = [primary]
-    if primary[0] == "anthropic":
-        writers.append(("openai", carousel_fallback_model()))
+    computed fallback: configured model (Claude Sonnet), then the carousel
+    backup (gpt-6-luna), then the last resort (LLM_MODEL / gpt-4o).
+    Duplicates are dropped."""
+    chain = [(resolved_carousel_provider(), resolved_carousel_model())]
+    for m in carousel_backup_models() + [carousel_fallback_model()]:
+        chain.append((provider_for(m), m))
+    writers, seen = [], set()
+    for provider, model in chain:
+        if model in seen:
+            continue
+        seen.add(model)
+        writers.append((provider, model))
     return writers
+
+
+def _is_reasoning_openai_model(model):
+    """GPT-5/6 family ids (e.g. gpt-6-luna) take reasoning_effort and
+    max_completion_tokens instead of max_tokens."""
+    m = (model or "").strip().lower()
+    return bool(re.match(r"^(gpt-[5-9]|o[1-9])", m))
 
 
 def _never_opus_or_fable(model):
@@ -120,6 +146,13 @@ def chat(system, user, max_tokens=12000, temperature=0.3, attempts=3,
         "temperature": temperature,
         "max_tokens": max_tokens,
     }
+    if _is_reasoning_openai_model(model):
+        # OpenAI's GPT-4o migration guide: start Luna at reasoning effort
+        # "none" (temperature is allowed at "none"); these models take
+        # max_completion_tokens, not max_tokens.
+        payload["reasoning_effort"] = (
+            os.environ.get("LLM_REASONING_EFFORT_CAROUSEL") or "none").strip()
+        payload["max_completion_tokens"] = payload.pop("max_tokens")
     return _post_chat(url, headers, payload, attempts, timeout=600)
 
 
@@ -145,6 +178,21 @@ def _chat_anthropic(system, user, max_tokens=8000, model=None, attempts=2):
     }
     return _post_chat(f"{base}/chat/completions", headers, payload, attempts,
                       timeout=360)
+
+
+OPTIONAL_PARAMS = ("temperature", "reasoning_effort")
+
+
+def _drop_rejected_param(payload, text):
+    """If a 400 names an optional parameter we sent, remove it (in place)
+    and return its name so the caller can retry without burning an attempt.
+    Each parameter can be dropped once, so this cannot loop."""
+    low = (text or "").lower()
+    for p in OPTIONAL_PARAMS:
+        if p in payload and p in low:
+            payload.pop(p)
+            return p
+    return None
 
 
 def _post_chat(url, headers, payload, attempts, timeout=600):
@@ -177,6 +225,12 @@ def _post_chat(url, headers, payload, attempts, timeout=600):
                       f"(wait {rate_waits}/3)", flush=True)
                 time.sleep(wait)
                 continue
+            if r.status_code == 400:
+                dropped = _drop_rejected_param(payload, r.text)
+                if dropped:
+                    print(f"  [llm] {payload.get('model')} rejected "
+                          f"'{dropped}'; retrying without it", flush=True)
+                    continue
             last = f"HTTP {r.status_code}: {r.text[:300]}"
         except Exception as e:  # noqa: BLE001
             last = f"{type(e).__name__}: {e}"
