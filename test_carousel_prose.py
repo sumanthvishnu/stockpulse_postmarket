@@ -418,7 +418,8 @@ class CarouselWriterChainTests(unittest.TestCase):
     model as the safety net before computed text."""
 
     ENV = ("LLM_MODEL_CAROUSEL", "LLM_MODEL", "LLM_PROVIDER_CAROUSEL",
-           "ANTHROPIC_API_KEY", "OPENAI_API_KEY")
+           "ANTHROPIC_API_KEY", "OPENAI_API_KEY",
+           "LLM_MODEL_CAROUSEL_FALLBACK", "LLM_REASONING_EFFORT_CAROUSEL")
 
     @classmethod
     def setUpClass(cls):
@@ -461,10 +462,19 @@ class CarouselWriterChainTests(unittest.TestCase):
         os.environ["LLM_MODEL_CAROUSEL"] = "claude-sonnet-5-5"
         self.assertEqual(llm.carousel_writers(),
                          [("anthropic", "claude-sonnet-5-5"),
+                          ("openai", "gpt-6-luna"),
                           ("openai", "gpt-4o")])
+        os.environ["LLM_MODEL_CAROUSEL_FALLBACK"] = " "
+        self.assertEqual(llm.carousel_writers()[1], ("openai", "gpt-6-luna"))
+        os.environ["LLM_MODEL_CAROUSEL_FALLBACK"] = "gpt-4o"
+        self.assertEqual(llm.carousel_writers(),
+                         [("anthropic", "claude-sonnet-5-5"),
+                          ("openai", "gpt-4o")])
+        os.environ.pop("LLM_MODEL_CAROUSEL_FALLBACK")
         os.environ["LLM_MODEL"] = "gpt-4o"
         os.environ["LLM_MODEL_CAROUSEL"] = "gpt-4o"
-        self.assertEqual(llm.carousel_writers(), [("openai", "gpt-4o")])
+        self.assertEqual(llm.carousel_writers(),
+                         [("openai", "gpt-4o"), ("openai", "gpt-6-luna")])
         os.environ["LLM_PROVIDER_CAROUSEL"] = "anthropic"
         os.environ["LLM_MODEL_CAROUSEL"] = "claude-haiku-5-5"
         self.assertEqual(llm.carousel_writers()[0],
@@ -519,9 +529,9 @@ class CarouselWriterChainTests(unittest.TestCase):
         html, prose, issues, fell_back, meta = pipeline.generate_carousel(
             self.pack, self._brief())
         self.assertFalse(fell_back)
-        self.assertEqual(meta["carousel_model"], "gpt-4o")
+        self.assertEqual(meta["carousel_model"], "gpt-6-luna")
         self.assertEqual(self.calls[0], ("anthropic", "claude-sonnet-5-5"))
-        self.assertEqual(self.calls[-1], ("openai", "gpt-4o"))
+        self.assertEqual(self.calls[-1], ("openai", "gpt-6-luna"))
         self.assertIn("Not investment advice.", html)
 
     def test_broken_claude_json_falls_back_to_gpt4o(self):
@@ -530,7 +540,7 @@ class CarouselWriterChainTests(unittest.TestCase):
         _h, _p, _i, fell_back, meta = pipeline.generate_carousel(
             self.pack, self._brief())
         self.assertFalse(fell_back)
-        self.assertEqual(meta["carousel_model"], "gpt-4o")
+        self.assertEqual(meta["carousel_model"], "gpt-6-luna")
         self.assertEqual([c for c in self.calls if c[0] == "anthropic"],
                          [("anthropic", "claude-sonnet-5-5")] * 3)
 
@@ -556,7 +566,79 @@ class CarouselWriterChainTests(unittest.TestCase):
         self.assertFalse(meta["llm_reached"])
         self.assertTrue(meta["carousel_model"].startswith("computed"))
         self.assertEqual(self.calls, [("anthropic", "claude-sonnet-5-5"),
+                                      ("openai", "gpt-6-luna"),
                                       ("openai", "gpt-4o")])
+
+    def test_claude_and_luna_down_gpt4o_writes(self):
+        os.environ["LLM_MODEL_CAROUSEL"] = "claude-sonnet-5-5"
+
+        def chat(system, user, model=None, provider=None, **kw):
+            self.calls.append((provider, model))
+            if model == "gpt-4o":
+                return self.good
+            raise RuntimeError("HTTP 404: model_not_found")
+        llm.chat = chat
+        _h, _p, _i, fell_back, meta = pipeline.generate_carousel(
+            self.pack, self._brief())
+        self.assertFalse(fell_back)
+        self.assertEqual(meta["carousel_model"], "gpt-4o")
+        self.assertEqual(self.calls, [("anthropic", "claude-sonnet-5-5"),
+                                      ("openai", "gpt-6-luna"),
+                                      ("openai", "gpt-4o")])
+
+    def test_luna_request_uses_reasoning_none_and_retries_rejected_param(self):
+        os.environ["OPENAI_API_KEY"] = "test-key"
+        sent = []
+
+        class R:
+            def __init__(self, code, text=""):
+                self.status_code, self.text, self.headers = code, text, {}
+
+            def json(self):
+                return {"choices": [{"message": {"content": "{}"}}],
+                        "usage": {"prompt_tokens": 1, "completion_tokens": 1}}
+
+        orig = llm.requests.post
+
+        def post(url, headers=None, json=None, timeout=None):
+            sent.append(dict(json))
+            if "temperature" in json:
+                return R(400, "Unsupported parameter: 'temperature'")
+            return R(200)
+        llm.requests.post = post
+        try:
+            out = self._chat("s", "u", model="gpt-6-luna", temperature=0.85,
+                             max_tokens=8000)
+        finally:
+            llm.requests.post = orig
+        self.assertEqual(out, "{}")
+        self.assertEqual(sent[0]["reasoning_effort"], "none")
+        self.assertEqual(sent[0]["max_completion_tokens"], 8000)
+        self.assertNotIn("max_tokens", sent[0])
+        self.assertEqual(len(sent), 2)
+        self.assertNotIn("temperature", sent[1])
+
+    def test_gpt4o_request_is_unchanged(self):
+        os.environ["OPENAI_API_KEY"] = "test-key"
+        sent = []
+
+        class R:
+            status_code, text, headers = 200, "", {}
+
+            def json(self):
+                return {"choices": [{"message": {"content": "ok"}}]}
+
+        orig = llm.requests.post
+        llm.requests.post = lambda url, headers=None, json=None, timeout=None: (
+            sent.append(dict(json)) or R())
+        try:
+            self._chat("s", "u", model="gpt-4o", temperature=0.3,
+                       max_tokens=100)
+        finally:
+            llm.requests.post = orig
+        self.assertEqual(sent[0]["max_tokens"], 100)
+        self.assertEqual(sent[0]["temperature"], 0.3)
+        self.assertNotIn("reasoning_effort", sent[0])
 
     def test_telegram_names_the_model_that_wrote_it(self):
         messages = []
@@ -576,12 +658,19 @@ class CarouselWriterChainTests(unittest.TestCase):
                             carousel_model_configured="claude-sonnet-5-5",
                             **common)
             second = "\n".join(messages)
+            messages.clear()
+            pipeline.notify(carousel_model="gpt-6-luna",
+                            carousel_model_configured="claude-sonnet-5-5",
+                            **common)
+            third = "\n".join(messages)
         finally:
             pipeline.DRY = orig_dry
         self.assertIn("Carousel model: claude-sonnet-5-5", first)
         self.assertNotIn("was unavailable", first)
         self.assertIn("Carousel model: gpt-4o", second)
         self.assertIn("claude-sonnet-5-5 was unavailable", second)
+        self.assertIn("Carousel model: gpt-6-luna", third)
+        self.assertIn("gpt-6-luna wrote the carousel instead", third)
 
 
 if __name__ == "__main__":

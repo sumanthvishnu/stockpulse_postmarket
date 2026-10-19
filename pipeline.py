@@ -9,8 +9,10 @@ Env knobs:
     MOCK_LLM=1        skip the LLM; carousel prose is computed from the datapack
     LLM_MODEL_CAROUSEL  carousel-only model override (blank falls through).
                       A claude-* id (e.g. claude-sonnet-5-5) routes the
-                      carousel to Anthropic, with LLM_MODEL (gpt-4o) as the
-                      fallback writer before computed text.
+                      carousel to Anthropic.
+    LLM_MODEL_CAROUSEL_FALLBACK  carousel-only backup writer(s), comma list
+                      (blank = gpt-6-luna, reasoning effort none); then
+                      LLM_MODEL / gpt-4o as last resort, then computed text.
     LLM_PROVIDER_CAROUSEL  optional pin: anthropic | openai (blank = infer)
     ANTHROPIC_API_KEY  key for the Claude carousel writer
     DRY_RUN=1         don't send Telegram, just print what would be sent
@@ -538,7 +540,9 @@ def generate_carousel(pack, brief, weekly=False):
     meta = {"llm_reached": False, "field_fallbacks": [], "auto_fixes": [],
             "carousel_model": None}
     # Writers in order: the configured carousel model (Claude Sonnet when
-    # LLM_MODEL_CAROUSEL is a claude-* id), then the OpenAI model. The next
+    # LLM_MODEL_CAROUSEL is a claude-* id), then the carousel backup
+    # (LLM_MODEL_CAROUSEL_FALLBACK, default gpt-6-luna), then the last
+    # resort (LLM_MODEL / gpt-4o, until its 14 Jan 2027 retirement). The next
     # writer is tried only when the current one is UNAVAILABLE: the call
     # failed (auth, quota, 5xx, timeout, missing key) or it never returned
     # parseable JSON. A writer that answered but failed hard rules on every
