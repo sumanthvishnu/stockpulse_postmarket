@@ -1,0 +1,40 @@
+{
+ "one_liner": "Indian markets decline broadly with Nifty 50 down 1.11% amid rising volatility.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Broad Decline",
+   "detail": "No specific catalyst identified for market decline.",
+   "stat": "Nifty 50 fell 257.2 points."
+  },
+  {
+   "emoji": "🏦",
+   "title": "Financials Fall",
+   "detail": "Financial services index dropped by 1.58%.",
+   "stat": "Nifty Financial Services down 400 points."
+  },
+  {
+   "emoji": "💻",
+   "title": "IT Weakness",
+   "detail": "IT sector declined by 1.28%.",
+   "stat": "Nifty IT down 407.8 points."
+  },
+  {
+   "emoji": "📈",
+   "title": "Volatility Rises",
+   "detail": "India VIX increased by 5.05%.",
+   "stat": "India VIX at 14.77."
+  }
+ ],
+ "flows_line": "FIIs sold Rs 1,148.64 Cr; DIIs bought Rs 3,201.19 Cr.",
+ "watch_next": "Wednesday's session includes GBP CPI data and BOE speech.",
+ "week_pct": 2.35,
+ "lesson_seeds": [
+  "Market breadth was heavily negative with more declines than advances.",
+  "Financials and IT sectors led the decline in today's session.",
+  "Volatility increased significantly as indicated by the rise in India VIX.",
+  "No specific catalysts were identified for the top gainers and losers."
+ ],
+ "source": "llm"
+}
