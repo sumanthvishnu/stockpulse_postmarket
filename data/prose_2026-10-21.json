@@ -1,0 +1,58 @@
+{
+ "headline": "IT held the Nifty up while *the broader market bled*",
+ "subline": "IT rose 2.88%, but 2,338 stocks fell against 337 that rose.",
+ "hero_text": "Nifty Smallcap 250 fell 2.26% and Midcap 150 fell 1.39%. Fear rose, with India VIX up 6.11% to 15.68.",
+ "why_head": "Why IT could not lift Nifty",
+ "why": [
+  {
+   "emoji": "🌐",
+   "title": "Wall Street rose, Asia slipped",
+   "desc": "US and Europe closed higher while Asia lagged and India stayed lower.",
+   "badge": "Dow +110.62 pts"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT stocks cushioned the index",
+   "desc": "Infosys, HCLTech and TechM each rose more than 3 percent.",
+   "badge": "Nifty IT +2.88%"
+  },
+  {
+   "emoji": "🔻",
+   "title": "Smallcaps took the brunt",
+   "desc": "Midcap 150 fell 1.39 percent. Declines outnumbered advances 2,338 to 337.",
+   "badge": "Smallcap 250 -2.26%"
+  },
+  {
+   "emoji": "⚡",
+   "title": "Fear gauge jumped higher",
+   "desc": "India VIX closed at 15.68, the top of its 20 session range.",
+   "badge": "VIX 15.68, +6.11%"
+  }
+ ],
+ "sector_reasons": {
+  "IT": "Led as Infosys and HCLTech rose over 3 percent",
+  "Oil & Gas": "Nearly flat, a steady spot as others fell",
+  "Pharma": "Slipped little as defensive names held on",
+  "Consumer Durables": "Discretionary names fell hardest of the six",
+  "Metal": "Cyclical names sagged with the broader tape",
+  "Auto": "Eicher Motors fell 2.43 percent and pulled it lower"
+ },
+ "bonus_title": "FEAR CHECK",
+ "bonus_text": "India VIX rose 6.11% to 15.68, the top of its 20 session range. Fear built while the index barely moved.",
+ "movers_note_gainers": "Four IT names led the board. Infosys topped it.",
+ "movers_note_losers": "Bajaj Finance led the slide, with BSE, Eternal and Eicher close behind.",
+ "watch_text": "Thursday: 23,000 holds peak call OI and 22,000 peak put OI. Nifty PCR sits at 0.70.",
+ "lessons": [
+  "One sector held the index up. IT rose while 34 of 50 Nifty names fell.",
+  "The broader market took the hit. Smallcaps fell far harder than the frontline.",
+  "Institutions bought in cash, yet 52 week lows outnumbered highs, 285 to 25.",
+  "Fear built under a calm headline. The index lost little but the VIX hit a 20 session high."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "US jobless claims land at 22:00 IST on Thursday. Forecast is 200K against 199K prior.",
+ "cta_headline": "A split day. *Save it for Thursday*.",
+ "cta_sub": "Thursday's open arrives with fear at a 20 session high.",
+ "next_text": "Thursday 22 October is the next session. The Nifty weekly expiry falls on Tuesday 27 October.",
+ "caption_a": "Nifty lost just 0.34% to 22,811, but 2,338 stocks fell against 337 that rose.\nNifty IT jumped 2.88% and masked a 2.26% slide in Smallcap 250.\nIndia VIX rose 6.11% to 15.68.\nWatch: US jobless claims at 22:00 IST on Thursday.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyIT #IndiaVIX #MarketWrap",
+ "caption_b": "IT did the lifting. Infosys rose 3.3%, HCLTech 3.21%, TechM 3.13%.\nThe rest slipped: Midcap 150 fell 1.39%, Bank Nifty 0.92%.\nFIIs bought Rs 1,022.32 Cr and DIIs Rs 1,614.32 Cr in cash.\nWatch: Nifty PCR at 0.70, peak call OI at 23,000.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #FII #Smallcap"
+}
