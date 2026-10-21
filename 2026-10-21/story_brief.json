@@ -1,0 +1,40 @@
+{
+ "one_liner": "Indian markets decline amid global cues and sector-specific pressures.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "🌐",
+   "title": "Global Cues",
+   "detail": "US and European markets ended higher, but Asia was mixed.",
+   "stat": "Dow up 110.62 pts"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT Sector Surge",
+   "detail": "Nifty IT rose 2.88% with major IT stocks gaining.",
+   "stat": "Nifty IT +2.88%"
+  },
+  {
+   "emoji": "📉",
+   "title": "Broader Market Pressure",
+   "detail": "Midcap and smallcap indices fell significantly.",
+   "stat": "Nifty Smallcap 250 -2.26%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Volatility Spike",
+   "detail": "India VIX surged, indicating increased market volatility.",
+   "stat": "India VIX +6.11%"
+  }
+ ],
+ "flows_line": "FIIs and DIIs were net buyers with inflows of Rs 1,022.32 Cr and Rs 1,614.32 Cr.",
+ "watch_next": "Watch for USD unemployment claims data at 22:00 IST tomorrow.",
+ "week_pct": 0.39,
+ "lesson_seeds": [
+  "Global cues can drive local market sentiment.",
+  "Sector-specific performance can offset broader market trends.",
+  "Volatility indices are key indicators of market sentiment.",
+  "Institutional flows provide insights into market direction."
+ ],
+ "source": "llm"
+}
