@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty slipped 0.54% but *1,969 stocks fell*",
+ "subline": "FIIs sold, DIIs bought, and the broader market took the heavier hit.",
+ "hero_text": "FIIs sold Rs 3,458.7 Cr in cash while DIIs bought Rs 2,891.32 Cr. Domestic money absorbed most of the foreign exit.",
+ "why_head": "Why the tape sold off",
+ "why": [
+  {
+   "emoji": "⚖️",
+   "title": "Decliners swamped advancers",
+   "desc": "Nearly three stocks fell for every one that rose.",
+   "badge": "1,969 down, 700 up"
+  },
+  {
+   "emoji": "🛒",
+   "title": "FMCG sold off hard",
+   "desc": "Nifty FMCG fell 1.41%, with Nestle the heaviest Nifty 50 loser.",
+   "badge": "Nestle -2.78%"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT gave back some gains",
+   "desc": "Nifty IT fell 1.05% after a strong five day run.",
+   "badge": "IT 5d +6.33%"
+  },
+  {
+   "emoji": "❓",
+   "title": "No single trigger emerged",
+   "desc": "Selling came without a named catalyst. Smallcaps fell hardest.",
+   "badge": "Smallcap 100 -1.14%"
+  }
+ ],
+ "sector_reasons": {
+  "Pharma": "Edged up as Cipla gained 1.29%",
+  "PSU Bank": "Held a small bid while the tape fell",
+  "Healthcare": "Cipla kept it flat against the slide",
+  "Media": "Slid hardest, ahead of FMCG",
+  "FMCG": "Nestle fell 2.78% to lead the drag",
+  "Energy": "Reliance fell 2.03% and pulled it lower"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,969 stocks fell and 700 rose. Only 14 of the 50 Nifty names advanced, so the index dip understated the damage.",
+ "movers_note_gainers": "Bajaj Finance led, with Cipla and ICICI Bank close behind.",
+ "movers_note_losers": "Nestle fell most. Eternal and HDFC Life followed.",
+ "watch_text": "Friday: TechM trades ex dividend. The Nifty close sits below the max pain level of 22,850.",
+ "lessons": [
+  "A small index dip hid a heavy tape. Nearly three stocks fell for every one that rose.",
+  "Five days split the market. IT gained 6.33% while smallcaps lost 5.47%.",
+  "FIIs held a net short of 280,300 index futures contracts, matching their cash selling.",
+  "Defensives gave no cover. FMCG slid while pharma and PSU banks barely moved."
+ ],
+ "alert_title": "Friday's data window",
+ "alert_text": "Euro flash PMIs land at 16:45 IST on Friday. US flash PMIs follow at 23:15 IST.",
+ "cta_headline": "A thin dip, a heavy tape. *Save it for Friday*.",
+ "cta_sub": "Full wrap every evening. Next bell is Friday.",
+ "next_text": "Next bell is Friday. Nifty expiry lands Tuesday.",
+ "caption_a": "Nifty slipped just 0.54% to 22,687.65, yet 1,969 stocks fell against 700 that rose.\nFIIs sold Rs 3,458.7 Cr. DIIs bought Rs 2,891.32 Cr.\nFMCG fell 1.41% and IT 1.05%.\nWatch: TechM trades ex dividend on Friday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyFMCG #NiftyIT #FIIFlows",
+ "caption_b": "Smallcaps lost 5.47% in five days while the Nifty gained 0.29%. Thursday kept the split alive.\nIndia VIX closed at 15.76, the top of its 20 session range.\nNifty PCR sat at 0.82 with max pain at 22,850.\nWatch: Euro flash PMIs at 16:45 IST on Friday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #IndiaVIX #Smallcaps #MarketWrap"
+}
