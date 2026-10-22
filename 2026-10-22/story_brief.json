@@ -1,0 +1,40 @@
+{
+ "one_liner": "Markets decline as FMCG and IT sectors face pressure.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Market Decline",
+   "detail": "Nifty 50 fell by 0.54%.",
+   "stat": "22,687.65"
+  },
+  {
+   "emoji": "📊",
+   "title": "FMCG Pressure",
+   "detail": "Nifty FMCG index dropped by 1.41%.",
+   "stat": "-615.25"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT Sector Drop",
+   "detail": "Nifty IT index decreased by 1.05%.",
+   "stat": "-341.25"
+  },
+  {
+   "emoji": "❓",
+   "title": "No Clear Catalysts",
+   "detail": "No specific catalysts identified today.",
+   "stat": "Data Gaps Register"
+  }
+ ],
+ "flows_line": "FIIs sold Rs 3,458.7 Cr; DIIs bought Rs 2,891.32 Cr.",
+ "watch_next": "Watch for TECHM's interim dividend and economic data releases tomorrow.",
+ "week_pct": 0.29,
+ "lesson_seeds": [
+  "Market breadth was negative with more declines than advances.",
+  "FMCG and IT sectors faced significant pressure.",
+  "FIIs were net sellers in the cash market.",
+  "No specific catalysts were identified for today's movements."
+ ],
+ "source": "llm"
+}
