@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty fell and the *broader market fell harder*",
+ "subline": "On Friday, 2,368 stocks fell and only 318 rose. India VIX closed at 16.86.",
+ "hero_text": "Nifty lost 1.73% over the week. Midcap 150 fell 5.35% and Smallcap 250 fell 7.05%, so the broader market fell far harder than the frontline.",
+ "why_head": "Why the week ended weak",
+ "why": [
+  {
+   "emoji": "🐻",
+   "title": "Sellers swamped the tape",
+   "desc": "Declines beat advances by 2,368 to 318 across the market.",
+   "badge": "2,368 declines"
+  },
+  {
+   "emoji": "😰",
+   "title": "India VIX climbed to 16.86",
+   "desc": "Fear rose and closed at the top of its 20 session range.",
+   "badge": "VIX 16.86, +6.96%"
+  },
+  {
+   "emoji": "💰",
+   "title": "Domestic money cushioned it",
+   "desc": "DIIs bought Rs 3,235.36 Cr and FIIs added Rs 887.65 Cr in cash.",
+   "badge": "DII Rs 3,235.36 Cr"
+  },
+  {
+   "emoji": "🗽",
+   "title": "The Dow lost 482 points",
+   "desc": "Wall Street's Dow slipped into the close, a soft backdrop for Friday.",
+   "badge": "Dow -0.91%"
+  }
+ ],
+ "sector_reasons": {
+  "IT": "Led the week, though it slipped on Friday",
+  "PSU Bank": "Held flat for the week after a Friday drop",
+  "Infra": "Lost less than most as the tape thinned",
+  "Consumer Durables": "Weakest of all, down 6.98 percent in five days",
+  "Realty": "Slid 5.35 percent as sellers outnumbered buyers",
+  "FMCG": "No shelter here, down 4.71 percent in five days"
+ },
+ "bonus_title": "THE SPLIT",
+ "bonus_text": "IT led the week, up 4.15 percent. Consumer Durables lagged, down 6.98 percent, with Realty and FMCG close behind.",
+ "movers_note_gainers": "Eternal led the gainers. Only 14 of 50 Nifty names rose on Friday.",
+ "movers_note_losers": "Shriram Finance fell most. Adani Enterprises and JSW Steel followed.",
+ "watch_text": "Monday follows a 4 session slide. Nifty max pain sits at 22,700, with put OI at 21,500 and call OI at 24,000.",
+ "lessons": [
+  "Size set the pain. Smallcaps fell about four times as hard as Nifty over the week.",
+  "The frontline held up. Smallcaps finished behind Nifty.",
+  "IT led the week yet slipped on Friday. The one winning sector lost ground at the close.",
+  "A fourth straight Nifty loss ended the week, with only 14 of 50 names green on Friday."
+ ],
+ "alert_title": "Expiry watch",
+ "alert_text": "Nifty and Bank Nifty options expire on Tuesday 27 October. Monday is the first session of the week.",
+ "cta_headline": "The broad market bled. *Bookmark it for Monday*.",
+ "cta_sub": "Full wrap every evening. Next bell is Monday 26 October.",
+ "next_text": "Monday 26 October opens the week. The Nifty weekly expiry lands on Tuesday 27 October.",
+ "caption_a": "Nifty lost 1.73% this week. Smallcap 250 lost 7.05%.\nFriday: 2,368 stocks fell, 318 rose. India VIX rose 6.96% to 16.86.\nDIIs bought Rs 3,235.36 Cr and FIIs Rs 887.65 Cr in cash.\nWatch: Monday follows a 4 session Nifty slide, with expiry on Tuesday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #SmallCaps #IndiaVIX #WeeklyWrap",
+ "caption_b": "IT was the week's only big winner, up 4.15%. Consumer Durables lost 6.98%.\nNifty closed at 22,600, down 0.39% on Friday.\nNifty max pain sits at 22,700, put OI at 21,500, call OI at 24,000.\nWatch: Monday opens a week with Tuesday expiry.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyIT #MarketWrap #BankNifty"
+}
