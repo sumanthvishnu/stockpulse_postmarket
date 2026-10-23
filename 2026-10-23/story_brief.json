@@ -1,0 +1,40 @@
+{
+ "one_liner": "Markets decline with Nifty 50 down 0.39% amid broad-based sell-off.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Market Breadth",
+   "detail": "Declines outnumber advances by 2368 to 318.",
+   "stat": "2368 declines"
+  },
+  {
+   "emoji": "💹",
+   "title": "Volatility Spike",
+   "detail": "India VIX rises 6.96% to 16.86.",
+   "stat": "16.86 VIX"
+  },
+  {
+   "emoji": "🏦",
+   "title": "FII/DII Activity",
+   "detail": "DII net buy Rs 3,235.36 Cr; FII net buy Rs 887.65 Cr.",
+   "stat": "Rs 3,235.36 Cr DII net"
+  },
+  {
+   "emoji": "📉",
+   "title": "Global Cues",
+   "detail": "Dow Jones drops 482.15 points, down 0.91%.",
+   "stat": "-0.91% Dow"
+  }
+ ],
+ "flows_line": "DII net buy Rs 3,235.36 Cr; FII net buy Rs 887.65 Cr.",
+ "watch_next": "Watch for market reactions on Monday, 26 October 2026, after the weekend.",
+ "week_pct": -1.73,
+ "lesson_seeds": [
+  "Market breadth can indicate overall sentiment.",
+  "Volatility spikes often accompany market declines.",
+  "FII/DII flows provide insight into institutional sentiment.",
+  "Global market movements can impact local indices."
+ ],
+ "source": "llm"
+}
