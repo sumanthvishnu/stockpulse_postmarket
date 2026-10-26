@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty rose as *DIIs absorbed FII selling*",
+ "subline": "Broad buying lifted 1,639 stocks. Fear still ticked up.",
+ "hero_text": "FIIs sold Rs 1,462.49 Cr in cash. DIIs bought Rs 2,609.57 Cr and more than covered it.",
+ "why_head": "Why the market rose",
+ "why": [
+  {
+   "emoji": "📈",
+   "title": "Buying spread across the tape",
+   "desc": "1,639 stocks advanced against 1,045 decliners.",
+   "badge": "1,639 advances"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma led the large caps",
+   "desc": "Dr Reddys jumped 6.62% and pulled the sector up.",
+   "badge": "Pharma +1.76%"
+  },
+  {
+   "emoji": "🏭",
+   "title": "Metals ran on steel strength",
+   "desc": "JSW Steel rose 6.28% as the metal index led all sectors.",
+   "badge": "Metal +2.21%"
+  },
+  {
+   "emoji": "🎢",
+   "title": "Fear edged up despite gains",
+   "desc": "India VIX closed at its highest level in 20 sessions.",
+   "badge": "VIX 17.16"
+  }
+ ],
+ "sector_reasons": {
+  "Metal": "Led the session on JSW Steel's jump",
+  "Healthcare": "Rode the Dr Reddys and pharma bid",
+  "Pharma": "Dr Reddys anchored a firm bid",
+  "Media": "Slipped while the wider tape rose",
+  "Consumer Durables": "Gave back ground against a rising tape",
+  "Bank": "Barely moved as HDFC Bank slipped"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,639 stocks rose and 1,045 fell. Inside the Nifty 50, 37 names advanced and 13 declined.",
+ "movers_note_gainers": "Dr Reddys and JSW Steel led, both up over 6%.",
+ "movers_note_losers": "Three of the four losers were financial names, led by Shriram Finance.",
+ "watch_text": "Tuesday is weekly expiry day. Nifty open interest sits between 22,500 puts and 23,000 calls.",
+ "lessons": [
+  "Fear and gains coexisted. The VIX held its 20 session high while the index rose.",
+  "Foreign selling met domestic buying. DIIs absorbed more than FIIs sold.",
+  "A good day followed a weak week. Smallcaps rose but sat 6.05% lower over five days.",
+  "Banks barely moved while metals and pharma ran. Sector weight shaped the index gain."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "The Nifty weekly expiry falls on Tuesday. US CB Consumer Confidence prints at 23:30 IST.",
+ "cta_headline": "A broad up day. *Expiry comes next*.",
+ "cta_sub": "The Tuesday bell brings weekly expiry. Wrap lands after the close.",
+ "next_text": "Tuesday 27 October brings the Nifty weekly expiry. US consumer confidence follows at 23:30 IST.",
+ "caption_a": "Nifty rose 0.68% to 22,753 even as FIIs sold Rs 1,462.49 Cr. DIIs bought Rs 2,609.57 Cr.\n\nBreadth ran 1,639 up to 1,045 down. Metal gained 2.21%, Pharma 1.76%.\n\nWatch: Nifty weekly expiry on Tuesday, with open interest between 22,500 and 23,000.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyPharma #NiftyMetal #FII",
+ "caption_b": "India VIX closed at 17.16, a 20 session high, on a day Nifty gained.\n\nMetal rose 2.21% and Pharma 1.76%, while Bank Nifty managed only 0.15%. 37 of 50 Nifty names advanced.\n\nWatch: weekly expiry lands Tuesday. Nifty PCR sits at 1.13.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #IndiaVIX #MarketWrap #StockMarket"
+}
