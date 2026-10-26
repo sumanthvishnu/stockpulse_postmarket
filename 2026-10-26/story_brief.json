@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 rises 0.68% amid broad-based rally with positive market breadth.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "📈",
+   "title": "Broad Market Rally",
+   "detail": "Market breadth positive with 1,639 advances.",
+   "stat": "1,639 advances"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma Surge",
+   "detail": "Nifty Pharma index gained 1.76%.",
+   "stat": "1.76% gain"
+  },
+  {
+   "emoji": "🔧",
+   "title": "Metal Gains",
+   "detail": "Nifty Metal index rose 2.21%.",
+   "stat": "2.21% gain"
+  },
+  {
+   "emoji": "💹",
+   "title": "Volatility Spike",
+   "detail": "India VIX increased by 1.78%.",
+   "stat": "1.78% increase"
+  }
+ ],
+ "flows_line": "FIIs net sellers at Rs 1,462.49 Cr; DIIs net buyers at Rs 2,609.57 Cr.",
+ "watch_next": "Tomorrow's session includes Nifty 50 weekly expiry and CB Consumer Confidence data.",
+ "week_pct": -1.7,
+ "lesson_seeds": [
+  "Market breadth can indicate underlying strength.",
+  "Sectoral performance can drive index movements.",
+  "Volatility spikes may signal market caution.",
+  "Institutional flows impact market sentiment."
+ ],
+ "source": "llm"
+}
