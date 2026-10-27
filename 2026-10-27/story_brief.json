@@ -1,0 +1,40 @@
+{
+ "one_liner": "Markets mixed as Nifty 50 dips slightly, broader indices gain.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Nifty 50 Decline",
+   "detail": "No identifiable catalyst for slight decline.",
+   "stat": "-0.02%"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma Surge",
+   "detail": "Nifty Pharma rose significantly.",
+   "stat": "1.91%"
+  },
+  {
+   "emoji": "📈",
+   "title": "Broader Gains",
+   "detail": "Nifty Smallcap 250 showed significant gains.",
+   "stat": "2.19%"
+  },
+  {
+   "emoji": "🌍",
+   "title": "FII Inflows",
+   "detail": "FIIs were net buyers in cash market.",
+   "stat": "Rs 4,240.39 Cr"
+  }
+ ],
+ "flows_line": "FIIs net bought Rs 4,240.39 Cr; DIIs net sold Rs 1,250.03 Cr.",
+ "watch_next": "Watch for UK's Annual Budget and US Federal Funds Rate announcements tomorrow.",
+ "week_pct": -0.61,
+ "lesson_seeds": [
+  "Nifty 50 saw no clear catalyst for its decline.",
+  "Pharma sector outperformed with notable gains.",
+  "Broader indices like Smallcap 250 showed resilience.",
+  "FIIs continued to be net buyers, supporting market sentiment."
+ ],
+ "source": "llm"
+}
