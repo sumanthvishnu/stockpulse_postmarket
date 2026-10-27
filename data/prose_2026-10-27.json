@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty stood still while *smallcaps surged 2.19%*",
+ "subline": "Midcaps and smallcaps led. Breadth stayed with the move.",
+ "hero_text": "Smallcap 250 rose 2.19% while Nifty slipped 0.02%. FIIs bought Rs 4,240.39 Cr as DIIs sold Rs 1,250.03 Cr.",
+ "why_head": "Why the tape split",
+ "why": [
+  {
+   "emoji": "😐",
+   "title": "Nifty ended flat, no trigger",
+   "desc": "The index slipped with no clear catalyst. 25 names rose, 25 fell.",
+   "badge": "25 up, 25 down"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma ran on broad buying",
+   "desc": "Nifty Pharma rose 1.91%, well ahead of the frontline index.",
+   "badge": "Pharma +1.91%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Private Bank lagged",
+   "desc": "Deepest loss, closed -0.73%.",
+   "badge": "Private Bank -0.73%"
+  },
+  {
+   "emoji": "💵",
+   "title": "Foreign cash came in",
+   "desc": "FIIs bought in cash while DIIs sold the other way.",
+   "badge": "FII +4,240.39 Cr"
+  }
+ ],
+ "sector_reasons": {
+  "Media": "Topped the board on a sharp bid",
+  "Realty": "Firm beside the leader, +1.94%.",
+  "Pharma": "Large and midcap drug names both rallied",
+  "Private Bank": "Private lenders slipped and capped Nifty",
+  "Bank": "SBI's slide weighed on the group",
+  "Financials": "Banks dragged while non bank lenders held"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "FIIs bought Rs 4,240.39 Cr in cash. DIIs sold Rs 1,250.03 Cr. The two sides moved in opposite directions.",
+ "movers_note_gainers": "Tata Consumer led. Bharti Airtel and Bajaj Auto followed.",
+ "movers_note_losers": "Asian Paints fell most. Coal India, Grasim and SBI trailed.",
+ "watch_text": "Expiry day OI pinned Nifty between 22,750 and 22,800. Bank Nifty max pain sat at 54,300.",
+ "lessons": [
+  "A flat index hid a wide tape. Advancers beat decliners by more than two to one.",
+  "Size led the day. Smallcaps beat midcaps, and midcaps beat the frontline.",
+  "Banks held the index back while pharma, realty and media ran.",
+  "Institutions split. FIIs bought in cash while DIIs sold."
+ ],
+ "alert_title": "Wednesday's event risk",
+ "alert_text": "The UK Budget and the US Fed rate decision both fall around Wednesday's session.",
+ "cta_headline": "Flat Nifty, hot smallcaps. *Save it for Wednesday*.",
+ "cta_sub": "Full wrap every evening. Next bell is Wednesday 28 October.",
+ "next_text": "Wednesday 28 October opens with the UK Budget and the US Fed rate decision in play.",
+ "caption_a": "Nifty ended flat at 22,749.75, yet smallcaps jumped 2.19%.\nBreadth ran 1,922 to 756. FIIs bought Rs 4,240.39 Cr in cash.\nWatch: Nifty OI pinned between 22,750 and 22,800.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #Smallcap #FII #StockMarket",
+ "caption_b": "FIIs bought Rs 4,240.39 Cr while DIIs sold Rs 1,250.03 Cr.\nNifty Pharma rose 1.91%. Bank Nifty fell 0.72%.\nWatch: the UK Budget and US Fed rate decision around Wednesday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #NiftyPharma #MarketWrap"
+}
