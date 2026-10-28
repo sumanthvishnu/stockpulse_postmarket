@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 declines 0.22% amid mixed global cues and sectoral shifts.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "💻",
+   "title": "IT Sector Pressure",
+   "detail": "IT sector drags indices lower.",
+   "stat": "-1.98%"
+  },
+  {
+   "emoji": "💊",
+   "title": "Healthcare Support",
+   "detail": "Healthcare sector provides market support.",
+   "stat": "1.04%"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Auto Sector Gains",
+   "detail": "Auto sector shows strong performance.",
+   "stat": "1.45%"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Cues Mixed",
+   "detail": "Mixed trends in global markets.",
+   "stat": "0.15% SP500"
+  }
+ ],
+ "flows_line": "FIIs and DIIs both net buyers with Rs 871.83 Cr and Rs 643.35 Cr respectively.",
+ "watch_next": "Watch for economic data releases including US GDP and ECB statements tomorrow.",
+ "week_pct": -0.49,
+ "lesson_seeds": [
+  "Market breadth positive despite index decline.",
+  "FIIs and DIIs show buying interest.",
+  "Sectoral performance varies with IT under pressure.",
+  "Global cues remain mixed, influencing local sentiment."
+ ],
+ "source": "llm"
+}
