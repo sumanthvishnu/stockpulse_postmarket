@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty slipped while *more stocks rose than fell*",
+ "subline": "Reliance and Infosys weighed on the index. Autos, pharma and media ran.",
+ "hero_text": "Nifty closed at 22,698.85, down 0.22%. IT and oil and gas dragged, while autos, pharma and the broader market held up.",
+ "why_head": "Why the index slipped",
+ "why": [
+  {
+   "emoji": "💻",
+   "title": "IT dragged the index lower",
+   "desc": "Infosys and Tech Mahindra fell, pulling Nifty IT down.",
+   "badge": "Nifty IT -1.98%"
+  },
+  {
+   "emoji": "🛋️",
+   "title": "Consumer Durables led",
+   "desc": "Firm beside the leader, +1.41%.",
+   "badge": "Consumer Durables +1.41%"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Autos ran ahead of the tape",
+   "desc": "Autos topped the sector board, ahead of durables and media.",
+   "badge": "Auto +1.45%"
+  },
+  {
+   "emoji": "🌍",
+   "title": "US markets gave mixed signals",
+   "desc": "The S&P 500 rose while the Nasdaq slipped slightly.",
+   "badge": "S&P 500 +0.15%"
+  }
+ ],
+ "sector_reasons": {
+  "Auto": "Led the board on a broad auto bid",
+  "Consumer Durables": "Rose alongside autos on a firm bid",
+  "Media": "Held a steady bid through the session",
+  "Oil & Gas": "Reliance and ONGC pulled it down",
+  "IT": "Infosys and Tech Mahindra led the slide",
+  "Energy": "Same Reliance and ONGC drag"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,430 stocks rose and 1,246 fell, so the tape beat the index. 26 of 50 Nifty names closed green.",
+ "movers_note_gainers": "Apollo Hospitals led, with L&T and Trent close behind.",
+ "movers_note_losers": "Infosys and Reliance led the slide, each down over 3%.",
+ "watch_text": "Thursday: Nifty max pain sits at 22,700, right at the close. Max call OI is at 24,000, max put OI at 20,050.",
+ "lessons": [
+  "Breadth beat the index. More stocks rose than fell even as Nifty slipped.",
+  "Two heavyweights capped the index. Reliance and Infosys fell over 3% each.",
+  "Size helped. Smallcaps rose while the frontline slipped.",
+  "Institutions agreed. FIIs and DIIs both bought in cash, yet the index still dipped."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "US GDP and Core PCE data and the ECB rate decision land Thursday evening IST.",
+ "cta_headline": "Index down, tape up. *Bookmark the breadth check*.",
+ "cta_sub": "Thursday opens with US GDP and the ECB decision due that evening.",
+ "next_text": "Thursday 29 October opens next. US GDP and the ECB decision arrive in the evening IST.",
+ "caption_a": "Nifty slipped 0.22% to 22,698.85, yet more stocks rose than fell.\nAdvances beat declines 1,430 to 1,246. Autos rose 1.45% while IT fell 1.98%.\nFIIs bought Rs 871.83 Cr and DIIs Rs 643.35 Cr.\nWatch: US GDP and the ECB decision on Thursday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyIT #NiftyAuto #MarketWrap",
+ "caption_b": "Reliance fell 3.19% and Infosys 3.43%. Two names capped the Nifty while the tape held up.\nPharma rose 1.04%. Smallcap 100 added 0.90%.\nBoth FIIs and DIIs were net buyers in cash.\nWatch: Nifty max pain at 22,700 into Thursday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #Reliance #FII #NiftyPharma"
+}
