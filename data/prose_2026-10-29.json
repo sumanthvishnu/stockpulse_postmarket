@@ -1,0 +1,58 @@
+{
+ "headline": "Fear fell and Nifty rose, yet *FIIs still sold*",
+ "subline": "India VIX fell to 15.12. DIIs bought Rs 1,924.41 Cr as FIIs sold.",
+ "hero_text": "India VIX fell 6.94% to 15.12 as Nifty rose 1.05%. FIIs sold Rs 943.6 Cr in cash while DIIs bought Rs 1,924.41 Cr.",
+ "why_head": "Why the market rallied today",
+ "why": [
+  {
+   "emoji": "💹",
+   "title": "Financials led the lift",
+   "desc": "Nifty Financial Services rose 1.17% on a broad bank bid.",
+   "badge": "Fin Services +1.17%"
+  },
+  {
+   "emoji": "🧴",
+   "title": "FMCG ran a defensive bid",
+   "desc": "The FMCG index jumped 2.34%, among the day's top sectors.",
+   "badge": "FMCG +2.34%"
+  },
+  {
+   "emoji": "🌐",
+   "title": "Global cues stayed mixed",
+   "desc": "Wall Street slipped while Europe rose.",
+   "badge": "S&P 500 -0.19%"
+  },
+  {
+   "emoji": "📉",
+   "title": "The fear gauge cooled off",
+   "desc": "India VIX fell 6.94% as nerves eased.",
+   "badge": "VIX 15.12"
+  }
+ ],
+ "sector_reasons": {
+  "Realty": "Topped the board with a broad bid",
+  "FMCG": "Staples ran on a strong defensive bid",
+  "PSU Bank": "Rode the wider bank rally higher",
+  "Auto": "Only red sector as Maruti and Bajaj Auto slipped",
+  "Oil & Gas": "Gained, but trailed the wider rally",
+  "Healthcare": "Rose quietly, behind the main tape"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "FIIs sold Rs 943.6 Cr in cash. DIIs bought Rs 1,924.41 Cr, about twice that outflow.",
+ "movers_note_gainers": "Adani Ports and Adani Enterprises led, with Kotak Bank next.",
+ "movers_note_losers": "Trent fell most. Maruti and Bajaj Auto joined the auto drag.",
+ "watch_text": "Nifty OI walls sit at 22,000 and 23,500. The BOJ rate decision lands at 12:00 IST on Friday.",
+ "lessons": [
+  "Staples and banks rose together. The bid was not a simple rotation.",
+  "Breadth backed the index. About 5 stocks rose for every 3 that fell.",
+  "Fear drained while the world was mixed. Wall Street slipped, Europe rose, and the VIX still dropped.",
+  "Autos were the lone red sector, a small hole in a broad rally."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "The BOJ policy rate decision is due at 12:00 IST on Friday. German CPI and GDP follow.",
+ "cta_headline": "A calm rally. *Bookmark the flows split*.",
+ "cta_sub": "Friday opens with the BOJ decision at 12:00 IST.",
+ "next_text": "Friday 30 October brings the BOJ decision at 12:00 IST. German CPI and GDP follow in the evening.",
+ "caption_a": "India VIX fell 6.94% to 15.12 while FIIs still sold Rs 943.6 Cr.\nNifty rose 1.05% to 22,936.75. FMCG led with 2.34%.\nDIIs bought Rs 1,924.41 Cr and more than offset the selling.\nWatch: the BOJ rate decision at 12:00 IST on Friday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #IndiaVIX #FII #NiftyFMCG",
+ "caption_b": "Only one sector ended red today: Auto, down 0.24%.\nRealty rose 2.75%, FMCG 2.34% and PSU Banks 2.20%. Advances beat declines 1,674 to 1,012.\nNifty PCR closed at 1.44.\nWatch: OI walls at 22,000 and 23,500, plus the BOJ decision on Friday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyRealty #BankNifty #MarketWrap"
+}
