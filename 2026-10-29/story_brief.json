@@ -1,0 +1,40 @@
+{
+ "one_liner": "Indian markets rallied with Nifty 50 up 1.05% amid broad-based gains.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "💹",
+   "title": "Financial Surge",
+   "detail": "Nifty Financial Services rose by 1.17%.",
+   "stat": "1.17%"
+  },
+  {
+   "emoji": "🍽️",
+   "title": "FMCG Boost",
+   "detail": "Nifty FMCG surged by 2.34%.",
+   "stat": "2.34%"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Cues",
+   "detail": "Mixed trends in global markets.",
+   "stat": "-0.19% SP500"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Drop",
+   "detail": "India VIX decreased by 6.94%.",
+   "stat": "15.12"
+  }
+ ],
+ "flows_line": "FIIs were net sellers with Rs 943.6 Cr outflow; DIIs net buyers with Rs 1,924.41 Cr inflow.",
+ "watch_next": "Watch for BOJ Policy Rate announcement and German economic data tomorrow.",
+ "week_pct": 1.1,
+ "lesson_seeds": [
+  "Financial and FMCG sectors drove market gains.",
+  "India VIX drop indicates reduced volatility.",
+  "Global markets showed mixed performance.",
+  "FIIs and DIIs had contrasting cash flow positions."
+ ],
+ "source": "llm"
+}
