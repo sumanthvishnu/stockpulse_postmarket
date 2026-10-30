@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty ended the week up 2% as *breadth turned weak*",
+ "subline": "Only IT and pharma lifted the index. Smallcap 250 lost 1.97% on Friday.",
+ "hero_text": "Nifty rose 2.0% on the week and 0.51% on Friday, but 2,058 stocks fell against 618 up. Smallcaps lost 1.97%.",
+ "why_head": "Why Nifty rose, tape fell",
+ "why": [
+  {
+   "emoji": "💻",
+   "title": "Infosys carried IT higher",
+   "desc": "Nifty IT rose 2.32%, the best sector on Friday.",
+   "badge": "Infy +3.36%"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma extended a strong week",
+   "desc": "Nifty Pharma rose 1.55% and has gained 7.09% over five days.",
+   "badge": "Pharma 5D +7.09%"
+  },
+  {
+   "emoji": "📉",
+   "title": "US tech sold off hard",
+   "desc": "Nasdaq fell 2.37% and the S&P 500 lost 1.47%.",
+   "badge": "Nasdaq -2.37%"
+  },
+  {
+   "emoji": "💸",
+   "title": "FIIs bought, DIIs trimmed",
+   "desc": "FIIs added Rs 3,598.54 Cr in cash while DIIs sold Rs 817.51 Cr.",
+   "badge": "FII +3,598.54 Cr"
+  }
+ ],
+ "sector_reasons": {
+  "Pharma": "Led the week as pharma names kept a steady bid",
+  "Healthcare": "Hospitals joined pharma, with Apollo up 3.02%",
+  "Media": "Third best week, though it slipped on Friday",
+  "Oil & Gas": "Slipped over the week while peers rose",
+  "Bank": "Lagged as private banks sat flat on Friday",
+  "Energy": "Eased on Friday and trailed the week's leaders"
+ },
+ "bonus_title": "THE SPLIT",
+ "bonus_text": "IT and pharma led Friday. Consumer durables, media and energy fell, and smallcaps and midcaps closed lower.",
+ "movers_note_gainers": "Trent and IndiGo led. Infosys and Apollo Hospitals added over 3% each.",
+ "movers_note_losers": "Shriram Finance fell most. Nestle, M&M and Jio Financial trailed.",
+ "watch_text": "On Monday, watch the 23,000 max pain and the 23,500 call wall. The US selloff is the open question.",
+ "lessons": [
+  "The index rose while most stocks fell. Heavyweights carried what breadth did not.",
+  "Only the top 50 gained. Next 50, midcaps and smallcaps all closed in the red.",
+  "Two groups did the lifting. IT and pharma rose while most other sectors slipped.",
+  "Foreign cash bought into a falling tape while domestic funds sold."
+ ],
+ "alert_title": "Monday's setup",
+ "alert_text": "Monday opens first, with the US selloff in view. The Nifty weekly expiry falls on Tuesday 3 November.",
+ "cta_headline": "A week that ended *lopsided and narrow*.",
+ "cta_sub": "Wrap returns after Monday's close. Next bell is 2 November.",
+ "next_text": "Next bell is Monday. Nifty expiry lands Tuesday.",
+ "caption_a": "Nifty closed the week up 2.0%, yet 2,058 stocks fell against 618 up on Friday.\nNifty IT rose 2.32%. Nifty Pharma added 1.55% and is up 7.09% on the week.\nSmallcap 250 fell 1.97% even as FIIs bought Rs 3,598.54 Cr in cash.\nWatch: the 23,000 max pain and 23,500 call wall on Monday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyIT #NiftyPharma #MarketWrap",
+ "caption_b": "Wall Street sold off hard and Nifty still gained.\nNasdaq fell 2.37% while Nifty rose 0.51% to 23,053.1.\nNifty PCR sits at 1.62. India VIX closed at 15.3.\nWatch: Monday's open and the Tuesday weekly expiry.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #FII #Sensex #WeeklyWrap"
+}
