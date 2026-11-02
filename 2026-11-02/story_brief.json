@@ -1,0 +1,40 @@
+{
+ "one_liner": "Indian markets rally with Nifty 50 up 1.68% driven by energy and metal sectors.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "🛢️",
+   "title": "Oil & Gas Surge",
+   "detail": "Nifty Oil & Gas jumped 5.95% as crude prices fell.",
+   "stat": "5.95%"
+  },
+  {
+   "emoji": "🔧",
+   "title": "Metal Gains",
+   "detail": "Nifty Metal rose 3.21% on strong global commodity prices.",
+   "stat": "3.21%"
+  },
+  {
+   "emoji": "📈",
+   "title": "FII Inflows",
+   "detail": "FIIs were net buyers with Rs 3,114.68 Cr inflow.",
+   "stat": "Rs 3,114.68 Cr"
+  },
+  {
+   "emoji": "📉",
+   "title": "Crude Oil Drop",
+   "detail": "Brent Crude fell 10.06%, impacting energy stocks.",
+   "stat": "-10.06%"
+  }
+ ],
+ "flows_line": "FIIs net bought Rs 3,114.68 Cr; DIIs net sold Rs 392.2 Cr.",
+ "watch_next": "Watch for JOLTS Job Openings and INFY's dividend ex-date tomorrow.",
+ "week_pct": 3.02,
+ "lesson_seeds": [
+  "Energy sector led market gains with a 5.95% surge.",
+  "FIIs continue to drive market sentiment with significant inflows.",
+  "Global commodity prices influence domestic metal stocks.",
+  "Crude oil price movements have a direct impact on related sectors."
+ ],
+ "source": "llm"
+}
