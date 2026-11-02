@@ -1,0 +1,58 @@
+{
+ "headline": "Crude collapsed while *energy ran the Nifty*",
+ "subline": "FIIs bought Rs 3,114.68 Cr while DIIs trimmed. Banks and IT lagged the rally.",
+ "hero_text": "FIIs bought Rs 3,114.68 Cr in cash while DIIs sold Rs 392.2 Cr. Foreign money backed a 1.68 percent Nifty gain.",
+ "why_head": "Why the Nifty rallied",
+ "why": [
+  {
+   "emoji": "🛢️",
+   "title": "Oil and gas ripped higher",
+   "desc": "Nifty Oil & Gas jumped as crude prices fell.",
+   "badge": "Oil & Gas +5.95%"
+  },
+  {
+   "emoji": "⛏️",
+   "title": "Metals rode commodity strength",
+   "desc": "Nifty Metal rose on firm global commodity prices.",
+   "badge": "Metal +3.21%"
+  },
+  {
+   "emoji": "💰",
+   "title": "Foreign buyers outweighed DIIs",
+   "desc": "FIIs bought Rs 3,114.68 Cr while DIIs sold Rs 392.2 Cr.",
+   "badge": "FII +Rs 3,114.68 Cr"
+  },
+  {
+   "emoji": "⛽",
+   "title": "Brent crude cracked lower",
+   "desc": "Brent dropped to 105.81 from 117.64 in one session.",
+   "badge": "Brent -10.06%"
+  }
+ ],
+ "sector_reasons": {
+  "Oil & Gas": "Led as Reliance jumped 11.6%",
+  "Energy": "Rode the same Reliance surge",
+  "Infra": "Ran alongside energy and metals",
+  "Media": "Slipped while the wider tape rose",
+  "IT": "Infosys fell and dragged the group",
+  "Private Bank": "ICICI Bank and Kotak slipped"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,956 stocks advanced and 738 declined, a ratio of 2.65. Inside the Nifty 50, 38 rose and 12 fell.",
+ "movers_note_gainers": "Reliance jumped 11.6%, with Tata Steel and JSW Steel next.",
+ "movers_note_losers": "Infosys fell most. ICICI Bank, Dr Reddy's and Kotak trailed.",
+ "watch_text": "Tuesday is Nifty expiry day. Open interest is stacked at 23,000 puts and 24,000 calls.",
+ "lessons": [
+  "One heavyweight carried the index. Reliance outran every other Nifty name by a wide margin.",
+  "Banks and IT sat out the rally. Private banks and Infosys slipped while energy ran.",
+  "Commodity linked groups ran the board. Oil, energy, metals and infra topped the sector list.",
+  "The frontline led the size ladder. Midcaps and smallcaps rose, but by less than the Nifty."
+ ],
+ "alert_title": "Before Tuesday's open",
+ "alert_text": "US JOLTS at 00:30 IST and the US Congressional Elections at 00:46 IST land before the Tuesday open.",
+ "cta_headline": "A crude shock day. *Save it for Tuesday*.",
+ "cta_sub": "Next bell is Tuesday 3 November, with the Nifty weekly expiry.",
+ "next_text": "Tuesday 3 November brings Nifty weekly expiry. Infosys also goes ex dividend of Rs 26.",
+ "caption_a": "Brent crude fell 10.06% and the Nifty still jumped 1.68% to 23,440.8.\nOil & Gas rose 5.95% and Metal 3.21%.\nFIIs bought Rs 3,114.68 Cr while DIIs sold Rs 392.2 Cr.\nWatch: Nifty weekly expiry falls on Tuesday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyEnergy #FII #CrudeOil",
+ "caption_b": "Reliance rose 11.6% and carried the frontline. Tata Steel and JSW Steel followed.\nBreadth ran 1,956 to 738. Private banks and IT lagged.\nNifty PCR closed at 1.668.\nWatch: open interest sits at 23,000 puts and 24,000 calls into Tuesday expiry.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #Reliance #NiftyMetal #MarketWrap"
+}
