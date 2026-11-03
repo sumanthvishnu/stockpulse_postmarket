@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty ran hard while the *broader market trailed*",
+ "subline": "FIIs bought Rs 6,836.81 Cr while DIIs sold. Smallcap 250 rose just 0.42%.",
+ "hero_text": "The frontline led. Nifty rose 1.58 percent and Midcap 150 gained 1.00 percent, while Smallcap 250 managed only 0.42 percent.",
+ "why_head": "Why the market rose",
+ "why": [
+  {
+   "emoji": "📈",
+   "title": "Foreign money poured back in",
+   "desc": "FIIs were net cash buyers while DIIs sold on the day.",
+   "badge": "FII +6,836.81 Cr"
+  },
+  {
+   "emoji": "🗽",
+   "title": "Wall Street gave a lift",
+   "desc": "The S&P 500 and Nasdaq both closed higher.",
+   "badge": "S&P 500 +0.33%"
+  },
+  {
+   "emoji": "📊",
+   "title": "More stocks rose than fell",
+   "desc": "Advancers outnumbered decliners across the full market.",
+   "badge": "1,607 advances"
+  },
+  {
+   "emoji": "🔍",
+   "title": "No single trigger stood out",
+   "desc": "The rally came without a clearly named catalyst.",
+   "badge": "Nifty +1.58%"
+  }
+ ],
+ "sector_reasons": {
+  "FMCG": "Nestle and Tata Consumer led the staples bid",
+  "Realty": "Ran with FMCG among the leaders",
+  "Private Bank": "Private lenders lifted the Bank Nifty",
+  "PSU Bank": "Weakest sector as SBI slid 1.7%",
+  "Metal": "Edged lower as the metal pack stalled",
+  "Energy": "ONGC slipped and held the space back"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "FII bought while DII sold.",
+ "movers_note_gainers": "BSE led at 5.03%, with Nestle and Tata Consumer next.",
+ "movers_note_losers": "Power Grid fell most. SBI, ONGC and Infosys trailed.",
+ "watch_text": "Nifty closed at 23,810.85, between the 23,700 put wall and the 23,850 call wall. Wednesday tests that range.",
+ "lessons": [
+  "The top 50 ran ahead of the pack. 38 of 50 rose, but the whole market managed only 1.4 to 1.",
+  "PSU banks fell while private banks rallied. The bank trade split down the middle.",
+  "Staples led the board. Nestle and Tata Consumer sat in the top three gainers.",
+  "No headline catalyst showed up. A broad rally can run on flows and a mild global tailwind alone."
+ ],
+ "alert_title": "Data and dividends",
+ "alert_text": "Eurozone CPI flash lands at 19:30 IST and US ISM Services PMI at 00:30 IST. Coal India trades ex dividend.",
+ "cta_headline": "A frontline rally. *Save it for Wednesday*.",
+ "cta_sub": "Full wrap every evening. Next bell is Wednesday 4 November.",
+ "next_text": "Wednesday 4 November opens after four straight up sessions for Nifty. Coal India goes ex dividend.",
+ "caption_a": "Nifty jumped 1.58% to 23,810.85, but Smallcap 250 managed only 0.42%.\nFIIs bought Rs 6,836.81 Cr in cash while DIIs sold Rs 3,678.85 Cr.\nFMCG led the sectors at 3.65%.\nWatch: Eurozone CPI and the Coal India ex dividend on Wednesday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyFMCG #FII #Sensex",
+ "caption_b": "Four straight up sessions. Nifty is now up 4.66% over five days.\nBreadth ran 1,607 advances to 1,110 declines. India VIX sat at 15.72.\nPSU banks fell 1.27% while private banks rose 1.98%.\nWatch: Nifty put wall at 23,700, call wall at 23,850.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #MarketWrap #NiftyRealty"
+}
