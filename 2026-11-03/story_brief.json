@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 surges 1.58% amid strong FII inflows and positive global cues.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "📈",
+   "title": "FII Inflows",
+   "detail": "FIIs net buyers with Rs 6,836.81 Cr inflow.",
+   "stat": "6836.81 Cr"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Cues",
+   "detail": "Positive cues from S&P 500 and Nasdaq gains.",
+   "stat": "0.33% S&P 500"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Market Breadth",
+   "detail": "Market breadth positive with 1,607 advances.",
+   "stat": "1,607 advances"
+  },
+  {
+   "emoji": "🔍",
+   "title": "Data Gaps",
+   "detail": "No specific catalysts identified for broad rally.",
+   "stat": "No identifiable catalyst"
+  }
+ ],
+ "flows_line": "FIIs were net buyers with Rs 6,836.81 Cr, while DIIs sold Rs 3,678.85 Cr.",
+ "watch_next": "Watch for Eurozone CPI data and COALINDIA's dividend ex-date tomorrow.",
+ "week_pct": 4.66,
+ "lesson_seeds": [
+  "Strong FII inflows can significantly boost market sentiment.",
+  "Global market movements influence domestic indices.",
+  "Positive market breadth often accompanies index gains.",
+  "Data gaps can obscure specific market catalysts."
+ ],
+ "source": "llm"
+}
