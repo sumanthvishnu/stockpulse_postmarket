@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 gains 0.63% amid strong FII inflows and broad-based rally.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "📈",
+   "title": "FII Inflows",
+   "detail": "FIIs net bought Rs 7,284.03 Cr.",
+   "stat": "Rs 7,284.03 Cr"
+  },
+  {
+   "emoji": "🎭",
+   "title": "Media Surge",
+   "detail": "Nifty Media jumped 5.15%.",
+   "stat": "5.15%"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Rally",
+   "detail": "Dow Jones rose 2.06%.",
+   "stat": "2.06%"
+  },
+  {
+   "emoji": "💹",
+   "title": "Volatility Drop",
+   "detail": "India VIX fell 3.4%.",
+   "stat": "-3.4%"
+  }
+ ],
+ "flows_line": "FIIs were net buyers with Rs 7,284.03 Cr, DIIs sold Rs 3,712.23 Cr.",
+ "watch_next": "Watch for BOE Monetary Policy Report at 21:30 IST tomorrow.",
+ "week_pct": 5.56,
+ "lesson_seeds": [
+  "FII inflows can drive market gains.",
+  "Sectoral surges can lead broader rallies.",
+  "Global market trends influence local sentiment.",
+  "Decreased volatility often accompanies market rallies."
+ ],
+ "source": "llm"
+}
