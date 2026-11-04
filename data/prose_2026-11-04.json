@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty rose 0.63% but *smallcaps rose 2%*",
+ "subline": "Smallcaps rose 2%. About 4 stocks rose for every 1 that fell.",
+ "hero_text": "Smallcap 100 rose 2% and Midcap 100 1.55%, outrunning a Nifty up 0.63%. Advances beat declines 2,177 to 539.",
+ "why_head": "Why the market rose",
+ "why": [
+  {
+   "emoji": "💵",
+   "title": "Overseas funds drove the bid",
+   "desc": "FIIs net bought in cash while DIIs sold.",
+   "badge": "FII +7,284.03 Cr"
+  },
+  {
+   "emoji": "📺",
+   "title": "Media ran away from the pack",
+   "desc": "Nifty Media jumped 5.15%, the best sector on the board.",
+   "badge": "Media +5.15%"
+  },
+  {
+   "emoji": "🇺🇸",
+   "title": "Wall Street rallied hard",
+   "desc": "The Dow rose 2.06% and the Nasdaq 2.11%.",
+   "badge": "Dow +2.06%"
+  },
+  {
+   "emoji": "😌",
+   "title": "The fear gauge eased again",
+   "desc": "India VIX fell 3.4% to 15.19.",
+   "badge": "VIX 15.19"
+  }
+ ],
+ "sector_reasons": {
+  "Media": "Topped every sector on a sharp bid",
+  "Realty": "Ran alongside metals at the top",
+  "Metal": "Broad bid lifted metal names",
+  "IT": "TCS and HCLTech dragged the group",
+  "Private Bank": "Barely moved while the tape ran",
+  "Pharma": "Small gain as the bid skipped defensives"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "FIIs bought Rs 7,284.03 Cr in cash. DIIs sold Rs 3,712.23 Cr. Foreign money did the lifting.",
+ "movers_note_gainers": "BEL topped at 4.71%. Adani Enterprises, Titan and Jio Financial each gained over 3.5%.",
+ "movers_note_losers": "TCS and HCLTech fell over 2.3% each. Coal India traded ex dividend and BSE slipped too.",
+ "watch_text": "Thursday brings the BOE rate decision at 21:30 IST. Nifty max pain sits at 23,800.",
+ "lessons": [
+  "The tail ran faster than the head. Smallcaps rose about 3 times as much as the Nifty.",
+  "Foreign and domestic funds disagreed. The foreign side decided the direction.",
+  "One group sat out. IT slipped while 35 of the Nifty 50 rose.",
+  "Five straight gains added 5.56% to the Nifty. The rally ran on while fear cooled."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "The BOE rate decision lands at 21:30 IST on Thursday. Forecast is 4.00% from 3.75%.",
+ "cta_headline": "Small stocks led. *Thursday opens with the BOE*.",
+ "cta_sub": "Next bell is Thursday 5 November, with the BOE rate call due that evening.",
+ "next_text": "Thursday 5 November follows five straight Nifty gains. The BOE rate call lands at 21:30 IST.",
+ "caption_a": "Nifty rose 0.63% to 23,960.6, but smallcaps rose 2%.\nAdvances beat declines 2,177 to 539.\nFIIs added Rs 7,284.03 Cr in cash while DIIs sold Rs 3,712.23 Cr.\nWatch: the BOE rate decision on Thursday at 21:30 IST.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #Sensex #FII #SmallCap",
+ "caption_b": "Nifty Media jumped 5.15% while IT slipped 1.5%.\nRealty rose 2.85% and metals 2.8%. The Nifty is up 5.56% in five sessions.\nNifty PCR sits at 1.07 with max pain at 23,800.\nWatch: the BOE decision on Thursday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyMedia #NiftyIT #MarketWrap"
+}
