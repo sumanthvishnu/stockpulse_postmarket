@@ -1,0 +1,40 @@
+{
+ "one_liner": "Markets rally as Nifty 50 gains 2.40% amid broad-based buying.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "💹",
+   "title": "Financial Surge",
+   "detail": "Financial sector drives market rally.",
+   "stat": "+3.99%"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Auto Boost",
+   "detail": "Auto sector sees significant gains.",
+   "stat": "+4.14%"
+  },
+  {
+   "emoji": "📈",
+   "title": "FII Inflows",
+   "detail": "FIIs net buyers with Rs 14,974.68 Cr inflow.",
+   "stat": "Rs 14,974.68 Cr"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Spike",
+   "detail": "India VIX rises indicating increased volatility.",
+   "stat": "+2.58%"
+  }
+ ],
+ "flows_line": "FIIs were net buyers with Rs 14,974.68 Cr, while DIIs sold Rs 10,444.54 Cr.",
+ "watch_next": "Watch for USD economic data releases at 23:00 IST tomorrow.",
+ "week_pct": 6.98,
+ "lesson_seeds": [
+  "Financials and autos led today's rally.",
+  "FIIs continue to drive market sentiment.",
+  "Volatility increased despite market gains.",
+  "Global cues showed mixed trends."
+ ],
+ "source": "llm"
+}
