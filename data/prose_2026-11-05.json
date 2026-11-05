@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty jumped 2.40% as *FIIs bought, DIIs sold*",
+ "subline": "Credit names and autos led the charge. Fear still ticked higher.",
+ "hero_text": "Nifty closed up 2.40% at 24,536.60. The broader tape did not follow.",
+ "why_head": "Why the market jumped",
+ "why": [
+  {
+   "emoji": "🏦",
+   "title": "Credit names drove the surge",
+   "desc": "Bajaj Finance rose 7.65% as Financial Services gained 3.99%.",
+   "badge": "Fin Services +3.99%"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Autos ran the sector board",
+   "desc": "Maruti, M&M and Tata Motors PV each rose over 5%.",
+   "badge": "Nifty Auto +4.14%"
+  },
+  {
+   "emoji": "💼",
+   "title": "FIIs bought Rs 14,974.68 Cr",
+   "desc": "DIIs sold Rs 10,444.54 Cr into the same rally.",
+   "badge": "FII +14,974.68 Cr"
+  },
+  {
+   "emoji": "⚠️",
+   "title": "Fear gauge ticked higher",
+   "desc": "India VIX rose to 15.58 even as the Nifty jumped.",
+   "badge": "VIX 15.58, +2.58%"
+  }
+ ],
+ "sector_reasons": {
+  "Auto": "Led the board on Maruti, M&M and Tata Motors PV",
+  "Financials": "Bajaj Finance and Shriram Finance drove it",
+  "Realty": "Rode the lenders' bid higher",
+  "Media": "Slipped while the rest of the tape rose",
+  "Energy": "ONGC and NTPC held it back",
+  "Oil & Gas": "Barely up as ONGC fell 2.13%"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "FIIs bought Rs 14,974.68 Cr in cash. DIIs sold Rs 10,444.54 Cr. Foreign money set the direction.",
+ "movers_note_gainers": "Bajaj Finance led at 7.65%. Shriram Finance, M&M and Maruti each added over 5%.",
+ "movers_note_losers": "Apollo Hospitals fell most at 2.66%. ONGC, NTPC and Coal India trailed.",
+ "watch_text": "Nifty OI walls sat at 25,000 on the call side and 23,000 on the put side. US jobs data lands at 23:00 IST tomorrow.",
+ "lessons": [
+  "Credit and cars set the pace. Bajaj Finance and Maruti led a 39 of 50 advance.",
+  "Price and fear rose together. A big up day still came with a higher VIX.",
+  "FIIs bought cash but stayed net negative in index futures. The two books disagreed.",
+  "Pockets stayed red inside a wide advance. Energy and media sat out."
+ ],
+ "alert_title": "Next up: US jobs data",
+ "alert_text": "US non farm payrolls land at 23:00 IST tomorrow. The forecast is 65K against 29K before.",
+ "cta_headline": "Lenders and carmakers led. *Save it for Friday*.",
+ "cta_sub": "Next bell is Friday 6 November, with US jobs data due at 23:00 IST.",
+ "next_text": "Friday 6 November follows a six session run. US payrolls land at 23:00 IST. Nifty weekly expiry is Monday.",
+ "caption_a": "Nifty jumped 2.40% to 24,536.6 and fear still rose. India VIX ended at 15.58.\nFinancial Services gained 3.99% and Auto 4.14%.\nFIIs bought Rs 14,974.68 Cr while DIIs sold Rs 10,444.54 Cr.\nWatch: US jobs data at 23:00 IST tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyAuto #FII #BankNifty",
+ "caption_b": "Six straight gains. The Nifty is up 6.98% over five sessions.\nBreadth ran 1,941 advances to 772 declines. Midcap 150 rose 1.93%, Smallcap 250 lagged at 0.79%.\nNifty PCR sits at 1.345 with OI walls at 25,000 and 23,000.\nWatch: US payrolls at 23:00 IST tomorrow.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #Sensex #Midcap #MarketWrap"
+}
