@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty closed the week up 8.58% as *1,735 stocks fell*",
+ "subline": "Frontline banks ran on Friday. Midcaps and smallcaps closed lower.",
+ "hero_text": "Nifty gained 8.58% on the week. Friday's lift came from financials, while midcaps and smallcaps closed in the red.",
+ "why_head": "Why the week ended higher",
+ "why": [
+  {
+   "emoji": "💹",
+   "title": "Financials led the lift",
+   "desc": "Banks and lenders drove the Nifty higher as ICICI Bank and HDFC Bank ran.",
+   "badge": "Fin Services +2.57%"
+  },
+  {
+   "emoji": "🧲",
+   "title": "Foreign inflow swamped exits",
+   "desc": "FIIs bought heavily in cash while DIIs were net sellers.",
+   "badge": "FII +13,749.82 Cr"
+  },
+  {
+   "emoji": "⚡",
+   "title": "Volatility hit a range high",
+   "desc": "India VIX closed at the top of its 21 session range.",
+   "badge": "VIX 17.47"
+  },
+  {
+   "emoji": "⚖️",
+   "title": "No trigger, thin breadth",
+   "desc": "No clear catalyst showed up. Declines beat advances 1,735 to 972.",
+   "badge": "A/D 0.56"
+  }
+ ],
+ "sector_reasons": {
+  "Financials": "Banks and lenders led, with ICICI Bank and HDFC Bank up",
+  "Realty": "Flat on the day, yet up 10.17% on the week",
+  "Consumer Durables": "Titan's gain helped the group",
+  "IT": "Lagged as midsmall IT names slipped",
+  "Media": "Only red group as flows went to banks",
+  "Healthcare": "Pharma firmed but trailed the week's leaders"
+ },
+ "bonus_title": "THE SPLIT",
+ "bonus_text": "Private Bank carried the board. Media was the pocket that lagged.",
+ "movers_note_gainers": "M&M led the Nifty. ICICI Bank and HDFC Bank each added over 3.7%.",
+ "movers_note_losers": "Only 5 of 50 fell, and none by more than 0.58%.",
+ "watch_text": "Monday is Nifty expiry day. Put OI peaks at 24,000, call OI at 26,000, with spot at 25,030.",
+ "lessons": [
+  "Banks set the week's pace. Financials, realty and durables each outran the Nifty's own gain.",
+  "Puts outweighed calls in open interest. The 24,000 strike held the heaviest put base.",
+  "The biggest names ran hardest. The top 10 equal weight index beat the Nifty 50 equal weight.",
+  "Value beat momentum. The Value 20 index rose while the Alpha 50 index slipped."
+ ],
+ "alert_title": "Monday expiry",
+ "alert_text": "The Nifty weekly expiry falls on Monday, 09 November 2026.",
+ "cta_headline": "A big week, thin base. *Save it for Monday*.",
+ "cta_sub": "Full wrap every evening. Next bell is Monday, 09 November, with the weekly expiry.",
+ "next_text": "Monday, 09 November opens the new week with the Nifty weekly expiry. Spot closed Friday at 25,030.35.",
+ "caption_a": "Nifty gained 8.58% this week, yet 1,735 stocks fell on Friday against 972 that rose.\nNifty closed at 25,030.35, up 2.01%. Midcap 150 and Smallcap 250 ended lower.\nFIIs bought Rs 13,749.82 Cr in cash. DIIs sold Rs 5,968.7 Cr.\nWatch: the Nifty weekly expiry on Monday, 09 November.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #FII #MarketWrap",
+ "caption_b": "India VIX closed at 17.47, the top of its 21 session range, on a 2% up day.\nFinancial Services rose 2.57% and Bank Nifty ended at 59,086.\nNifty PCR stands at 1.65. The heaviest puts sit at 24,000, calls at 26,000.\nWatch: weekly expiry on Monday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #IndiaVIX #NiftyBank #WeeklyWrap"
+}
