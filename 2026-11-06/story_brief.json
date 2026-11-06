@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 gains 2.01% amid strong financial sector performance.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "💹",
+   "title": "Financial Surge",
+   "detail": "Strong buying in financial and banking stocks.",
+   "stat": "Nifty Financial Services +2.57%"
+  },
+  {
+   "emoji": "📈",
+   "title": "FII Inflows",
+   "detail": "FIIs were net buyers in the cash market.",
+   "stat": "FII net Rs 13,749.82 Cr"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Spike",
+   "detail": "India VIX surged to the top of its range.",
+   "stat": "India VIX +12.10%"
+  },
+  {
+   "emoji": "🔍",
+   "title": "Data Gaps",
+   "detail": "Driver attribution was unavailable for top movers.",
+   "stat": "No identifiable catalyst"
+  }
+ ],
+ "flows_line": "FIIs net bought Rs 13,749.82 Cr; DIIs net sold Rs 5,968.7 Cr.",
+ "watch_next": "Watch for corporate actions on Monday, 09 November 2026.",
+ "week_pct": 8.58,
+ "lesson_seeds": [
+  "Financial sector led market gains.",
+  "FIIs showed strong buying interest.",
+  "Volatility increased significantly.",
+  "Data gaps affected mover analysis."
+ ],
+ "source": "llm"
+}
