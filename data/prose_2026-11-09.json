@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty rose an eighth day while *more stocks fell*",
+ "subline": "FIIs bought Rs 7,212.22 Cr. DIIs sold almost the same.",
+ "hero_text": "India VIX stayed at 17.42, near its 21 session high, even as the Nifty notched an eighth straight gain.",
+ "why_head": "Why the Nifty edged higher",
+ "why": [
+  {
+   "emoji": "🔥",
+   "title": "An eighth straight gain",
+   "desc": "Nifty added 58.25 pts to close at 25,044.65.",
+   "badge": "8 sessions up"
+  },
+  {
+   "emoji": "🔄",
+   "title": "FIIs bought, DIIs sold evenly",
+   "desc": "FIIs net bought Rs 7,212.22 Cr while DIIs net sold Rs 7,172.53 Cr.",
+   "badge": "FII Rs 7,212.22 Cr"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma and PSU banks led",
+   "desc": "PSU Banks rose 3.73% and Pharma gained 1.65%.",
+   "badge": "Pharma +1.65%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Breadth stayed weak",
+   "desc": "More names fell than rose.",
+   "badge": "1,126 : 1,583"
+  }
+ ],
+ "sector_reasons": {
+  "PSU Bank": "SBI led a broad PSU lender bid",
+  "Pharma": "Divi's Lab and Laurus hit 52 week highs",
+  "Bank": "SBI and private lenders lifted the index",
+  "IT": "HCLTech's slide led the drag",
+  "Metal": "Tata Steel slid as metals gave way",
+  "FMCG": "ITC's fall outweighed Nestle's gain"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "FIIs net bought Rs 7,212.22 Cr and DIIs net sold Rs 7,172.53 Cr. Near mirror images, and the Nifty still edged up.",
+ "movers_note_gainers": "SBI led at 2.56%. Trent, Nestle, NTPC and L&T each added over 1.8%.",
+ "movers_note_losers": "Tata Steel fell most at 2.81%. HCLTech, UltraTech, ITC and Bajaj Finance trailed.",
+ "watch_text": "25,000 held the heaviest put OI and max pain. 26,000 held the heaviest call OI. Wednesday reopens after a holiday.",
+ "lessons": [
+  "The streak ran on a thin base. 28 of the Nifty 50 fell and the wider market skewed red.",
+  "Fear stayed high through the rally. VIX sat near the top of its 21 session range.",
+  "Flows netted out. Foreign buying and domestic selling matched almost exactly.",
+  "The tail lagged the head. Smallcap 250 slipped while the Nifty rose."
+ ],
+ "alert_title": "After the holiday",
+ "alert_text": "Wednesday 11 November reopens after the Tuesday holiday. HUL and ONGC go ex dividend on Thursday.",
+ "cta_headline": "Eight up days, thin base. *Wednesday reopens the test*.",
+ "cta_sub": "Markets shut Tuesday. The next bell is Wednesday 11 November.",
+ "next_text": "Wednesday 11 November reopens after the Tuesday holiday. HUL and ONGC go ex dividend a day later.",
+ "caption_a": "Eight straight gains, yet more stocks fell than rose.\nNifty closed at 25,044.65, up 0.23%. Breadth ran 1,126 up to 1,583 down.\nFIIs bought Rs 7,212.22 Cr. DIIs sold Rs 7,172.53 Cr.\nWatch: 25,000 held the heaviest put OI. Markets shut Tuesday, next bell Wednesday.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #FII #NiftyPharma #IndiaVIX",
+ "caption_b": "FIIs and DIIs cancelled each other out, and the Nifty still gained 0.23%.\nFIIs net bought Rs 7,212.22 Cr. DIIs net sold Rs 7,172.53 Cr.\nPSU Banks rose 3.73%, Pharma 1.65%, IT fell 1.22%. India VIX closed at 17.42.\nWatch: 26,000 holds the heaviest call OI. Next bell is Wednesday.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #PSUBank #NiftyPharma #NiftyIT"
+}
