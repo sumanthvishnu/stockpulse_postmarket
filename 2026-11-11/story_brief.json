@@ -1,0 +1,40 @@
+{
+ "one_liner": "Indian markets rally with strong FII inflows and broad-based sector gains.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "💸",
+   "title": "FII Inflows",
+   "detail": "FIIs net bought Rs 12,563.33 Cr in cash segment.",
+   "stat": "Rs 12,563.33 Cr"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Auto Surge",
+   "detail": "Nifty Auto index rose by 2.14%.",
+   "stat": "2.14%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "PSU Banks Shine",
+   "detail": "Nifty PSU Bank index gained 2.94%.",
+   "stat": "2.94%"
+  },
+  {
+   "emoji": "📈",
+   "title": "Broad Rally",
+   "detail": "Strong market breadth with 1,969 advances.",
+   "stat": "1,969 advances"
+  }
+ ],
+ "flows_line": "FIIs were net buyers with Rs 12,563.33 Cr, DIIs net sellers at Rs 8,434.53 Cr.",
+ "watch_next": "Watch for UK GDP data and US unemployment claims impacting global cues tomorrow.",
+ "week_pct": 6.07,
+ "lesson_seeds": [
+  "FII inflows can drive market sentiment positively.",
+  "Sector-specific rallies can boost overall index performance.",
+  "Market breadth indicates underlying strength or weakness.",
+  "Global economic data can influence local market movements."
+ ],
+ "source": "llm"
+}
