@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty rose a ninth day as *DIIs leaned against FIIs*",
+ "subline": "FIIs added Rs 12,563.33 Cr in cash. DIIs pulled out Rs 8,434.53 Cr.",
+ "hero_text": "FIIs bought Rs 12,563.33 Cr in cash while DIIs sold Rs 8,434.53 Cr. Foreign money won and the Nifty closed at 25,255.05.",
+ "why_head": "Why the market rose",
+ "why": [
+  {
+   "emoji": "💸",
+   "title": "Foreign cash outweighed DIIs",
+   "desc": "FIIs net bought Rs 12,563.33 Cr while DIIs net sold Rs 8,434.53 Cr.",
+   "badge": "FII +12,563.33 Cr"
+  },
+  {
+   "emoji": "🚗",
+   "title": "M&M lifted the auto index",
+   "desc": "Nifty Auto rose 2.14% as M&M led the Nifty 50 higher.",
+   "badge": "Auto +2.14%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "State lenders led the board",
+   "desc": "Nifty PSU Bank gained 2.94%, well ahead of Nifty Bank at 1.76%.",
+   "badge": "PSU Bank +2.94%"
+  },
+  {
+   "emoji": "🌊",
+   "title": "Participation ran wide",
+   "desc": "1,969 stocks advanced against 756 decliners across the market.",
+   "badge": "A/D 2.60"
+  }
+ ],
+ "sector_reasons": {
+  "PSU Bank": "State lenders led the whole board",
+  "Auto": "M&M ran up 5.30% to lead",
+  "Bank": "PSU and private lenders both bid",
+  "IT": "TechM and HCLTech slipped together",
+  "Realty": "Slipped while the wider market rose",
+  "Pharma": "Faded from its opening high"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,969 stocks advanced and 756 declined. 37 of the Nifty 50 rose, 13 fell.",
+ "movers_note_gainers": "M&M led at 5.30%. IndiGo and Trent followed.",
+ "movers_note_losers": "Losses stayed mild. Adani Ports fell most at 1.84%.",
+ "watch_text": "UK GDP at 16:30 IST and US jobless claims at 23:00 IST set Thursday's global cues. Nifty zones: 24,500 to 26,000.",
+ "lessons": [
+  "State lenders outran private banks. PSU Bank gained over twice what Private Bank did.",
+  "Smallcaps beat midcaps. The Smallcap 100 rose about twice as much as the Midcap 100.",
+  "Oil rose and stocks still climbed. Brent gained 3.51% and the Nifty held its run.",
+  "Calls outweighed puts in open interest. PCR sat at 0.77 after a nine day run."
+ ],
+ "alert_title": "Next event",
+ "alert_text": "UK GDP prints at 16:30 IST on Thursday. US jobless claims follow at 23:00 IST.",
+ "cta_headline": "A wide up day. *Save it for Thursday*.",
+ "cta_sub": "Next bell is Thursday 12 November, with UK GDP and US claims due.",
+ "next_text": "Thursday 12 November opens after a nine day run. The Nifty weekly expiry lands Tuesday 17 November.",
+ "caption_a": "FIIs bought Rs 12,563.33 Cr of cash stocks while DIIs sold Rs 8,434.53 Cr. The Nifty still rose a ninth straight day.\nIt closed at 25,255.05, up 0.84%. Breadth ran 1,969 to 756.\nWatch: UK GDP and US jobless claims drive Thursday's global cues.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #FII #NiftyAuto #PSUBank",
+ "caption_b": "State lenders led the tape. PSU Bank rose 2.94% and Auto 2.14%, while IT, pharma and realty slipped.\nNifty closed at 25,255.05. India VIX ended at 17.56.\nNifty PCR sat at 0.77, with the heaviest calls at 26,000.\nWatch: UK GDP at 16:30 IST on Thursday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #NiftyAuto #MarketWrap"
+}
