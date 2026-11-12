@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 extends winning streak amid mixed sectoral performance.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "💹",
+   "title": "FII Inflows",
+   "detail": "FIIs net bought Rs 7,830.6 Cr in cash market.",
+   "stat": "Rs 7,830.6 Cr"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Banking Rally",
+   "detail": "Nifty Bank surged 1.19% amid sectoral gains.",
+   "stat": "1.19%"
+  },
+  {
+   "emoji": "📉",
+   "title": "Dividend Impact",
+   "detail": "ONGC and Hindustan Unilever fell post-dividend announcements.",
+   "stat": "-4.39%"
+  },
+  {
+   "emoji": "📈",
+   "title": "Volatility Eases",
+   "detail": "India VIX dropped 5.34%, indicating lower volatility.",
+   "stat": "-5.34%"
+  }
+ ],
+ "flows_line": "FIIs were net buyers with Rs 7,830.6 Cr, while DIIs sold Rs 6,331.17 Cr.",
+ "watch_next": "Tomorrow, watch for USD Core PPI and PPI data at 23:00 IST.",
+ "week_pct": 5.59,
+ "lesson_seeds": [
+  "FII inflows can boost market sentiment.",
+  "Sectoral rallies can drive index gains.",
+  "Dividend announcements may impact stock prices.",
+  "Volatility indicators like VIX can signal market mood."
+ ],
+ "source": "llm"
+}
