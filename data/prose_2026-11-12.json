@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty edged up while *30 of its 50 stocks fell*",
+ "subline": "Realty led the tape. Fear fell hard.",
+ "hero_text": "Smallcaps led. Nifty closed up 0.18% at 25,299.35, behind the broader tape.",
+ "why_head": "Why Nifty edged higher",
+ "why": [
+  {
+   "emoji": "💰",
+   "title": "Foreign money came in heavy",
+   "desc": "FIIs bought Rs 7,830.6 Cr in cash while DIIs sold Rs 6,331.17 Cr.",
+   "badge": "FII Rs 7,830.6 Cr"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Bank Nifty beat the index",
+   "desc": "Bank Nifty gained 1.19% against the Nifty's 0.18%.",
+   "badge": "Bank Nifty +1.19%"
+  },
+  {
+   "emoji": "🧾",
+   "title": "Ex dividend hit ONGC and HUL",
+   "desc": "ONGC fell 4.39% and Hindustan Unilever 2.39% as both traded ex dividend.",
+   "badge": "ONGC -4.39%"
+  },
+  {
+   "emoji": "📉",
+   "title": "Nervousness faded into close",
+   "desc": "India VIX fell 5.34% but still sat in the upper part of its 20 session range.",
+   "badge": "VIX 16.62"
+  }
+ ],
+ "sector_reasons": {
+  "Realty": "Ran the board as property names rallied",
+  "Media": "Steady bid lifted media names",
+  "PSU Bank": "State lenders rode the bank rally",
+  "Auto": "M&M fell 1.9% and led the drag",
+  "FMCG": "HUL and Nestle slipped and weighed",
+  "Oil & Gas": "ONGC fell ex dividend and dragged the group"
+ },
+ "bonus_title": "FEAR CHECK",
+ "bonus_text": "India VIX fell 5.34% to 16.62. Fear eased, yet the gauge still sat in the upper part of its 20 session range.",
+ "movers_note_gainers": "Financials took every top spot. HDFC Life led at 4.23%.",
+ "movers_note_losers": "ONGC fell most at 4.39%. ONGC and HUL both traded ex dividend.",
+ "watch_text": "US PPI data lands at 23:00 IST on Friday, after the close. Nifty max pain sits at 25,200.",
+ "lessons": [
+  "The Nifty and the wider market disagreed. 30 of 50 fell, but gainers still led across NSE.",
+  "One sector held the index up. All five top Nifty gainers were financials.",
+  "A dividend date pulled two names lower. ONGC and HUL traded ex dividend and fell.",
+  "The streak reached ten sessions on a small gain. Bank Nifty did the heavy lifting."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "US Core PPI and PPI are due tomorrow at 23:00 IST, after Friday's Indian close.",
+ "cta_headline": "Banks lifted a split tape. *Next bell is Friday*.",
+ "cta_sub": "Full wrap every evening. US PPI lands at 23:00 IST on Friday.",
+ "next_text": "Friday 13 November opens with a ten session run on the line. US PPI data lands at 23:00 IST.",
+ "caption_a": "Nifty closed up 0.18% at 25,299.35, while Realty led and Auto lagged.\n\nBreadth: 1,536 advances vs 1,163 declines.\n\nDaily wrap every evening @getstockpulse\n\nNot investment advice.\n\n#Nifty #IndianStockMarket #NiftyRealty #MarketWrap #Sensex",
+ "caption_b": "Fear fell. India VIX dropped 5.34% to 16.62 as the Nifty closed at 25,299.35.\nRealty led at 4.51%. Media rose 2.46%. Autos fell 1.02%.\nONGC fell 4.39% on its ex dividend day.\nWatch: Friday's US PPI data at 23:00 IST.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #IndiaVIX #NiftyRealty #StockMarket"
+}
