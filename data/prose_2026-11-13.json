@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty won the week but *Friday gave some back*",
+ "subline": "Up 2.48% on the week. Foreign cash poured in while breadth stayed weak.",
+ "hero_text": "Nifty gained 2.48% on the week. Friday slipped 0.61%, but fear fell as India VIX dropped 6.75% to 15.50.",
+ "why_head": "Why Friday slipped",
+ "why": [
+  {
+   "emoji": "🔻",
+   "title": "Friday pared the weekly gain",
+   "desc": "Nifty closed at 25,144.30 after a 0.61% slide.",
+   "badge": "Week +2.48%"
+  },
+  {
+   "emoji": "🇺🇸",
+   "title": "Nasdaq weighed on mood",
+   "desc": "US indices were lower, with the Nasdaq down 1.56%.",
+   "badge": "Nasdaq -1.56%"
+  },
+  {
+   "emoji": "💵",
+   "title": "Foreign flows stayed firm",
+   "desc": "FIIs net bought Rs 5,736.55 Cr as DIIs sold Rs 2,253.58 Cr.",
+   "badge": "FII Rs 5,736.55 Cr"
+  },
+  {
+   "emoji": "🧮",
+   "title": "Decliners outran advancers",
+   "desc": "939 stocks rose against 1,777 that fell across the NSE.",
+   "badge": "939 up, 1,777 down"
+  }
+ ],
+ "sector_reasons": {
+  "PSU Bank": "Led the week even with a Friday dip",
+  "Bank": "Week's lift held despite a Friday slip",
+  "Private Bank": "Gave back part of its weekly gain",
+  "IT": "Weekly laggard as Friday added losses",
+  "Metal": "Hindalco's drop weighed on Friday",
+  "FMCG": "HUL's gain kept it flat on the day"
+ },
+ "bonus_title": "FEAR CHECK",
+ "bonus_text": "India VIX fell 6.75% to 15.50. Fear eased on a red day and sits below the middle of its 20 session range.",
+ "movers_note_gainers": "Eicher Motors topped the list at 1.34%. HUL, BSE and Asian Paints trailed.",
+ "movers_note_losers": "Shriram Finance and TMPV both lost over 3.3%. Grasim and Hindalco trailed.",
+ "watch_text": "Monday 16 November tests the 24,000 put and 26,000 call walls in Nifty open interest. PCR sat at 0.83.",
+ "lessons": [
+  "The week and the day disagreed. A weekly gain survived a red Friday.",
+  "Foreign and domestic funds took opposite sides. FIIs added cash while DIIs sold.",
+  "IT stood apart. It was the one major sector lower on the week while banks rallied.",
+  "Fear fell with the index. A red close came with calmer options."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "Monday 16 November opens the week. The Nifty weekly expiry falls on Tuesday 17 November.",
+ "cta_headline": "Week up, Friday down. *Reopen the chart Monday*.",
+ "cta_sub": "Next bell is Monday 16 November, with Nifty expiry on Tuesday.",
+ "next_text": "Monday 16 November opens the new week. Nifty max pain sits at 25,100, close to Friday's finish.",
+ "caption_a": "Nifty gained 2.48% this week, yet Friday closed red with 1,777 stocks down.\n\nNifty ended at 25,144.30, down 0.61%. FIIs added Rs 5,736.55 Cr in cash while DIIs sold Rs 2,253.58 Cr.\n\nWatch: Monday 16 November, with Nifty expiry on Tuesday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #FII #WeeklyWrap",
+ "caption_b": "Fear fell on a down day. India VIX dropped 6.75% to 15.50 as the Nifty slipped 0.61%.\n\nPSU Bank rose 8.14% on the week. IT fell 2.76%. The Nasdaq lost 1.56% overnight.\n\nWatch: the 24,000 put and 26,000 call walls from Monday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyIT #PSUBank #MarketWrap"
+}
