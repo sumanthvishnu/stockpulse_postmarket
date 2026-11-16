@@ -1,0 +1,58 @@
+{
+ "headline": "Large caps rose while *smallcaps sank 1.10%*",
+ "subline": "FIIs bought Rs 4,864.68 Cr. DIIs sold Rs 3,519.05 Cr. Only 792 stocks rose.",
+ "hero_text": "The broader market lagged the Nifty. Smallcap 250 fell 0.94% and Midcap 150 fell 0.41%, while FIIs bought and DIIs sold.",
+ "why_head": "Why the Nifty rose, breadth fell",
+ "why": [
+  {
+   "emoji": "📈",
+   "title": "Large caps carried the index",
+   "desc": "Nifty rose 146.80 points to 25,291.10. 31 of its 50 stocks gained.",
+   "badge": "146.80 points"
+  },
+  {
+   "emoji": "📥",
+   "title": "FIIs ran a big cash bid",
+   "desc": "FIIs bought Rs 4,864.68 Cr in cash. DIIs sold Rs 3,519.05 Cr.",
+   "badge": "FII +Rs 4,864.68 Cr"
+  },
+  {
+   "emoji": "🐻",
+   "title": "The wider market sold off",
+   "desc": "1,937 stocks fell against 792 that rose. Smallcap 250 lost 0.94%.",
+   "badge": "A/D 0.409"
+  },
+  {
+   "emoji": "😬",
+   "title": "Fear edged up on a green day",
+   "desc": "India VIX rose 1.18% to 15.68, near the middle of its 20 session range.",
+   "badge": "VIX 15.68"
+  }
+ ],
+ "sector_reasons": {
+  "FMCG": "ITC and Nestle led the lift",
+  "Bank": "Large lenders held a steady bid",
+  "Private Bank": "Private lenders firmed with the index",
+  "Pharma": "Weakest sector as Laurus Labs slid",
+  "Metal": "Tata Steel and Hindalco led the drop",
+  "Realty": "Sold off with the smallcap tape"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "FIIs bought Rs 4,864.68 Cr in cash while DIIs sold Rs 3,519.05 Cr. Foreign money outweighed domestic selling.",
+ "movers_note_gainers": "Max Healthcare led at 6.63%. ITC and Tata Consumer each added over 3.5%.",
+ "movers_note_losers": "TMPV fell 8.70%, the deepest drop. Tata Steel, Maruti and Hindalco each lost over 2%.",
+ "watch_text": "The Nifty weekly expiry falls tomorrow. Open interest shows the heaviest puts at 25,000 and the heaviest calls at 26,000.",
+ "lessons": [
+  "Defensives led while cyclicals sagged. FMCG rose as metal, pharma and auto fell.",
+  "Foreign cash reached the large names. Midcaps and smallcaps still closed lower.",
+  "One heavy loser did not stop the index. TMPV sank and the Nifty still rose.",
+  "The Nifty closed just above the 25,200 max pain strike on expiry eve."
+ ],
+ "alert_title": "Tomorrow's triggers",
+ "alert_text": "The Nifty weekly expiry is tomorrow. US retail sales data lands at 23:00 IST.",
+ "cta_headline": "A split tape. *Tuesday brings expiry*.",
+ "cta_sub": "Index up, most stocks down. Next bell is Tuesday 17 November.",
+ "next_text": "Tuesday 17 November brings the Nifty weekly expiry. US retail sales follow at 23:00 IST.",
+ "caption_a": "Nifty rose 0.58% to 25,291.10, yet 1,937 stocks fell against 792 that rose.\n\nFIIs bought Rs 4,864.68 Cr in cash while DIIs sold Rs 3,519.05 Cr.\nFMCG gained 1.87%. Pharma fell 1.53%.\n\nWatch: the Nifty weekly expiry on Tuesday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n\n#Nifty #IndianStockMarket #FII #NiftyFMCG #NiftyPharma",
+ "caption_b": "Smallcap 250 fell 0.94% while the Nifty gained. The frontline and the tail split.\n\nBank Nifty rose 0.89% to 61,575.90. Metal fell 1.50%.\nIndia VIX ticked up 1.18% to 15.68.\n\nWatch: US retail sales at 23:00 IST on Tuesday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n\n#Nifty #IndianStockMarket #BankNifty #Smallcap #MarketWrap"
+}
