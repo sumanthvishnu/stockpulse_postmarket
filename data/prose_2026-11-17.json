@@ -1,0 +1,58 @@
+{
+ "headline": "Banks and FIIs lifted Nifty, *breadth lagged behind*",
+ "subline": "Bank Nifty gained 1.13% while the wider NSE tape split.",
+ "hero_text": "Nifty closed at 25,387.40, up 0.38%. Banks led, but 1,404 stocks fell against 1,318 that rose.",
+ "why_head": "Why banks carried the Nifty",
+ "why": [
+  {
+   "emoji": "🎯",
+   "title": "Nifty closed near 25,400",
+   "desc": "Expiry day ended just under the 25,400 max pain strike.",
+   "badge": "Close 25,387.40"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Lenders did the heavy lifting",
+   "desc": "Nifty Bank rose 1.13%. Axis Bank gained 1.98% among the Nifty names.",
+   "badge": "PSU Bank +1.95%"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Overseas screens stayed red",
+   "desc": "The S&P 500 fell 0.56% and the DAX fell 1.49%, yet India held up.",
+   "badge": "S&P -0.56%"
+  },
+  {
+   "emoji": "🧲",
+   "title": "FII cash outweighed DIIs",
+   "desc": "FIIs added Rs 4,195.38 Cr in cash while DIIs added Rs 196.93 Cr.",
+   "badge": "FII Rs 4,195.38 Cr"
+  }
+ ],
+ "sector_reasons": {
+  "PSU Bank": "State lenders led the whole board",
+  "Realty": "Firm bonds helped rate sensitive names",
+  "Bank": "Axis Bank's 1.98% gain led the lenders",
+  "IT": "HCLTech's 2.09% slide capped the group",
+  "Energy": "ONGC and Coal India both lost over 1.5%",
+  "Consumer Durables": "Lagged as money rotated to banks"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,318 stocks rose and 1,404 fell on NSE. Inside the Nifty 50, 27 rose and 23 fell.",
+ "movers_note_gainers": "Adani Enterprises led at 3.24%. Eicher Motors added 3.01%.",
+ "movers_note_losers": "HCLTech fell most at 2.09%. Power Grid, HDFC Life, ONGC and Coal India trailed.",
+ "watch_text": "FOMC minutes drop at 04:30 IST on Wednesday. Bank Nifty max pain sits at 60,000 against a 62,273 close.",
+ "lessons": [
+  "Banks and rate sensitives led while IT, energy and FMCG slipped. One cluster set the tone.",
+  "Participation narrowed. Decliners outnumbered advancers even as the Nifty 50 split 27 to 23.",
+  "Global weakness did not travel. US and European screens fell while Indian banks rose.",
+  "Cash and futures pointed apart. FIIs bought cash but sold Rs 1,392 Cr of index futures."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "FOMC meeting minutes release at 04:30 IST on Wednesday, before the Indian open.",
+ "cta_headline": "A bank led day. *Reopen the chart Wednesday*.",
+ "cta_sub": "Wednesday 18 November opens after the FOMC minutes at 04:30 IST.",
+ "next_text": "Wednesday 18 November opens after FOMC minutes at 04:30 IST. UK CPI prints at 16:30 IST.",
+ "caption_a": "Nifty rose 0.38% to 25,387.40, yet more NSE stocks fell (1,404) than rose (1,318).\nBank Nifty gained 1.13%. FIIs bought Rs 4,195.38 Cr in cash.\nWatch: FOMC minutes land at 04:30 IST on Wednesday.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #FII #PSUBank",
+ "caption_b": "FIIs put Rs 4,195.38 Cr into cash while DIIs added only Rs 196.93 Cr.\nPSU Bank rose 1.95% and Realty 1.94%. IT fell 0.90%.\nIndia VIX eased to 15.52.\nWatch: UK CPI and FOMC minutes before Wednesday's open.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #FII #NiftyIT #MarketWrap"
+}
