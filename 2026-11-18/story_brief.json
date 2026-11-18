@@ -1,0 +1,40 @@
+{
+ "one_liner": "Markets declined broadly with no identifiable catalyst, led by sentiment-driven moves.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Broad Market Decline",
+   "detail": "No identifiable catalyst for the decline.",
+   "stat": "Nifty 50 fell 0.63%"
+  },
+  {
+   "emoji": "📊",
+   "title": "FII/DII Activity",
+   "detail": "FIIs were net buyers, DIIs were net sellers.",
+   "stat": "FIIs net Rs 5,866.78 Cr"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Sectoral Moves",
+   "detail": "Nifty Metal and IT sectors fell sharply.",
+   "stat": "Nifty Metal down 2.46%"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Cues",
+   "detail": "Mixed US markets with Dow down, Nasdaq up.",
+   "stat": "Dow fell 0.94%"
+  }
+ ],
+ "flows_line": "FIIs net bought Rs 5,866.78 Cr; DIIs net sold Rs 3,159.9 Cr.",
+ "watch_next": "Watch ECB President Lagarde's speech and US Unemployment Claims at 23:00 IST.",
+ "week_pct": -0.11,
+ "lesson_seeds": [
+  "Market sentiment can drive significant moves without clear catalysts.",
+  "Sectoral performance can vary widely even in broad declines.",
+  "Institutional flows provide insight into market sentiment.",
+  "Global market movements can influence local indices."
+ ],
+ "source": "llm"
+}
