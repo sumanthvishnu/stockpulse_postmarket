@@ -1,0 +1,58 @@
+{
+ "headline": "Foreign cash poured in. *Nifty still slipped*.",
+ "subline": "FIIs bought Rs 5,866.78 Cr and DIIs sold. Decliners beat advancers nearly 3 to 1.",
+ "hero_text": "FIIs net bought Rs 5,866.78 Cr while DIIs net sold Rs 3,159.9 Cr. The Nifty still closed 0.63% lower.",
+ "why_head": "Why the market slipped",
+ "why": [
+  {
+   "emoji": "🌧️",
+   "title": "Selling had no single trigger",
+   "desc": "No clear catalyst. Decliners outnumbered advancers by 2,035 to 693.",
+   "badge": "Nifty 50 -0.63%"
+  },
+  {
+   "emoji": "📡",
+   "title": "Media led",
+   "desc": "Firm beside the leader, +0.46%.",
+   "badge": "Media +0.46%"
+  },
+  {
+   "emoji": "🏭",
+   "title": "Metals and IT fell sharply",
+   "desc": "Nifty Metal lost 2.46% and Nifty IT slid 1.24%.",
+   "badge": "Metal -2.46%"
+  },
+  {
+   "emoji": "🗽",
+   "title": "US markets sent mixed signals",
+   "desc": "The Dow fell 0.94% while the Nasdaq rose 0.24%.",
+   "badge": "Dow -0.94%"
+  }
+ ],
+ "sector_reasons": {
+  "PSU Bank": "SBI's rise led the state lenders higher",
+  "Media": "Held a small bid on a red tape",
+  "Pharma": "Cipla's gain kept the group green",
+  "Consumer Durables": "Titan's slide dragged the group",
+  "Metal": "Hindalco fell as the whole group sagged",
+  "Auto": "TMPV slipped as autos lost ground"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "Advances 693, declines 2,035. Only 15 of 50 Nifty stocks rose, so the tape was weaker than the index.",
+ "movers_note_gainers": "SBI led at 2.38%. Cipla, Tata Consumer and Apollo Hospitals also rose.",
+ "movers_note_losers": "Titan sank 5.30%, the deepest cut. HDFC Life, Hindalco and BSE trailed.",
+ "watch_text": "Thursday: Nifty open interest stacked calls at 26,000 and puts at 24,000. Max pain sat at 25,050.",
+ "lessons": [
+  "Breadth was the tell. About 3 stocks fell for every 1 that rose.",
+  "Fear did not spike. India VIX held near 15.5 on a day when decliners led.",
+  "Pockets held up inside the fall. PSU banks, media and pharma closed green while metals sank.",
+  "One pocket lagged the rest. Consumer Durables trailed while PSU Bank led."
+ ],
+ "alert_title": "Thursday night events",
+ "alert_text": "Lagarde speaks, US jobless claims and the Philly Fed all land at 23:00 IST on Thursday.",
+ "cta_headline": "Foreign cash in, index down. *Save it for Thursday*.",
+ "cta_sub": "Next bell is Thursday 19 November. The flow split is the thing to track.",
+ "next_text": "Thursday 19 November is next. The Nifty option expiry sits on Monday 23 November, with max pain at 25,050.",
+ "caption_a": "FIIs bought Rs 5,866.78 Cr of cash and the Nifty still fell.\nIt closed at 25,227.95, down 0.63%. DIIs net sold Rs 3,159.9 Cr.\nDecliners beat advancers 2,035 to 693.\nWatch: Lagarde and US claims at 23:00 IST on Thursday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #FII #NiftyMetal #MarketWrap",
+ "caption_b": "Metal fell 2.46% and Consumer Durables 3.13%, while PSU Banks rose 0.59%.\nTitan sank 5.30%. SBI gained 2.38%.\nNifty PCR sat at 0.855 with max pain at 25,050.\nWatch: Lagarde speaks at 23:00 IST on Thursday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyMetal #PSUBank #StockMarket"
+}
