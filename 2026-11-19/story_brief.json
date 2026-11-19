@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 surged 1.14% amid strong FII inflows and broad market gains.",
+ "mood": "risk-on",
+ "drivers": [
+  {
+   "emoji": "📈",
+   "title": "Nifty 50 Rally",
+   "detail": "Nifty 50 rose by 1.14% to close at 25,514.30.",
+   "stat": "25,514.30"
+  },
+  {
+   "emoji": "💸",
+   "title": "FII Inflows",
+   "detail": "FII net inflow was Rs 7,411.41 Cr today.",
+   "stat": "7,411.41 Cr"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Auto Sector Surge",
+   "detail": "Nifty Auto index jumped 4.4%, leading sector gains.",
+   "stat": "4.4%"
+  },
+  {
+   "emoji": "📉",
+   "title": "IT Sector Decline",
+   "detail": "Nifty IT was down by 1.1%, bucking the trend.",
+   "stat": "-1.1%"
+  }
+ ],
+ "flows_line": "FII net inflow was Rs 7,411.41 Cr, while DII saw an outflow of Rs 1,356.57 Cr.",
+ "watch_next": "Watch for ECB President Lagarde's speech and US consumer sentiment data tomorrow.",
+ "week_pct": 0.85,
+ "lesson_seeds": [
+  "FII inflows can drive market rallies.",
+  "Sector performance can vary widely on the same day.",
+  "Market breadth indicates overall market health.",
+  "Global events can impact next session's market sentiment."
+ ],
+ "source": "llm"
+}
