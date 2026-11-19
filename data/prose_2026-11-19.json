@@ -1,0 +1,58 @@
+{
+ "headline": "Foreign funds poured in as *DIIs sold*",
+ "subline": "Nifty closed on its high. Autos led and IT lagged.",
+ "hero_text": "FIIs put Rs 7,411.41 Cr into cash while DIIs sold Rs 1,356.57 Cr. The Nifty finished at its high of 25,514.30.",
+ "why_head": "Why the Nifty rallied today",
+ "why": [
+  {
+   "emoji": "🔝",
+   "title": "Nifty closed on its high",
+   "desc": "The index rose 1.14% and finished at the session peak.",
+   "badge": "Close 25,514.30"
+  },
+  {
+   "emoji": "💸",
+   "title": "FIIs added, DIIs trimmed",
+   "desc": "Foreign cash inflow was large while domestic funds were net sellers.",
+   "badge": "FII +7,411.41 Cr"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Autos led the charge",
+   "desc": "Nifty Auto jumped, with Maruti up 7.58% on the day.",
+   "badge": "Auto +4.4%"
+  },
+  {
+   "emoji": "💻",
+   "title": "IT slipped against the tape",
+   "desc": "TCS, Tech Mahindra and Infosys each lost over 1.5%.",
+   "badge": "IT -1.1%"
+  }
+ ],
+ "sector_reasons": {
+  "Auto": "Maruti jumped 7.58% to lead",
+  "Consumer Durables": "Rode the consumption bid with autos",
+  "PSU Bank": "State lenders joined the bank bid",
+  "IT": "TCS, Infosys and Tech M dragged",
+  "Media": "Barely moved while the rest ran",
+  "Realty": "Small gain, lagged the broad rally"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,563 stocks advanced and 1,164 declined across NSE. Inside the Nifty 50, 42 rose and only 8 fell.",
+ "movers_note_gainers": "Maruti led at 7.58%. Eicher, M&M and TMPV followed on the auto bid.",
+ "movers_note_losers": "Three IT names led the slide at about 1.5% each. HCLTech also fell.",
+ "watch_text": "Friday opens with the Nifty above its 25,300 max pain. Option OI marks 25,000 and 26,000 as the range.",
+ "lessons": [
+  "The Nifty 50 was near unanimous, the wider market less so. 42 of 50 rose, yet 1,164 NSE stocks fell.",
+  "Consumer names carried the rally. Auto, durables and FMCG all beat the Nifty.",
+  "Large caps outran small caps. Nifty Next 50 beat Smallcap 100 by about a point.",
+  "The index ended at its high of the day. Nothing was given back into the bell."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "ECB President Lagarde speaks at 17:45 IST on Friday. US consumer sentiment follows at 00:30 IST.",
+ "cta_headline": "A broad rally. *Save it for Friday's open*.",
+ "cta_sub": "Flows split, breadth held. Next bell is Friday 20 November.",
+ "next_text": "Friday 20 November opens from a close of 25,514.30. Nifty expiry follows on Monday 23 November.",
+ "caption_a": "FIIs put Rs 7,411.41 Cr into cash while DIIs sold Rs 1,356.57 Cr.\nNifty rose 1.14% to 25,514.30, closing at its high. 42 of 50 stocks gained.\nAuto jumped 4.4%. IT slipped 1.1%.\nWatch: Lagarde speaks at 17:45 IST on Friday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #FII #NiftyAuto #MarketWrap",
+ "caption_b": "Maruti rose 7.58% and Nifty Auto jumped 4.4%. IT was the lone big sector lower.\nBreadth ran 1,563 advances to 1,164 declines. India VIX rose to 16.11.\nNifty PCR sits at 1.47 with max pain at 25,300.\nWatch: Nifty expiry on Monday 23 November.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyAuto #IndiaVIX #Maruti"
+}
