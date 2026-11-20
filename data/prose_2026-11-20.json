@@ -1,0 +1,58 @@
+{
+ "headline": "Banks led the week while *IT and metal slipped*",
+ "subline": "Nifty rose 2.61% on the week. Friday's gain came with more decliners than advancers.",
+ "hero_text": "Nifty gained 2.61% on the week and 1.12% on Friday, but 1,682 stocks fell against 1,046 that rose. The wider tape lagged the index.",
+ "why_head": "Why the week ended higher",
+ "why": [
+  {
+   "emoji": "🏦",
+   "title": "Private banks set the pace",
+   "desc": "Axis Bank rose 4.72% and Nifty Private Bank gained 3.01%.",
+   "badge": "Bank Nifty +2.49%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Bank led",
+   "desc": "Firm beside the leader, +2.49%.",
+   "badge": "Bank +2.49%"
+  },
+  {
+   "emoji": "⚠️",
+   "title": "Caution built under the rally",
+   "desc": "India VIX rose to 17.32, near the top of its 21 session range.",
+   "badge": "VIX 17.32, +7.51%"
+  },
+  {
+   "emoji": "📊",
+   "title": "Wider tape had no trigger",
+   "desc": "1,682 stocks fell against 1,046 that rose. No clear catalyst for the movers.",
+   "badge": "A/D 0.62"
+  }
+ ],
+ "sector_reasons": {
+  "PSU Bank": "Topped the week on a steady lender bid",
+  "Bank": "Financial heavyweights anchored the gain",
+  "Private Bank": "Axis Bank led the Friday surge",
+  "Metal": "Tata Steel's slip weighed on the group",
+  "IT": "Bounced Friday but stayed lower for the week",
+  "Pharma": "Barely moved as hospital names took the bid"
+ },
+ "bonus_title": "THE SPLIT",
+ "bonus_text": "PSU banks led the week at 6.72% and Bank Nifty gained 5.9%. Metal fell 2.98% and IT 1.91%.",
+ "movers_note_gainers": "Apollo Hospitals led at 5.29%. Axis Bank added 4.72% on the bank bid.",
+ "movers_note_losers": "Titan fell 1.70%, the deepest cut. Tata Steel, NTPC and HUL also slipped.",
+ "watch_text": "Monday is the Nifty weekly expiry. Open interest stacks at 26,000 calls and 24,500 puts, with max pain at 25,500.",
+ "lessons": [
+  "Weight beat headcount. Banks lifted the Nifty while decliners outnumbered advancers.",
+  "The leader changed by the day. PSU banks topped the week, but private banks topped Friday.",
+  "A bounce did not repair the week. IT rose Friday but stayed lower for the week, as metal did.",
+  "Gains were not only banks. Hospital, auto and cement names also sat among the top Nifty gainers."
+ ],
+ "alert_title": "Monday expiry",
+ "alert_text": "Nifty weekly expiry falls on Monday 23 November. Max pain sits at 25,500, below Friday's close.",
+ "cta_headline": "Banks won the week. *Expiry comes Monday*.",
+ "cta_sub": "Full wrap every evening. Next bell is Monday 23 November.",
+ "next_text": "Monday 23 November opens the new week. The F&O ban list adds MANAPPURAM and drops KAYNES.",
+ "caption_a": "Nifty rose 1.12% to 25,800.6 on Friday, yet 1,682 stocks fell against 1,046 that rose.\nBank Nifty gained 2.49%. FIIs bought Rs 10,308.42 Cr in cash while DIIs sold Rs 4,859.8 Cr.\nWatch: Monday brings the Nifty weekly expiry, with max pain at 25,500.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #FII #MarketWrap",
+ "caption_b": "Week in one line: Nifty up 2.61%, Bank Nifty up 5.9%, PSU banks up 6.72%.\nMetal fell 2.98% and IT 1.91% over the same five sessions.\nNifty PCR closed at 1.673, with open interest stacked at 26,000 calls.\nWatch: the weekly expiry lands on Monday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyBank #NiftyIT #WeeklyWrap"
+}
