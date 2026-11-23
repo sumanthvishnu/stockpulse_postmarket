@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 falls 1.75% amid broad market decline and rising volatility.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "📉",
+   "title": "Market Downturn",
+   "detail": "Nifty 50 dropped by 1.75%.",
+   "stat": "25,349.65"
+  },
+  {
+   "emoji": "📈",
+   "title": "Volatility Surge",
+   "detail": "India VIX increased by 2.18%.",
+   "stat": "17.7"
+  },
+  {
+   "emoji": "💰",
+   "title": "FII Inflows",
+   "detail": "FIIs were net buyers with Rs 5,672.99 Cr.",
+   "stat": "5,672.99 Cr"
+  },
+  {
+   "emoji": "❓",
+   "title": "No Clear Catalyst",
+   "detail": "Driver attribution was unavailable.",
+   "stat": "Unavailable"
+  }
+ ],
+ "flows_line": "FIIs net bought Rs 5,672.99 Cr, DIIs net sold Rs 2,760.12 Cr.",
+ "watch_next": "Watch for US economic data on Wednesday, 25 November 2026.",
+ "week_pct": 0.23,
+ "lesson_seeds": [
+  "Nifty 50 declines despite FII buying.",
+  "Volatility at session high indicates market uncertainty.",
+  "Sectoral performance mixed with IT gaining and metals falling.",
+  "No clear market driver highlights data gaps."
+ ],
+ "source": "llm"
+}
