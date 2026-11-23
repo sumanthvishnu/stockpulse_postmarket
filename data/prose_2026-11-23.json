@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty fell 1.75% while the *broader market lost less*",
+ "subline": "Banks dragged the frontline. FIIs bought cash while DIIs sold.",
+ "hero_text": "The frontline fell harder than the rest. Midcap 150 lost 0.92% and Smallcap 250 lost 0.69%, as FIIs bought and DIIs sold.",
+ "why_head": "Why the market slid today",
+ "why": [
+  {
+   "emoji": "📉",
+   "title": "Banks led the slide",
+   "desc": "Private banks and PSU banks both fell over 3%, pulling the index down.",
+   "badge": "HDFC Bank -3.33%"
+  },
+  {
+   "emoji": "🌡️",
+   "title": "Fear hit a 21 session high",
+   "desc": "India VIX climbed to the top of its recent range.",
+   "badge": "VIX 17.70"
+  },
+  {
+   "emoji": "💰",
+   "title": "Flows pulled in opposite ways",
+   "desc": "FIIs bought in cash while DIIs sold, and the index still fell.",
+   "badge": "FII +5,672.99 Cr"
+  },
+  {
+   "emoji": "❓",
+   "title": "No clear cause surfaced",
+   "desc": "No single trigger was named. Declines outnumbered advances 1,997 to 748.",
+   "badge": "A/D 0.38"
+  }
+ ],
+ "sector_reasons": {
+  "IT": "TCS led the Nifty gainers",
+  "Consumer Durables": "Titan firmed among the gainers",
+  "Realty": "Edged up while the tape fell",
+  "Metal": "Tata Steel sank 8.43%",
+  "PSU Bank": "Sold off in step with private lenders",
+  "Private Bank": "HDFC Bank and ICICI Bank fell over 3%"
+ },
+ "bonus_title": "THE FLOWS",
+ "bonus_text": "FIIs bought Rs 5,672.99 Cr and DIIs sold Rs 2,760.12 Cr. The two pointed opposite ways on a day the index fell.",
+ "movers_note_gainers": "TCS led at 3.53%. TechM and HCLTech made it three IT names in the top four.",
+ "movers_note_losers": "Tata Steel sank 8.43%. Axis Bank, HDFC Bank and ICICI Bank each lost over 3%.",
+ "watch_text": "Wednesday reopens after the holiday. Nifty closed between the 25,300 and 25,400 OI strikes. US GDP and PCE follow.",
+ "lessons": [
+  "Banks outweighed everything. Private and PSU banks fell together while IT rose against them.",
+  "Foreign cash did not cap the fall. DIIs sold, and decliners beat advancers by about 2.7 to 1.",
+  "Fear sat at the top of its 21 session range, so the fall was not shrugged off.",
+  "IT moved against the tape. TCS led the Nifty gainers while Tata Steel led the losers."
+ ],
+ "alert_title": "Next session",
+ "alert_text": "Wednesday 25 November reopens after Tuesday's holiday. US Core PCE and GDP data land at 23:00 IST.",
+ "cta_headline": "Index down, IT up. *Market shuts Tuesday*.",
+ "cta_sub": "Tuesday 24 Nov is an NSE holiday. Next bell is Wednesday 25 November.",
+ "next_text": "Wednesday 25 November is the next session. Tuesday is an NSE holiday. US Core PCE and GDP follow at 23:00 IST.",
+ "caption_a": "Nifty fell 1.75% to 25,349.65 but IT rose 1.69%.\nBank Nifty dropped 3.17%. Breadth ran 748 up to 1,997 down.\nFIIs bought Rs 5,672.99 Cr while DIIs sold Rs 2,760.12 Cr.\nWatch: Wednesday 25 November reopens after the Tuesday holiday.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #NiftyIT #FII",
+ "caption_b": "Only 748 NSE stocks rose while 1,997 fell.\nMidcap 150 lost 0.92%, Smallcap 250 lost 0.69%, Nifty 1.75%.\nMetal fell 3.68%. Tata Steel sank 8.43%.\nWatch: US Core PCE and GDP data land Wednesday night.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyMetal #StockMarket #MarketWrap"
+}
