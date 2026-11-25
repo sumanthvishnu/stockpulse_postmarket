@@ -1,0 +1,58 @@
+{
+ "headline": "Nifty rose while the *broader market lagged*",
+ "subline": "The frontline ran hard. Smallcaps and the wider tape did not follow.",
+ "hero_text": "Nifty gained 1.85% with 42 of 50 stocks rising. Across 2,774 NSE stocks, decliners still outnumbered advancers.",
+ "why_head": "Why the Nifty jumped",
+ "why": [
+  {
+   "emoji": "🛒",
+   "title": "Staples carried the Nifty up",
+   "desc": "42 of 50 Nifty stocks rose. HUL led at 6.08% and staples did the lifting.",
+   "badge": "42 of 50 rose"
+  },
+  {
+   "emoji": "💵",
+   "title": "FIIs and DIIs both came in",
+   "desc": "FII net inflow was Rs 4,479.08 Cr. DIIs added Rs 4,018.72 Cr.",
+   "badge": "FII Rs 4,479.08 Cr"
+  },
+  {
+   "emoji": "🇺🇸",
+   "title": "Wall Street fell sharply",
+   "desc": "S&P 500 fell 2.59% and Nasdaq 3.92%, yet the Nifty still rose.",
+   "badge": "S&P 500 -2.59%"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma added to the lift",
+   "desc": "Nifty Pharma rose 2.38% and closed near its high of the day.",
+   "badge": "Pharma +2.38%"
+  }
+ ],
+ "sector_reasons": {
+  "FMCG": "HUL, Tata Consumer and Nestle led the climb",
+  "Pharma": "Closed near its high on a firm bid",
+  "Private Bank": "Private lenders carried the bank bid",
+  "Media": "Sun TV fell 9.21% and dragged the group",
+  "Metal": "Tata Steel, Hindalco and JSW Steel slipped",
+  "Consumer Durables": "Slipped while staples ran ahead"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,183 stocks advanced and 1,560 declined, a ratio of 0.76. Nifty Smallcap 100 lost 0.44% while the Nifty 50 rose.",
+ "movers_note_gainers": "HUL led at 6.08%. Tata Consumer and Nestle made it three staples in the top four.",
+ "movers_note_losers": "Tata Steel fell 2.27%, the deepest cut. Hindalco and JSW Steel made it three metal names.",
+ "watch_text": "Tokyo Core CPI lands at 09:00 IST Thursday. Nifty option OI stacks at 25,500 puts and 26,000 calls.",
+ "lessons": [
+  "Breadth was only slightly negative. The decline was narrow.",
+  "The frontline and the tail parted ways. Smallcap 100 fell 0.44% while the Nifty jumped.",
+  "Steel led the Nifty losers. Tata Steel, Hindalco and JSW Steel all closed lower.",
+  "Both big money pools agreed. FIIs and DIIs each added cash on the same day."
+ ],
+ "alert_title": "Thursday 09:00 IST",
+ "alert_text": "Tokyo Core CPI is forecast at 3.0% against 2.6% before. The Nifty weekly expiry falls Tuesday 1 December.",
+ "cta_headline": "Index up, tape split. *Next bell is Thursday*.",
+ "cta_sub": "More stocks fell than rose. Full wrap every evening, next one after Thursday's close.",
+ "next_text": "Thursday 26 November opens after a 1.85% jump. Tokyo Core CPI at 09:00 IST is the one scheduled event.",
+ "caption_a": "Nifty jumped 1.85% to 25,819.25, yet 1,560 stocks fell against 1,183 that rose.\nFMCG led at 3.79%. Media lost 4.44%.\nFIIs added Rs 4,479.08 Cr, DIIs Rs 4,018.72 Cr.\nWatch: Tokyo Core CPI at 09:00 IST Thursday.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyFMCG #NiftyPharma #FII",
+ "caption_b": "Wall Street fell hard, with the S&P 500 down 2.59%. The Nifty rose 1.85% anyway.\nHUL gained 6.08%, Nifty Pharma 2.38%. Metals slid 2.04%.\nNifty PCR sits at 0.92, max pain near 25,700.\nWatch: Tokyo Core CPI at 09:00 IST Thursday.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyFMCG #SP500 #MarketWrap"
+}
