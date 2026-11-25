@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 surges 1.85% amid mixed global cues and strong FII inflows.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "📈",
+   "title": "Nifty 50 Rally",
+   "detail": "Nifty 50 closed at 25,819.25, up 1.85%.",
+   "stat": "469.6 points"
+  },
+  {
+   "emoji": "💹",
+   "title": "FII Inflows",
+   "detail": "FII net inflow was Rs 4,479.08 Cr.",
+   "stat": "Rs 4,479.08 Cr"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Market Influence",
+   "detail": "US markets fell sharply, impacting sentiment.",
+   "stat": "-2.59% on S&P 500"
+  },
+  {
+   "emoji": "💊",
+   "title": "Pharma Gains",
+   "detail": "Nifty Pharma index rose by 2.38%.",
+   "stat": "673.05 points"
+  }
+ ],
+ "flows_line": "FII and DII both posted strong net inflows, Rs 4,479.08 Cr and Rs 4,018.72 Cr respectively.",
+ "watch_next": "Watch for Tokyo Core CPI data at 09:00 IST tomorrow for potential market impact.",
+ "week_pct": 1.7,
+ "lesson_seeds": [
+  "Nifty 50 showed strong performance with a 1.85% rise.",
+  "FII inflows continue to support market sentiment.",
+  "Global market downturns can still affect local sentiment.",
+  "Sectoral gains led by Pharma indicate selective market strength."
+ ],
+ "source": "llm"
+}
