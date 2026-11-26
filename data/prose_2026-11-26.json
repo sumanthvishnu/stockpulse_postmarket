@@ -1,0 +1,58 @@
+{
+ "headline": "IT surged while *banks and staples held back*",
+ "subline": "Nifty gained 0.25% as 28 of its 50 stocks closed lower.",
+ "hero_text": "Nifty closed at 25,884.5, up 0.25%. IT jumped 3.66%, while 28 of the 50 Nifty stocks ended lower.",
+ "why_head": "Why the Nifty edged up",
+ "why": [
+  {
+   "emoji": "💻",
+   "title": "HCLTech led an IT surge",
+   "desc": "HCLTECH, TCS and INFY pulled the Nifty IT index higher.",
+   "badge": "Nifty IT +3.66%"
+  },
+  {
+   "emoji": "😌",
+   "title": "Fear eased through the day",
+   "desc": "India VIX fell to 16.84 from 17.67 as nerves settled.",
+   "badge": "VIX 16.84"
+  },
+  {
+   "emoji": "🤝",
+   "title": "Both big pools were buyers",
+   "desc": "FIIs put in Rs 5,843.33 Cr and DIIs added Rs 5,630.72 Cr in cash.",
+   "badge": "FII Rs 5,843.33 Cr"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Europe rose, US was mixed",
+   "desc": "FTSE gained 1.89% and DAX 2.19%, while the Nasdaq slipped 0.62%.",
+   "badge": "DAX +2.19%"
+  }
+ ],
+ "sector_reasons": {
+  "IT": "Led on HCLTECH, TCS and INFY gains",
+  "Realty": "Property names ran on a firm bid",
+  "Metal": "Bounced after a weak week",
+  "Consumer Durables": "Weakest sector as consumer names slid",
+  "FMCG": "Nestle led the staples lower",
+  "Auto": "Eased with the rest of consumer demand"
+ },
+ "bonus_title": "BREADTH CHECK",
+ "bonus_text": "1,497 stocks rose and 1,244 fell, about 1.2 to 1. Only 22 of the 50 Nifty names closed higher.",
+ "movers_note_gainers": "HCLTECH jumped 6.42%. BSE broke the IT run at 5.70%.",
+ "movers_note_losers": "Asian Paints fell 2.98%. Bajaj Finance and Shriram Finance trailed close behind.",
+ "watch_text": "Friday: the Nifty sits between 25,000 put OI and 26,000 call OI. Max pain is 25,800.",
+ "lessons": [
+  "One sector carried the index. IT rose while most Nifty stocks closed lower.",
+  "Banks sat out the rally. Bank Nifty slipped while the Nifty gained.",
+  "Consumer names moved together. FMCG, durables and auto all closed lower.",
+  "Lenders lagged the IT bounce. Bajaj Finance and Shriram Finance sat among the top Nifty losers."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "Friday brings ex dates for VGL's split and FUSIONCX's dividend. TECHM's 1:1 bonus goes ex on Monday 30 November.",
+ "cta_headline": "IT did the heavy lifting. *Save this wrap*.",
+ "cta_sub": "Next bell is Friday 27 November. Full wrap every evening.",
+ "next_text": "Next bell is Friday. Nifty expiry lands Tuesday.",
+ "caption_a": "IT jumped 3.66% but the Nifty gained just 0.25% to 25,884.5.\nHCLTECH rose 6.42%, yet 28 of 50 Nifty stocks closed lower.\nFIIs bought Rs 5,843.33 Cr and DIIs Rs 5,630.72 Cr in cash.\n\nWatch: 26,000 call OI and 25,000 put OI frame Friday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyIT #FII #Sensex",
+ "caption_b": "Bank Nifty slipped 0.26% while the Nifty rose. Lenders and staples sat out the move.\nBreadth ran 1,497 up to 1,244 down. India VIX eased to 16.84.\n\nWatch: VGL and FUSIONCX go ex on Friday.\n\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #BankNifty #MarketWrap #IndiaVIX"
+}
