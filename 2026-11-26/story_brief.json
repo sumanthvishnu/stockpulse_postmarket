@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 gains 0.25% amid IT sector strength and positive institutional flows.",
+ "mood": "mixed",
+ "drivers": [
+  {
+   "emoji": "💻",
+   "title": "IT Sector Surge",
+   "detail": "HCLTECH, TCS, and INFY led the gains.",
+   "stat": "+3.66%"
+  },
+  {
+   "emoji": "📉",
+   "title": "Volatility Drops",
+   "detail": "India VIX fell by 4.73%.",
+   "stat": "-4.73%"
+  },
+  {
+   "emoji": "🏦",
+   "title": "Institutional Buying",
+   "detail": "FIIs and DIIs were net buyers.",
+   "stat": "Rs 5,843.33 Cr"
+  },
+  {
+   "emoji": "📊",
+   "title": "Mixed Global Cues",
+   "detail": "European markets rose, US mixed.",
+   "stat": "FTSE +1.89%"
+  }
+ ],
+ "flows_line": "FIIs and DIIs were net buyers in the cash market, with inflows of Rs 5,843.33 Cr and Rs 5,630.72 Cr respectively.",
+ "watch_next": "Tomorrow, watch for corporate actions including a face value split for VGL and a dividend for FUSIONCX.",
+ "week_pct": 2.6,
+ "lesson_seeds": [
+  "IT sector gains can drive broader index performance.",
+  "Volatility decrease suggests market stability.",
+  "Institutional flows can influence market direction.",
+  "Global cues impact local market sentiment."
+ ],
+ "source": "llm"
+}
