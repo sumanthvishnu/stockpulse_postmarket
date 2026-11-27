@@ -1,0 +1,58 @@
+{
+ "headline": "The week held green as *Friday gave way*",
+ "subline": "Nifty gained 0.36% on the week. Friday fell, yet smallcaps still rose.",
+ "hero_text": "Nifty fell 1.07% on Friday but still ended the week up 0.36%. Smallcap 250 rose 0.53% while the frontline slid.",
+ "why_head": "Why Friday broke the week",
+ "why": [
+  {
+   "emoji": "💻",
+   "title": "IT gave back part of its run",
+   "desc": "Nifty IT fell as Infosys, HCLTech and TCS all lost ground.",
+   "badge": "Nifty IT -1.88%"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Autos fell with Bajaj Auto",
+   "desc": "Nifty Auto dropped as Bajaj Auto lost 3.36%.",
+   "badge": "Auto -1.48%"
+  },
+  {
+   "emoji": "📉",
+   "title": "A broad dip with no catalyst",
+   "desc": "No single news item explained it. Forty of 50 Nifty names fell.",
+   "badge": "Nifty -277.3 pts"
+  },
+  {
+   "emoji": "📈",
+   "title": "Wall Street rose, Nifty fell",
+   "desc": "The S&P 500 gained while Indian indices slipped.",
+   "badge": "S&P 500 +0.85%"
+  }
+ ],
+ "sector_reasons": {
+  "IT": "Led the week despite Friday's Infosys and TCS drag",
+  "Realty": "Held a weekly gain even as Friday slipped",
+  "Healthcare": "Pharma strength carried the group",
+  "Media": "Slid through the week, Friday's bounce was small",
+  "Metal": "Lost the week though JSW Steel and Hindalco rose Friday",
+  "PSU Bank": "Slipped on the week as lenders stayed soft"
+ },
+ "bonus_title": "THE SPLIT",
+ "bonus_text": "IT led the week at 5.95% and realty added 3.88%. Media fell 6.23% and metal lost 3.43%.",
+ "movers_note_gainers": "BEL led at 1.72%. JSW Steel and Hindalco made it two metal names.",
+ "movers_note_losers": "Shriram Finance and Bajaj Auto led the losers.",
+ "watch_text": "TechM's 1:1 bonus goes ex on Monday. Nifty option OI stacks at 25,000 puts and 27,000 calls.",
+ "lessons": [
+  "Metal and media rose Friday but lost the week. IT did the reverse.",
+  "Smallcaps rose while 40 of 50 Nifty names fell. The drop sat in large caps.",
+  "Wall Street rose and the Nifty fell. Friday's drop did not follow global cues.",
+  "Autos, IT and lenders fell together. Bajaj Auto, HCLTech and Shriram Finance led the losers."
+ ],
+ "alert_title": "Next up",
+ "alert_text": "Monday 30 November is the next session. TechM trades ex bonus 1:1 that day.",
+ "cta_headline": "A green week, a red Friday. *Save it for Monday*.",
+ "cta_sub": "Full wrap every evening. Next bell is Monday 30 November.",
+ "next_text": "Monday 30 November opens the next week. The Nifty weekly expiry falls on Tuesday 1 December.",
+ "caption_a": "Nifty fell 1.07% on Friday to 25,607 but still gained 0.36% on the week.\nSmallcap 250 rose 0.53% while Nifty IT fell 1.88%.\nFIIs bought Rs 1,634.33 Cr in cash. DIIs trimmed Rs 556.42 Cr.\nWatch: TechM trades ex bonus 1:1 on Monday.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyIT #Sensex #WeeklyWrap",
+ "caption_b": "IT fell 1.88% on Friday yet led the week at 5.95%. Metal did the reverse.\nThe S&P 500 rose 0.85% while the Nifty fell. Nifty max pain sits at 25,700.\nWatch: the Nifty weekly expiry lands on Tuesday 1 December.\nDaily wrap every evening @getstockpulse\nNot investment advice.\n#Nifty #IndianStockMarket #NiftyIT #NiftyMetal #MarketWrap"
+}
