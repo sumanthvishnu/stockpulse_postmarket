@@ -1,0 +1,40 @@
+{
+ "one_liner": "Nifty 50 declines 1.07% amid broad-based market correction.",
+ "mood": "risk-off",
+ "drivers": [
+  {
+   "emoji": "💻",
+   "title": "IT Sector Slump",
+   "detail": "IT sector dropped 1.88%, leading market decline.",
+   "stat": "-628.85 pts"
+  },
+  {
+   "emoji": "🚗",
+   "title": "Auto Sector Drop",
+   "detail": "Auto sector fell 1.48%, contributing to market losses.",
+   "stat": "-423.55 pts"
+  },
+  {
+   "emoji": "📉",
+   "title": "General Correction",
+   "detail": "Market correction with no specific catalyst identified.",
+   "stat": "-277.3 pts"
+  },
+  {
+   "emoji": "🌍",
+   "title": "Global Cues",
+   "detail": "Global markets showed positive momentum, unlike local indices.",
+   "stat": "+0.85% SP500"
+  }
+ ],
+ "flows_line": "FIIs net bought Rs 1,634.33 crore; DIIs net sold Rs 556.42 crore.",
+ "watch_next": "Watch for TECHM's bonus issue on Monday, 30 November 2026.",
+ "week_pct": 0.36,
+ "lesson_seeds": [
+  "Nifty 50 fell 1.07% amid broad-based correction.",
+  "IT and Auto sectors led the market decline.",
+  "FIIs were net buyers, while DIIs sold in cash market.",
+  "Global markets rose, contrasting local market performance."
+ ],
+ "source": "llm"
+}
